@@ -1,0 +1,33 @@
+common\engine\resourceconfig.xml
+<ResourceConfig>
+  <Resource Class="CGeometryResource" SourceExt=".glm;.dae" TargetExt=".xbg" />
+  <Resource Class="CTextureResource" SourceExt=".dds;.png" TargetExt=".xbt" />
+  <Resource Class="CAnimationResource" SourceExt=".mac" TargetExt=".mab" CompileDependency=".markup" />
+  <Resource Class="CSkeletonResource" SourceExt=".skel.xml" TargetExt=".skeleton" />
+  <Resource Class="CPhysResource" SourceExt=".hkr" TargetExt=".hkx" />
+  <Resource Class="CRealtreeResource" SourceExt=".rta" TargetExt=".rtx" />
+  <Resource Class="CStateMachineResource" SourceExt=".gosm.xml" TargetExt=".gosm.xml" />
+  <Resource Class="CMaterialResource" SourceExt=".material.xml" TargetExt=".material.bin" />
+  <Resource Class="CSectorResource" SourceExt=".gsdat" TargetExt=".sdat" />
+  <Resource Class="CBinkResource" SourceExt=".bik" TargetExt=".bik" />
+  <Resource Class="CAIWorkspaceResource" SourceExt=".ai.xml" TargetExt=".ai.rml" />
+  <Resource Class="CVistaResource" SourceExt=".vista" TargetExt=".vista" />
+  <Resource Class="CVistaTextureResource" SourceExt=".dds;.png" TargetExt=".xbt" />
+  <Resource Class="CSequenceResource" SourceExt=".seq" TargetExt=".cseq" CompileDependency=".naseq;.liseq;.auseq;.fxseq;.prseq"/> 
+  <Resource Class="CDominoBoxResource" SourceExt=".domino.xml" TargetExt=".lua" />
+  <Resource Class="CDominoGlobalsResource" SourceExt=".domino.xml" TargetExt=".lua" />
+  <Resource Class="CPoseAnimationResource" SourceExt=".dpas;.fxe" TargetExt=".dpax" />
+  <Resource Class="CPoseDefinitionResource" SourceExt=".dpds" TargetExt=".dpdx" />
+  <Resource Class="CAnimationTrackCollectionResource" SourceExt=".animtrackcol.xml" TargetExt=".animtrackcol.rml" />
+</ResourceConfig>
+
+
+GLM  https://en.wikipedia.org/wiki/KernelCAD
+DAE  https://en.wikipedia.org/wiki/COLLADA
+
+
+
+xbt to dds:
+Remove 36 byte from begin file
+
+
