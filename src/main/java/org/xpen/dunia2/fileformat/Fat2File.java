@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.xpen.dunia2.fileformat.fat2.CompressionScheme;
 import org.xpen.dunia2.fileformat.fat2.Entry;
 import org.xpen.dunia2.fileformat.fat2.EntrySerializer;
 import org.xpen.dunia2.fileformat.fat2.EntrySerializerV9;
@@ -24,6 +25,7 @@ public class Fat2File {
     private FileChannel fileChannel;
     private int version;
     private int platform;
+    private String fileName;
     
     private List<Entry> entries = new ArrayList<Entry>();
 
@@ -42,9 +44,10 @@ public class Fat2File {
             new EntrySerializerV9()
     };
     
-    public Fat2File(File file) throws Exception {
+    public Fat2File(String fileName) throws Exception {
+    	this.fileName = fileName;
         
-        raf = new RandomAccessFile(file, "r");
+        raf = new RandomAccessFile(new File(fileName+".fat"), "r");
         fileChannel = raf.getChannel();
     }
     
@@ -198,6 +201,11 @@ public class Fat2File {
         if (totalEntryCountCheck != subfatTotalEntryCount) {
             throw new RuntimeException("subfat total entry count mismatch(" + totalEntryCountCheck + "!=" + subfatTotalEntryCount +")");
         }
+        
+        for (Entry entry : entries) {
+        	sanityCheckEntry(entry);
+        }
+
         LOG.debug("entryCount={}, subfatCount={}, totalEntryCountCheck={}, subfatTotalEntryCount={}",
                 entryCount, subfatCount, totalEntryCountCheck, subfatTotalEntryCount);
         
@@ -205,7 +213,28 @@ public class Fat2File {
         
     }
     
-    public void close() throws Exception {
+    private void sanityCheckEntry(Entry entry) {
+        if (entry.compressionScheme == CompressionScheme.NONE) {
+            if (entry.uncompressedSize != 0)
+            {
+                throw new RuntimeException("got entry with no compression with a non-zero uncompressed size");
+            }
+        }
+        else if (entry.compressionScheme == CompressionScheme.LZO1X ||
+                 entry.compressionScheme == CompressionScheme.ZLIB) {
+            if (entry.compressedSize == 0 &&
+                entry.uncompressedSize > 0)
+            {
+                throw new RuntimeException(
+                    "got entry with compression with a zero compressed size and a non-zero uncompressed size");
+            }
+        } else {
+            throw new RuntimeException("got entry with unsupported compression scheme");
+        }
+	
+	}
+
+	public void close() throws Exception {
         fileChannel.close();
         raf.close();
     }
