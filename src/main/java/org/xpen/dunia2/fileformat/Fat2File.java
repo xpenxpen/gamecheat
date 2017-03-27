@@ -8,6 +8,8 @@ import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xpen.dunia2.fileformat.fat2.Entry;
 import org.xpen.dunia2.fileformat.fat2.EntrySerializer;
 import org.xpen.dunia2.fileformat.fat2.EntrySerializerV9;
@@ -16,12 +18,15 @@ import org.xpen.dunia2.fileformat.fat2.SubFatEntry;
 public class Fat2File {
     public static final int MAGIC_FAT2 = 0x46415432; //'FAT2'
     
+    private static final Logger LOG = LoggerFactory.getLogger(Fat2File.class);
+    
     private RandomAccessFile raf;
     private FileChannel fileChannel;
     private int version;
     private int platform;
     
     private List<Entry> entries = new ArrayList<Entry>();
+
     private List<SubFatEntry> subFats = new ArrayList<SubFatEntry>();
     
     private EntrySerializer[] entrySerializers = {
@@ -55,8 +60,8 @@ public class Fat2File {
      * | 20 LOOP entry
      * |
      * ----
-     * 4 0000
-     * ----4 count
+     * 4 unknown1Count = 0000
+     * ----4 unknown2Count
      * |
      * | 16 LOOP unknown
      * |
@@ -76,7 +81,7 @@ public class Fat2File {
         ByteBuffer buffer = ByteBuffer.allocate(16);
         buffer.order(ByteOrder.LITTLE_ENDIAN);
         
-        buffer.limit(4);
+        buffer.limit(8);
         fileChannel.read(buffer);
         buffer.flip();
         
@@ -193,6 +198,8 @@ public class Fat2File {
         if (totalEntryCountCheck != subfatTotalEntryCount) {
             throw new RuntimeException("subfat total entry count mismatch(" + totalEntryCountCheck + "!=" + subfatTotalEntryCount +")");
         }
+        LOG.debug("entryCount={}, subfatCount={}, totalEntryCountCheck={}, subfatTotalEntryCount={}",
+                entryCount, subfatCount, totalEntryCountCheck, subfatTotalEntryCount);
         
         buffer.clear();
         
@@ -201,6 +208,10 @@ public class Fat2File {
     public void close() throws Exception {
         fileChannel.close();
         raf.close();
+    }
+    
+    public List<Entry> getEntries() {
+        return entries;
     }
 
 }

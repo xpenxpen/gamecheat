@@ -94,7 +94,23 @@ public class CRC64 {
     public long update(String value) {
         long hash = 0L;
         for (int i = 0; i < value.length(); i++){
-            hash = table[(byte)hash ^ (byte)value.charAt(i)] ^ (hash >> 8);
+            int temp1 = (byte)hash;
+            int temp2 = (byte)value.charAt(i);
+            if (temp1 < 0) {
+                temp1 += 256;
+            }
+            if (temp2 < 0) {
+                temp2 += 256;
+            }
+//            System.out.println(i + ":" +value.charAt(i) + ":" + (int)value.charAt(i));
+//            System.out.println("hash:" +hash);
+//            System.out.println("(byte)hash:" +(int)((byte)hash));
+//            System.out.println("(byte)hash ^ value.charAt(i):" +((byte)hash ^ value.charAt(i)));
+            int temp3 = (temp1 ^ temp2);
+            if (temp3 < 0) {
+                temp3 += 256;
+            }
+            hash = table[temp3] ^ (hash >>> 8);
         }
         return hash;
     }
