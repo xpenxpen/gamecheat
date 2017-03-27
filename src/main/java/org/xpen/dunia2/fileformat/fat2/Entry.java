@@ -1,7 +1,10 @@
 package org.xpen.dunia2.fileformat.fat2;
 
+import java.math.BigInteger;
+
 public class Entry {
-    public long nameHash;
+    //public long nameHash;
+    public BigInteger nameHash;
     public int uncompressedSize;
     public int compressedSize;
     public long offset;
@@ -9,7 +12,7 @@ public class Entry {
     
     @Override
     public String toString() {
-        return "Entry [nameHash=" + nameHash + "(" + Long.toHexString(nameHash)+")"
+        return "Entry [nameHash=" + nameHash.longValue() + "(" + nameHash.toString(16) +")"
                 + ", uncompressedSize=" + uncompressedSize + ", compressedSize=" + compressedSize
                 + ", offset=" + offset + ", compressionScheme=" + compressionScheme + "]";
     }
