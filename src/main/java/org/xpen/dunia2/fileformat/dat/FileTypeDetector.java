@@ -11,6 +11,7 @@ public class FileTypeDetector {
     
     static {
         fileHandlersMap.put("unknown", new SimpleCopyHandler("unknown"));
+        fileHandlersMap.put("fcb", new SimpleCopyHandler("fcb"));
         fileHandlersMap.put("png", new SimpleCopyHandler("png"));
         fileHandlersMap.put("xbt", new XbtHandler());
     }
@@ -57,6 +58,9 @@ public class FileTypeDetector {
             }
             if (magic == 0x4D455348) { // 'MESH'
                 return "xbg";
+            }
+            if (magic == 0x4643626E) { // 'FCbn'
+                return "fcb";
             }
         }
         

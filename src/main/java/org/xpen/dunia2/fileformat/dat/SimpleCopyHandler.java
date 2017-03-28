@@ -27,7 +27,7 @@ public class SimpleCopyHandler implements FileTypeHandler {
             }
             
         } else {
-            outFile = new File(UserSetting.rootOutputFolder, "unknown/" + newFileName + "." + extension);
+            outFile = new File(UserSetting.rootOutputFolder, "unknown/" + extension + "/" + newFileName + "." + extension);
         }
         
         File parentFile = outFile.getParentFile();

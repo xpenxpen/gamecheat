@@ -6,6 +6,10 @@ import java.nio.channels.FileChannel;
 import java.util.List;
 import java.util.Map;
 
+import org.anarres.lzo.LzoAlgorithm;
+import org.anarres.lzo.LzoDecompressor;
+import org.anarres.lzo.LzoLibrary;
+import org.anarres.lzo.lzo_uintp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xpen.dunia2.fileformat.dat.FileTypeDetector;
@@ -14,7 +18,6 @@ import org.xpen.dunia2.fileformat.dat.SimpleCopyHandler;
 import org.xpen.dunia2.fileformat.fat2.CompressionScheme;
 import org.xpen.dunia2.fileformat.fat2.Entry;
 import org.xpen.dunia2.fileformat.fat2.FileListManager;
-import org.xpen.farcry3.UserSetting;
 
 public class DatFile {
     
@@ -45,33 +48,52 @@ public class DatFile {
         for (Entry entry : entries) {
             //LOG.debug(entry.toString());
         	raf.seek(entry.offset);
+        	
         	if (entry.compressionScheme == CompressionScheme.NONE) {
         		byte[] b = new byte[entry.compressedSize];
             	raf.readFully(b);
-            	String detectedType = FileTypeDetector.detect(b);
-            	FileTypeHandler fileTypeHandler = FileTypeDetector.getFileTypeHandler(detectedType);
-            	if (fileTypeHandler == null) {
-            	    fileTypeHandler = new SimpleCopyHandler("unknown");
-            	}
             	
-            	Map<Long, String> crcMap = flm.getCrcMap();
-            	String newFileName = null;
-            	boolean isUnknown = false;
-            	if (crcMap.containsKey(entry.nameHash.longValue())) {
-            		String fileName = crcMap.get(entry.nameHash.longValue());
-            		newFileName = fileName;
-            	} else {
-            	    newFileName = entry.nameHash.toString(16);
-            	    isUnknown = true;
-            	}
+            	detectAndHandle(entry, b);
             	
-            	fileTypeHandler.handle(b, newFileName, isUnknown);
-            	
+        	} else if (entry.compressionScheme == CompressionScheme.LZO1X) {
+                byte[] b = new byte[entry.compressedSize];
+                byte[] ub = new byte[entry.uncompressedSize];
+                raf.readFully(b);
+                
+                LzoAlgorithm algorithm = LzoAlgorithm.LZO1X;
+                LzoDecompressor decompressor = LzoLibrary.getInstance().newDecompressor(algorithm, null);
+                lzo_uintp outputBufferLen = new lzo_uintp();
+                outputBufferLen.value = ub.length;
+                decompressor.decompress(b, 0, b.length, ub, 0, outputBufferLen);
+                
+                detectAndHandle(entry, ub);
+                
+                
         	} else {
-        		throw new UnsupportedOperationException();
+                throw new UnsupportedOperationException();
         	}
         }
-		
-	}
+    }
+
+    private void detectAndHandle(Entry entry, byte[] b) throws Exception {
+        String detectedType = FileTypeDetector.detect(b);
+        FileTypeHandler fileTypeHandler = FileTypeDetector.getFileTypeHandler(detectedType);
+        if (fileTypeHandler == null) {
+            fileTypeHandler = new SimpleCopyHandler("unknown");
+        }
+        
+        Map<Long, String> crcMap = flm.getCrcMap();
+        String newFileName = null;
+        boolean isUnknown = false;
+        if (crcMap.containsKey(entry.nameHash.longValue())) {
+        	String fileName = crcMap.get(entry.nameHash.longValue());
+        	newFileName = fileName;
+        } else {
+            newFileName = entry.nameHash.toString(16);
+            isUnknown = true;
+        }
+        
+        fileTypeHandler.handle(b, newFileName, isUnknown);
+    }
 
 }

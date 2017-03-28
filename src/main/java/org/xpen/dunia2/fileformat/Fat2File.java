@@ -198,9 +198,9 @@ public class Fat2File {
             
         }
         
-        if (totalEntryCountCheck != subfatTotalEntryCount) {
-            throw new RuntimeException("subfat total entry count mismatch(" + totalEntryCountCheck + "!=" + subfatTotalEntryCount +")");
-        }
+//        if (totalEntryCountCheck != subfatTotalEntryCount) {
+//            throw new RuntimeException("subfat total entry count mismatch(" + totalEntryCountCheck + "!=" + subfatTotalEntryCount +")");
+//        }
         
         for (Entry entry : entries) {
         	sanityCheckEntry(entry);

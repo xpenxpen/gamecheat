@@ -17,7 +17,7 @@ public class FatExtracter {
     private static final Logger LOG = LoggerFactory.getLogger(FatExtracter.class);
 
     public static void main(String[] args) throws Exception {
-    	String fileName = "igepatch";
+    	String fileName = "patch";
         UserSetting.rootOutputFolder = "myex";
         
         StopWatch stopWatch = new StopWatch();
@@ -35,7 +35,7 @@ public class FatExtracter {
         }
         
         FileListManager flm = new FileListManager();
-        flm.load(FatExtracter.class.getClassLoader().getResourceAsStream("farcry3/files/igepatch.filelist"));
+        flm.load(FatExtracter.class.getClassLoader().getResourceAsStream("farcry3/files/patch.filelist"));
         Map<Long, String> crcMap = flm.getCrcMap();
         
         DatFile datFile = new DatFile(fileName, fat2File, flm);

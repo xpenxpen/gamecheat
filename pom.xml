@@ -60,6 +60,12 @@
             <version>2.5</version>
         </dependency>
         
+        <dependency>
+            <groupId>org.anarres.lzo</groupId>
+            <artifactId>lzo-core</artifactId>
+            <version>1.0.5</version>
+        </dependency>
+        
         <!-- TEST begin -->
         <dependency>
             <groupId>junit</groupId>
