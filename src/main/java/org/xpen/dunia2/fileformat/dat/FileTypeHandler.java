@@ -4,5 +4,5 @@ import java.io.File;
 
 public interface FileTypeHandler {
 
-    void handle(byte[] b, String newFileName, boolean isUnknown) throws Exception;
+    void handle(byte[] b, String datFileName, String newFileName, boolean isUnknown) throws Exception;
 }

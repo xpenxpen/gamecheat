@@ -16,18 +16,24 @@ public class SimpleCopyHandler implements FileTypeHandler {
     }
 
     @Override
-    public void handle(byte[] b, String newFileName, boolean isUnknown) throws Exception {
+    public void handle(byte[] b, String datFileName, String newFileName, boolean isUnknown) throws Exception {
         File outFile = null;
         if (!isUnknown) {
             if (!extension.equals("unknown")) {
-                String oldFileNameWithoutExt = newFileName.substring(0, newFileName.lastIndexOf('.'));
-                outFile = new File(UserSetting.rootOutputFolder, oldFileNameWithoutExt + "." + extension);
+            	String oldFileNameWithoutExt = null;
+            	if (newFileName.lastIndexOf('.') == -1) {
+            		oldFileNameWithoutExt = newFileName;
+            	} else {
+                    oldFileNameWithoutExt = newFileName.substring(0, newFileName.lastIndexOf('.'));
+            	}
+                outFile = new File(UserSetting.rootOutputFolder, datFileName + "/" + oldFileNameWithoutExt + "." + extension);
             } else {
-                outFile = new File(UserSetting.rootOutputFolder, newFileName);
+                outFile = new File(UserSetting.rootOutputFolder, datFileName + "/" + newFileName);
             }
             
         } else {
-            outFile = new File(UserSetting.rootOutputFolder, "unknown/" + extension + "/" + newFileName + "." + extension);
+            outFile = new File(UserSetting.rootOutputFolder,
+            		datFileName + "/unknown/" + extension + "/" + newFileName + "." + extension);
         }
         
         File parentFile = outFile.getParentFile();

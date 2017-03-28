@@ -15,6 +15,7 @@ import org.xpen.dunia2.fileformat.fat2.Entry;
 import org.xpen.dunia2.fileformat.fat2.EntrySerializer;
 import org.xpen.dunia2.fileformat.fat2.EntrySerializerV9;
 import org.xpen.dunia2.fileformat.fat2.SubFatEntry;
+import org.xpen.farcry3.UserSetting;
 
 public class Fat2File {
     public static final int MAGIC_FAT2 = 0x46415432; //'FAT2'
@@ -47,7 +48,7 @@ public class Fat2File {
     public Fat2File(String fileName) throws Exception {
     	this.fileName = fileName;
         
-        raf = new RandomAccessFile(new File(fileName+".fat"), "r");
+        raf = new RandomAccessFile(new File(UserSetting.rootInputFolder, fileName+".fat"), "r");
         fileChannel = raf.getChannel();
     }
     

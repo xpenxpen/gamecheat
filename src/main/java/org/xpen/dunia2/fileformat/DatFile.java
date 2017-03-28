@@ -6,18 +6,16 @@ import java.nio.channels.FileChannel;
 import java.util.List;
 import java.util.Map;
 
-import org.anarres.lzo.LzoAlgorithm;
-import org.anarres.lzo.LzoDecompressor;
-import org.anarres.lzo.LzoLibrary;
-import org.anarres.lzo.lzo_uintp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xpen.dunia2.fileformat.dat.FileTypeDetector;
 import org.xpen.dunia2.fileformat.dat.FileTypeHandler;
+import org.xpen.dunia2.fileformat.dat.LzoCompressor;
 import org.xpen.dunia2.fileformat.dat.SimpleCopyHandler;
 import org.xpen.dunia2.fileformat.fat2.CompressionScheme;
 import org.xpen.dunia2.fileformat.fat2.Entry;
 import org.xpen.dunia2.fileformat.fat2.FileListManager;
+import org.xpen.farcry3.UserSetting;
 
 public class DatFile {
     
@@ -34,7 +32,7 @@ public class DatFile {
     	this.fat2File = fat2File;
     	this.flm = flm;
         
-        raf = new RandomAccessFile(new File(fileName+".dat"), "r");
+        raf = new RandomAccessFile(new File(UserSetting.rootInputFolder, fileName+".dat"), "r");
         fileChannel = raf.getChannel();
     }
 
@@ -46,7 +44,7 @@ public class DatFile {
 	public void decode() throws Exception {
         List<Entry> entries = fat2File.getEntries();
         for (Entry entry : entries) {
-            //LOG.debug(entry.toString());
+            LOG.debug("processing " + entry.toString());
         	raf.seek(entry.offset);
         	
         	if (entry.compressionScheme == CompressionScheme.NONE) {
@@ -60,11 +58,7 @@ public class DatFile {
                 byte[] ub = new byte[entry.uncompressedSize];
                 raf.readFully(b);
                 
-                LzoAlgorithm algorithm = LzoAlgorithm.LZO1X;
-                LzoDecompressor decompressor = LzoLibrary.getInstance().newDecompressor(algorithm, null);
-                lzo_uintp outputBufferLen = new lzo_uintp();
-                outputBufferLen.value = ub.length;
-                decompressor.decompress(b, 0, b.length, ub, 0, outputBufferLen);
+                decompressLzo(entry, b, ub);
                 
                 detectAndHandle(entry, ub);
                 
@@ -74,6 +68,10 @@ public class DatFile {
         	}
         }
     }
+
+	private void decompressLzo(Entry entry, byte[] b, byte[] ub) {
+		LzoCompressor.decompress(b, 0, entry.compressedSize, ub, 0, entry.uncompressedSize);
+	}
 
     private void detectAndHandle(Entry entry, byte[] b) throws Exception {
         String detectedType = FileTypeDetector.detect(b);
@@ -93,7 +91,7 @@ public class DatFile {
             isUnknown = true;
         }
         
-        fileTypeHandler.handle(b, newFileName, isUnknown);
+        fileTypeHandler.handle(b, this.fileName, newFileName, isUnknown);
     }
 
 }

@@ -9,14 +9,15 @@ import org.xpen.farcry3.UserSetting;
 public class XbtHandler implements FileTypeHandler {
 
     @Override
-    public void handle(byte[] b, String newFileName, boolean isUnknown) throws Exception {
+    public void handle(byte[] b, String datFileName, String newFileName, boolean isUnknown) throws Exception {
         File outFile = null;
         if (!isUnknown) {
                 String oldFileNameWithoutExt = newFileName.substring(0, newFileName.lastIndexOf('.'));
-                outFile = new File(UserSetting.rootOutputFolder, oldFileNameWithoutExt + ".dds");
+                outFile = new File(UserSetting.rootOutputFolder, datFileName + "/" + oldFileNameWithoutExt + ".dds");
             
         } else {
-            outFile = new File(UserSetting.rootOutputFolder, "unknown/" + newFileName + ".dds");
+            outFile = new File(UserSetting.rootOutputFolder,
+            		datFileName + "/unknown/dds/" + newFileName + ".dds");
         }
         
         File parentFile = outFile.getParentFile();

@@ -56,8 +56,14 @@ public class EntrySerializerV9 implements EntrySerializer {
         entry.nameHash = hash;
         entry.uncompressedSize = (c & 0xFFFFFFFC) >>> 2;
         entry.compressionScheme = c & 0x00000003;
-        entry.offset = d << 2;
-        entry.offset |= ((e & 0xC0000000) >>> 30);
+        String dd = Integer.toHexString(d);
+        BigInteger bi = new BigInteger(dd, 16);
+        bi = bi.shiftLeft(2);
+        int ee = (e & 0xC0000000) >>> 30;
+        bi = bi.add(BigInteger.valueOf(ee));
+        //entry.offset = d << 2;
+        //entry.offset |= ((e & 0xC0000000) >>> 30);
+        entry.offset = bi.longValueExact();
         entry.compressedSize = e & 0x3FFFFFFF;
         return entry;
     }

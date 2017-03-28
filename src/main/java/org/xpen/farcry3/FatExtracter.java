@@ -17,30 +17,37 @@ public class FatExtracter {
     private static final Logger LOG = LoggerFactory.getLogger(FatExtracter.class);
 
     public static void main(String[] args) throws Exception {
-    	String fileName = "patch";
-        UserSetting.rootOutputFolder = "myex";
+        UserSetting.rootInputFolder = "E:/aliBoxGames/games/5993/FarCry 3/data_win32";
+        UserSetting.rootOutputFolder = "E:/aliBoxGames/games/5993/myex";
+    	//String[] fileNames = {"common", "patch", "igepatch", "ige", "worlds/fc3main/fc3_main"};
+    	String[] fileNames = {"worlds/fc3_main/fc3_main"};
         
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
         
-        Fat2File fat2File = new Fat2File(fileName);
-        fat2File.decode();
-        fat2File.close();
-        
-        List<Entry> entries = fat2File.getEntries();
-        if (LOG.isDebugEnabled()) {
-	        for (Entry entry : entries) {
-	            LOG.debug(entry.toString());
-	        }
+        for (String fileName: fileNames) {
+        	LOG.debug("---------Starting {}", fileName);
+            
+            Fat2File fat2File = new Fat2File(fileName);
+            fat2File.decode();
+            fat2File.close();
+            
+            List<Entry> entries = fat2File.getEntries();
+            if (LOG.isDebugEnabled()) {
+    	        for (Entry entry : entries) {
+    	            LOG.debug(entry.toString());
+    	        }
+            }
+            
+            FileListManager flm = new FileListManager();
+            flm.load(FatExtracter.class.getClassLoader().getResourceAsStream(
+            		"farcry3/files/" + fileName + ".filelist"));
+            Map<Long, String> crcMap = flm.getCrcMap();
+            
+            DatFile datFile = new DatFile(fileName, fat2File, flm);
+            datFile.decode();
+            datFile.close();
         }
-        
-        FileListManager flm = new FileListManager();
-        flm.load(FatExtracter.class.getClassLoader().getResourceAsStream("farcry3/files/patch.filelist"));
-        Map<Long, String> crcMap = flm.getCrcMap();
-        
-        DatFile datFile = new DatFile(fileName, fat2File, flm);
-        datFile.decode();
-        datFile.close();
         
         stopWatch.stop();
         System.out.println("-----ALL OK, cost time = "+stopWatch.getTime(TimeUnit.SECONDS)+ "s");
