@@ -2,6 +2,7 @@ package org.xpen.dunia2.fileformat.dat;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,6 +13,8 @@ public class FileTypeDetector {
     static {
         fileHandlersMap.put("unknown", new SimpleCopyHandler("unknown"));
         fileHandlersMap.put("fcb", new SimpleCopyHandler("fcb"));
+        fileHandlersMap.put("lua", new SimpleCopyHandler("lua"));
+        fileHandlersMap.put("mat", new SimpleCopyHandler("material.bin"));
         fileHandlersMap.put("png", new SimpleCopyHandler("png"));
         fileHandlersMap.put("xbt", new XbtHandler());
     }
@@ -62,6 +65,15 @@ public class FileTypeDetector {
             if (magic == 0x4643626E) { // 'FCbn'
                 return "fcb";
             }
+            if (magic == 0x54414D00 || magic == 0x004D4154) { // '\0MAT'
+                return "mat";
+            }
+        }
+        
+        //ASCII mode
+        String text = new String(bytes, Charset.forName("UTF-8"));
+        if (text.startsWith("-- {\\v/} Domino auto-generated LUA script file")) {
+            return "lua";
         }
         
         return "unknown";
