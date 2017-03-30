@@ -12,11 +12,13 @@ public class FileTypeDetector {
     
     static {
         fileHandlersMap.put("unknown", new SimpleCopyHandler("unknown"));
+        fileHandlersMap.put("bik", new SimpleCopyHandler("bik"));
         fileHandlersMap.put("fcb", new SimpleCopyHandler("fcb"));
         fileHandlersMap.put("lua", new SimpleCopyHandler("lua"));
         fileHandlersMap.put("mat", new SimpleCopyHandler("material.bin"));
         fileHandlersMap.put("png", new SimpleCopyHandler("png"));
         fileHandlersMap.put("xbt", new XbtHandler());
+        fileHandlersMap.put("xml", new SimpleCopyHandler("xml"));
     }
     
     public static String detect(byte[] bytes) {
@@ -68,6 +70,18 @@ public class FileTypeDetector {
             if (magic == 0x54414D00 || magic == 0x004D4154) { // '\0MAT'
                 return "mat";
             }
+        }
+        
+        if (bytes.length >= 8) {
+        	ByteBuffer buffer = ByteBuffer.allocate(8);
+            buffer.order(ByteOrder.LITTLE_ENDIAN);
+            buffer.put(bytes, 0, 8);
+            buffer.flip();
+            long magic = buffer.getLong();
+            if (magic == 0x6C6D783F3CBFBBEFL) { //BOM + <?xml
+            	return "xml";
+            }
+            
         }
         
         //ASCII mode
