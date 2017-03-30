@@ -30,4 +30,28 @@ DAE  https://en.wikipedia.org/wiki/COLLADA
 xbt to dds:
 Remove 36 byte from begin file
 
+oasisstrings_compressed.bin structure
+
+int stringTableCount;
+struct stringTable{    
+    int unknown;
+    int sectorCount;
+    struct section{
+        int sectorHash;//crc32 of sector name
+        int stringCount;
+        struct{
+            int id;    //line id
+            int sec;   //same as sectorHash
+            int _enum; //crc32 hash of enum attribute in string
+            int pack; //crc32 Hash of 'Main'    
+        }lines[stringCount]<optimize=false>;
+        int cmpPartCount; //Number of lzo compressed parts
+        struct{
+            int unknown;
+            int cs;//compressed size of data
+            int ds; //decompressed size of data
+            ubyte cmpData[cs]; //These bytes are lzo compressed (lzo1x)
+       }parts[cmpPartCount]<optimize=false>;   
+    }sectors[sectorCount]<optimize=false>;
+}all[stringTableCount]<optimize=false>;
 
