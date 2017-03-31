@@ -11,6 +11,9 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xpen.dunia2.fileformat.xbg.chunk.Chunk;
+import org.xpen.dunia2.fileformat.xbg.chunk.ChunkFactory;
+import org.xpen.dunia2.fileformat.xbg.chunk.ChunkType;
+import org.xpen.dunia2.fileformat.xbg.chunk.RootChunk;
 
 public class XbgExtractor {
     public static final int MAGIC_XBG = 0x4D455348; //'MESH'
@@ -20,13 +23,15 @@ public class XbgExtractor {
     private RandomAccessFile raf;
     private FileChannel fileChannel;
     private byte[] bytes;
+    public Chunk root;
     
     public XbgExtractor(byte[] bytes) {
         this.bytes = bytes;
     }
 
     public static void main(String[] args) throws Exception {
-        File file = new File("D:/git/opensource/gamecheat/myex/patch/graphics/__fc3_graphics/sidequests/vehicles/sea/sha_boat_cabin.xbg");
+        File file = new File("D:/git/opensource/gamecheat/myex/patch/graphics/__fc3_graphics/sidequests/vehicles/sea/sha_boat_crane01.xbg");
+        //File file = new File("D:/git/opensource/gamecheat/myex/patch/graphics/__fc3_graphics/sidequests/vehicles/sea/sha_boat_cabin.xbg");
         byte[] bytes = IOUtils.toByteArray(new FileInputStream(file));
         XbgExtractor xbgExtractor = new XbgExtractor(bytes);
         xbgExtractor.decode();
@@ -60,11 +65,10 @@ public class XbgExtractor {
         char minorVer = buffer.getChar();
         int unknown08 = buffer.getInt();
         
-        Chunk chunk = decodeBlock(buffer);
+        RootChunk rootChunk = new RootChunk();
+        
+        Chunk chunk = rootChunk.decodeBlock(buffer, null);
     }
 
-    private Chunk decodeBlock(ByteBuffer buffer) {
-        return null;
-    }
 
 }
