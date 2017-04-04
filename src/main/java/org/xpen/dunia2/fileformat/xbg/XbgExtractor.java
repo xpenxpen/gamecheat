@@ -11,8 +11,6 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xpen.dunia2.fileformat.xbg.chunk.Chunk;
-import org.xpen.dunia2.fileformat.xbg.chunk.ChunkFactory;
-import org.xpen.dunia2.fileformat.xbg.chunk.ChunkType;
 import org.xpen.dunia2.fileformat.xbg.chunk.RootChunk;
 
 public class XbgExtractor {
@@ -23,17 +21,26 @@ public class XbgExtractor {
     private RandomAccessFile raf;
     private FileChannel fileChannel;
     private byte[] bytes;
+    private File file;
     public Chunk root;
     
     public XbgExtractor(byte[] bytes) {
         this.bytes = bytes;
     }
+    
+    public XbgExtractor(File file) throws Exception {
+        this.file = file;
+        byte[] bytes = IOUtils.toByteArray(new FileInputStream(file));
+        this.bytes = bytes;
+    }
 
     public static void main(String[] args) throws Exception {
-        File file = new File("D:/git/opensource/gamecheat/myex/patch/graphics/__fc3_graphics/sidequests/vehicles/sea/sha_boat_crane01.xbg");
+        //File file = new File("D:/git/opensource/gamecheat/myex/patch/graphics/__fc3_graphics/sidequests/vehicles/sea/sha_boat_crane01.xbg");
         //File file = new File("D:/git/opensource/gamecheat/myex/patch/graphics/__fc3_graphics/sidequests/vehicles/sea/sha_boat_cabin.xbg");
-        byte[] bytes = IOUtils.toByteArray(new FileInputStream(file));
-        XbgExtractor xbgExtractor = new XbgExtractor(bytes);
+        //File file = new File("E:/aliBoxGames/games/5993/ex/fc3main/graphics/__fc3_graphics/_common/characters/animals/asian_black_bear/ab_bear_big.xbg");
+        File file = new File("E:/aliBoxGames/games/5993/ex/fc3main/graphics/__fc3_graphics/_common/characters/animals/bird/bird.xbg");
+        //File file = new File("E:/aliBoxGames/games/5993/ex/fc3main/graphics/__fc3_graphics/_common/characters/unique/vaas/vaas.xbg");
+        XbgExtractor xbgExtractor = new XbgExtractor(file);
         xbgExtractor.decode();
 
     }
@@ -58,16 +65,19 @@ public class XbgExtractor {
             throw new RuntimeException("magic <> 'MESH'");
         }
         
-        char majorVer = buffer.getChar();
+        short majorVer = buffer.getShort();
         if (majorVer != 52) {
             throw new RuntimeException("majorVer wrong");
         }
-        char minorVer = buffer.getChar();
+        short minorVer = buffer.getShort();
         int unknown08 = buffer.getInt();
         
         RootChunk rootChunk = new RootChunk();
+        rootChunk.majorVer = majorVer;
+        rootChunk.minorVer = minorVer;
         
-        Chunk chunk = rootChunk.decodeBlock(buffer, null);
+        RootChunk chunk = (RootChunk)rootChunk.decodeBlock(buffer, null);
+        chunk.toObjFormat(file);
     }
 
 

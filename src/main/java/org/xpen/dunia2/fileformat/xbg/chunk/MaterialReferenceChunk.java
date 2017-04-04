@@ -17,23 +17,38 @@ public class MaterialReferenceChunk extends AbstractChunk {
 
 
     @Override
-    public void decode(ByteBuffer buffer, Chunk chunk) {
+    public void decode(ByteBuffer buffer, Chunk parent) {
+    	
+    	if (parent.getType() != ChunkType.ROOT) {
+    		throw new RuntimeException("MaterialReferenceChunk must be child of RootChunk");
+    	}
+    	
+    	RootChunk rootChunk = (RootChunk)parent;
+    	
         int count = buffer.getInt();
+        
+        LOG.debug("rootChunk.majorVer={}", rootChunk.majorVer);
 
-        unknown00 = buffer.getInt();
+        if (rootChunk.majorVer >= 52) {
+            unknown00 = buffer.getInt();
+        }
         
         for (int i = 0; i < count; i++) {
             int length1 = buffer.getInt();
             byte[] fileName = new byte[length1];
             buffer.get(fileName);
             buffer.get(); // skip null
+            
+            if (rootChunk.majorVer >= 52) {
+	
+	            int length2 = buffer.getInt();
+	            byte[] key = new byte[length2];
+	            buffer.get(key);
+	            buffer.get(); // skip null
+	            
+	            files.put(new String(key, Charset.forName("UTF-8")), new String(fileName, Charset.forName("UTF-8")));
+            }
 
-            int length2 = buffer.getInt();
-            byte[] key = new byte[length2];
-            buffer.get(key);
-            buffer.get(); // skip null
-
-            files.put(new String(key, Charset.forName("UTF-8")), new String(fileName, Charset.forName("UTF-8")));
         }
         
         LOG.debug("files={}", files);

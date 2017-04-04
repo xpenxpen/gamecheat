@@ -9,14 +9,13 @@ public class SkelChunk extends AbstractChunk {
     
     private static final Logger LOG = LoggerFactory.getLogger(SkelChunk.class);
     
-    public int unknown00;
-    public byte[] bytes;
+    public int hasSkeleton;
 
 
     @Override
     public void decode(ByteBuffer buffer, Chunk chunk) {
-        unknown00 = buffer.getInt();
-        LOG.debug("unknown00={}", unknown00);
+    	hasSkeleton = buffer.getInt();
+        LOG.debug("hasSkeleton={}", hasSkeleton);
     }
 
 }

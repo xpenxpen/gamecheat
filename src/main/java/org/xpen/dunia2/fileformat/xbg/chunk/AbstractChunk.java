@@ -25,7 +25,7 @@ public abstract class AbstractChunk implements Chunk {
         AbstractChunk chunk = null;
         switch (type) {
             case ChunkType.ROOT:
-                chunk = new RootChunk();
+                chunk = this;
                 break;
             case ChunkType.MATERIAL_REFERENCE:
                 chunk = new MaterialReferenceChunk();
@@ -63,6 +63,12 @@ public abstract class AbstractChunk implements Chunk {
             case ChunkType.UCMP:
                 chunk = new UcmpChunk();
                 break;
+            case ChunkType.O2BM:
+                chunk = new O2bmChunk();
+                break;
+            case ChunkType.IKDA:
+                chunk = new IkdaChunk();
+                break;
         }
         
         if (chunk == null) {
@@ -84,19 +90,19 @@ public abstract class AbstractChunk implements Chunk {
         }
         
         int unknown04 = buffer.getInt();
-        int size = buffer.getInt();
+        int chunkSize = buffer.getInt();
         int dataSize = buffer.getInt();
         int childCount = buffer.getInt();
         
         int childOffset = buffer.position();
-        int childEnd = childOffset + (size - dataSize - 20);
+        int childEnd = childOffset + (chunkSize - dataSize - 20);
         int blockOffset = childEnd;
         int blockEnd = blockOffset + dataSize;
         
         LOG.debug("type={}, unknown04={}, size={}, dataSize={}, childOffset={}, childEnd={}, blockOffset={}, blockEnd={}",
-                block.getClass().getSimpleName(), unknown04, size, dataSize, childOffset, childEnd, blockOffset, blockEnd);
+                block.getClass().getSimpleName(), unknown04, chunkSize, dataSize, childOffset, childEnd, blockOffset, blockEnd);
 
-        if (blockEnd != baseOffset + size) {
+        if (blockEnd != baseOffset + chunkSize) {
             throw new RuntimeException("blockEnd not match");
         }
         

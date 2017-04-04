@@ -4,13 +4,13 @@ import java.nio.ByteBuffer;
 
 public class UcmpChunk extends AbstractChunk {
 
-    public float x;
-    public float y;
+    public float u;
+    public float v;
 
     @Override
     public void decode(ByteBuffer buffer, Chunk chunk) {
-        this.x = buffer.getFloat();
-        this.y = buffer.getFloat();
+        this.u = buffer.getFloat();
+        this.v = buffer.getFloat();
     }
 
 }
