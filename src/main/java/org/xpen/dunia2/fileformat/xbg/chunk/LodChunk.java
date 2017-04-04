@@ -31,7 +31,7 @@ public class LodChunk extends AbstractChunk {
             node.decode(buffer);
             lods.add(node);
         }
-        LOG.debug("lods={}", lods);
+        //LOG.debug("lods={}", lods);
     }
     
     public class LevelOfDetail {
@@ -242,9 +242,9 @@ public class LodChunk extends AbstractChunk {
 				readBytes += 4;
 			}
 			
-			if (vertexBuffer.stride != 52 && vertexBuffer.stride != 40) {
-				throw new RuntimeException("unsupported size=" + vertexBuffer.stride);
-			}
+//			if (vertexBuffer.stride != 52 && vertexBuffer.stride != 40) {
+//				throw new RuntimeException("unsupported size=" + vertexBuffer.stride);
+//			}
 			
 			if ((fvfCode & 0x40) == 0x40) {
 			    a = buffer.get();

@@ -19,6 +19,7 @@ public class RootChunk extends AbstractChunk {
     
     private PcmpChunk pcmpChunk;
     private UcmpChunk ucmpChunk;
+    private LodChunk lodChunk;
     public short majorVer;
     public short minorVer;
 
@@ -28,57 +29,62 @@ public class RootChunk extends AbstractChunk {
     }
 
 	public void toObjFormat(File file) throws Exception {
-		int lastDot = file.getAbsolutePath().lastIndexOf(".");
-		String objFileName = file.getAbsolutePath().substring(0, lastDot) + ".obj";
-		LOG.debug("objFileName={}", objFileName);
-        BufferedWriter bw = new BufferedWriter(new FileWriter(objFileName));
-		
-        DecimalFormat nf = new DecimalFormat("0.######");
-        
-        //First round get vertex mad constants
+		LOG.debug("toObjFormat start");
 		for (Chunk chunk: this.children) {
 			if (chunk.getType() == ChunkType.PCMP) {
 				pcmpChunk = (PcmpChunk)chunk;
 			} else if (chunk.getType() == ChunkType.UCMP) {
 				ucmpChunk = (UcmpChunk)chunk;
-			}
-		}
-        
-		for (Chunk chunk: this.children) {
-			if (chunk.getType() == ChunkType.LODS) {
-				LOG.debug("toObjFormat start");
-				LodChunk lodChunk = (LodChunk)chunk;
-				LevelOfDetail levelOfDetail = lodChunk.lods.get(0);
-				for (VertexBuffer vertexBuffer : levelOfDetail.vbs) {
-					bw.write("#number of vert:" + vertexBuffer.verts.size());
-					bw.newLine();
-					for (Vert vert : vertexBuffer.verts) {
-						bw.write("v " + nf.format(vert.vx * pcmpChunk.y + pcmpChunk.x)
-						+ " " + nf.format(vert.vy * pcmpChunk.y + pcmpChunk.x)
-						+ " " + nf.format(vert.vz * pcmpChunk.y + pcmpChunk.x));
-						bw.newLine();
-					}
-//					for (Vert vert : vertexBuffer.verts) {
-//						bw.write("v " + nf.format(HalfFloatUtil.toFloat(vert.vx))
-//						+ " " + nf.format(HalfFloatUtil.toFloat(vert.vy))
-//						+ " " + nf.format(HalfFloatUtil.toFloat(vert.vz)));
-//						bw.newLine();
-//					}
-					
-					bw.newLine();
-					bw.write("#number of face:" + vertexBuffer.faces.size());
-					bw.newLine();
-					for (Face face : vertexBuffer.faces) {
-						bw.write("f " + (face.i1+1)
-						+ " " + (face.i2+1)
-						+ " " + (face.i3+1));
-						bw.newLine();
-					}
-				}
+			} else if (chunk.getType() == ChunkType.LODS) {
+				lodChunk = (LodChunk)chunk;
 			}
 		}
 		
-		bw.close();
+		int lastDot = file.getAbsolutePath().lastIndexOf(".");
+        DecimalFormat nf = new DecimalFormat("0.######");
+		
+		//export all lods (named _0, _1, _2...)
+        for (int i = 0; i < lodChunk.lods.size(); i++) {
+			
+			String objFileName = file.getAbsolutePath().substring(0, lastDot) + "_" + i + ".obj";
+			LOG.debug("objFileName={}", objFileName);
+	        BufferedWriter bw = new BufferedWriter(new FileWriter(objFileName));
+			
+
+	        
+			LevelOfDetail levelOfDetail = lodChunk.lods.get(i);
+			for (VertexBuffer vertexBuffer : levelOfDetail.vbs) {
+				bw.write("#number of vert:" + vertexBuffer.verts.size());
+				bw.newLine();
+				for (Vert vert : vertexBuffer.verts) {
+					bw.write("v " + nf.format(vert.vx * pcmpChunk.y + pcmpChunk.x)
+					+ " " + nf.format(vert.vy * pcmpChunk.y + pcmpChunk.x)
+					+ " " + nf.format(vert.vz * pcmpChunk.y + pcmpChunk.x));
+					bw.newLine();
+				}
+//						for (Vert vert : vertexBuffer.verts) {
+//							bw.write("v " + nf.format(HalfFloatUtil.toFloat(vert.vx))
+//							+ " " + nf.format(HalfFloatUtil.toFloat(vert.vy))
+//							+ " " + nf.format(HalfFloatUtil.toFloat(vert.vz)));
+//							bw.newLine();
+//						}
+				
+				bw.newLine();
+				bw.write("#number of face:" + vertexBuffer.faces.size());
+				bw.newLine();
+				for (Face face : vertexBuffer.faces) {
+					bw.write("f " + (face.i1+1)
+					+ " " + (face.i2+1)
+					+ " " + (face.i3+1));
+					bw.newLine();
+				}
+			}
+			
+			bw.close();
+		}
+		
+		
+		
 		
 	}
 

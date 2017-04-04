@@ -7,6 +7,8 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
 
+import javax.swing.JFileChooser;
+
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,13 +37,27 @@ public class XbgExtractor {
     }
 
     public static void main(String[] args) throws Exception {
-        //File file = new File("D:/git/opensource/gamecheat/myex/patch/graphics/__fc3_graphics/sidequests/vehicles/sea/sha_boat_crane01.xbg");
-        //File file = new File("D:/git/opensource/gamecheat/myex/patch/graphics/__fc3_graphics/sidequests/vehicles/sea/sha_boat_cabin.xbg");
-        //File file = new File("E:/aliBoxGames/games/5993/ex/fc3main/graphics/__fc3_graphics/_common/characters/animals/asian_black_bear/ab_bear_big.xbg");
-        File file = new File("E:/aliBoxGames/games/5993/ex/fc3main/graphics/__fc3_graphics/_common/characters/animals/bird/bird.xbg");
-        //File file = new File("E:/aliBoxGames/games/5993/ex/fc3main/graphics/__fc3_graphics/_common/characters/unique/vaas/vaas.xbg");
+    	
+    	File file = null;
+    	
+        //file = new File("D:/git/opensource/gamecheat/myex/patch/graphics/__fc3_graphics/sidequests/vehicles/sea/sha_boat_crane01.xbg");
+        //file = new File("D:/git/opensource/gamecheat/myex/patch/graphics/__fc3_graphics/sidequests/vehicles/sea/sha_boat_cabin.xbg");
+        file = new File("E:/aliBoxGames/games/5993/ex/fc3main/graphics/__fc3_graphics/_common/characters/animals/asian_black_bear/ab_bear_big.xbg");
+        //file = new File("E:/aliBoxGames/games/5993/ex/fc3main/graphics/__fc3_graphics/_common/characters/animals/bird/bird.xbg");
+        //file = new File("E:/aliBoxGames/games/5993/ex/fc3main/graphics/__fc3_graphics/_common/characters/unique/vaas/vaas.xbg");
+        
+//        JFileChooser chooser = new JFileChooser();
+//        chooser.setCurrentDirectory(new File("E:/aliBoxGames/games/5993/ex"));
+//        int result = chooser.showOpenDialog(null);
+//        
+//		if (result == JFileChooser.APPROVE_OPTION) {
+//			file = chooser.getSelectedFile();
+//	        
+//		}
+		
         XbgExtractor xbgExtractor = new XbgExtractor(file);
         xbgExtractor.decode();
+
 
     }
 
