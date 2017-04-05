@@ -5,6 +5,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,19 +27,19 @@ public class NodesChunk extends AbstractChunk {
             node.nameHash = buffer.getInt();
             node.nextSiblingIndex = buffer.getInt();
             node.firstChildIndex = buffer.getInt();
-            node.previousSiblingIndex = buffer.getInt();
-            node.unknown10 = buffer.getFloat();
-            node.unknown14 = buffer.getFloat();
-            node.unknown18 = buffer.getFloat();
-            node.unknown1C = buffer.getFloat();
-            node.unknown20 = buffer.getFloat();
-            node.unknown24 = buffer.getFloat();
-            node.unknown28 = buffer.getFloat();
-            node.unknown2C = buffer.getFloat();
-            node.unknown30 = buffer.getFloat();
-            node.unknown34 = buffer.getFloat();
-            node.o2bMIndex = buffer.getInt();
-            node.unknown3C = buffer.getFloat();
+            node.parentId = buffer.getInt();
+            node.rotX = buffer.getFloat();
+            node.rotY = buffer.getFloat();
+            node.rotZ = buffer.getFloat();
+            node.rotW = buffer.getFloat();
+            node.posX = buffer.getFloat();
+            node.posY = buffer.getFloat();
+            node.posZ = buffer.getFloat();
+            node.scaleX = buffer.getFloat();
+            node.scaleY = buffer.getFloat();
+            node.scaleZ = buffer.getFloat();
+            node.o2bmIndex = buffer.getInt();
+            node.unknown3C = buffer.getFloat(); //1.0
             node.unknown40 = buffer.getFloat();
 
             int length = buffer.getInt();
@@ -46,6 +47,7 @@ public class NodesChunk extends AbstractChunk {
             buffer.get(name);
             node.name = new String(name, Charset.forName("UTF-8"));
             LOG.debug("node.name={}", node.name);
+            LOG.debug("node={}", node);
             buffer.get(); // skip null
 
             items.add(node);
@@ -56,21 +58,30 @@ public class NodesChunk extends AbstractChunk {
         public int nameHash;
         public int nextSiblingIndex;
         public int firstChildIndex;
-        public int previousSiblingIndex;
-        public float unknown10;
-        public float unknown14;
-        public float unknown18;
-        public float unknown1C;
-        public float unknown20;
-        public float unknown24;
-        public float unknown28;
-        public float unknown2C;
-        public float unknown30;
-        public float unknown34;
-        public int o2bMIndex;
+        public int parentId;
+        
+        public float rotX;
+        public float rotY;
+        public float rotZ;
+        public float rotW;
+        
+        public float posX;
+        public float posY;
+        public float posZ;
+        
+        public float scaleX;
+        public float scaleY;
+        public float scaleZ;
+        
+        public int o2bmIndex;
         public float unknown3C;
         public float unknown40;
         public String name;
+        
+        @Override
+        public String toString() {
+            return ReflectionToStringBuilder.toString(this);
+        }
     }
 
 }
