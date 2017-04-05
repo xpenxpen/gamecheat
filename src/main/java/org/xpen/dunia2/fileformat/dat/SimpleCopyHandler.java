@@ -21,10 +21,10 @@ public class SimpleCopyHandler implements FileTypeHandler {
         if (!isUnknown) {
             if (!extension.equals("unknown")) {
             	String oldFileNameWithoutExt = null;
-            	if (newFileName.lastIndexOf('.') == -1) {
+            	if (newFileName.indexOf('.') == -1) {
             		oldFileNameWithoutExt = newFileName;
             	} else {
-                    oldFileNameWithoutExt = newFileName.substring(0, newFileName.lastIndexOf('.'));
+                    oldFileNameWithoutExt = newFileName.substring(0, newFileName.indexOf('.'));
             	}
                 outFile = new File(UserSetting.rootOutputFolder, datFileName + "/" + oldFileNameWithoutExt + "." + extension);
             } else {
