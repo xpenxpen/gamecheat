@@ -5,6 +5,8 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
 
+import org.apache.commons.lang3.StringUtils;
+
 public class EntrySerializerV9 implements EntrySerializer {
 
     @Override
@@ -46,7 +48,7 @@ public class EntrySerializerV9 implements EntrySerializer {
 //        }
         
         String aa = Integer.toHexString(a);
-        String bb = Integer.toHexString(b);
+        String bb = StringUtils.leftPad(Integer.toHexString(b), 8, '0');
         
         //BigInteger hash = BigInteger.valueOf(a);
         BigInteger hash = new BigInteger(aa+bb, 16);

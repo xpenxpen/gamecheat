@@ -13,10 +13,15 @@ public class FileTypeDetector {
     static {
         fileHandlersMap.put("unknown", new SimpleCopyHandler("unknown"));
         fileHandlersMap.put("bik", new SimpleCopyHandler("bik"));
+        fileHandlersMap.put("cseq", new SimpleCopyHandler("cseq"));
         fileHandlersMap.put("fcb", new SimpleCopyHandler("fcb"));
+        fileHandlersMap.put("feu", new SimpleCopyHandler("feu"));
         fileHandlersMap.put("lua", new SimpleCopyHandler("lua"));
         fileHandlersMap.put("mat", new SimpleCopyHandler("material.bin"));
         fileHandlersMap.put("png", new SimpleCopyHandler("png"));
+        fileHandlersMap.put("root", new SimpleCopyHandler("root.xml"));
+        fileHandlersMap.put("spk", new SimpleCopyHandler("spk"));
+        fileHandlersMap.put("xbg", new SimpleCopyHandler("xbg"));
         fileHandlersMap.put("xbt", new XbtHandler());
         fileHandlersMap.put("xml", new SimpleCopyHandler("xml"));
     }
@@ -88,6 +93,12 @@ public class FileTypeDetector {
         String text = new String(bytes, Charset.forName("UTF-8"));
         if (text.startsWith("-- {\\v/} Domino auto-generated LUA script file")) {
             return "lua";
+        }
+        if (text.startsWith("<Root>")) {
+            return "root";
+        }
+        if (text.startsWith("<Sequence>")) {
+            return "cseq";
         }
         
         return "unknown";

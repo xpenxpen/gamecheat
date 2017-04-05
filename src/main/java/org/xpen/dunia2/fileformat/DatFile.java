@@ -6,6 +6,7 @@ import java.nio.channels.FileChannel;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xpen.dunia2.fileformat.dat.FileTypeDetector;
@@ -87,7 +88,7 @@ public class DatFile {
         	String fileName = crcMap.get(entry.nameHash.longValue());
         	newFileName = fileName;
         } else {
-            newFileName = entry.nameHash.toString(16);
+            newFileName = StringUtils.leftPad(entry.nameHash.toString(16), 16, '0');
             isUnknown = true;
         }
         
