@@ -10,26 +10,31 @@ public class Sector {
 	public List<SectorLine> lines = new ArrayList<SectorLine>();
 	public int cmpPartCount; //Number of lzo compressed parts
 	public List<SectorPart> parts = new ArrayList<SectorPart>();
+	private OasisStringExtractor oasisStringExtractor;
 	
-	
-	public void decode(ByteBuffer buffer) {
+	public Sector(OasisStringExtractor oasisStringExtractor) {
+        this.oasisStringExtractor = oasisStringExtractor;
+    }
+
+
+    public void decode(ByteBuffer buffer) throws Exception {
 		sectorHash = buffer.getInt();
 		stringCount = buffer.getInt();
     	for (int i = 0; i < stringCount; i++) {
-    		System.out.println("--start lines " + i);
+    		//System.out.println("--start lines " + i);
     		SectorLine line = new SectorLine();
     		lines.add(line);
     		line.decode(buffer);
-    		System.out.println("--end lines " + i);
+    		//System.out.println("--end lines " + i);
     	}
     	
     	cmpPartCount = buffer.getInt();
     	for (int i = 0; i < cmpPartCount; i++) {
-    		System.out.println("--start parts " + i);
-    		SectorPart part = new SectorPart();
+    		//System.out.println("--start parts " + i);
+    		SectorPart part = new SectorPart(oasisStringExtractor);
     		parts.add(part);
     		part.decode(buffer);
-    		System.out.println("--end parts " + i);
+    		//System.out.println("--end parts " + i);
     	}
 		
 	}
