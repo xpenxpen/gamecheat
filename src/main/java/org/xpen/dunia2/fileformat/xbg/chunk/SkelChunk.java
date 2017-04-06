@@ -13,7 +13,7 @@ public class SkelChunk extends AbstractChunk {
 
 
     @Override
-    public void decode(ByteBuffer buffer, Chunk chunk) {
+    public void decode(ByteBuffer buffer) {
     	hasSkeleton = buffer.getInt();
         LOG.debug("hasSkeleton={}", hasSkeleton);
     }

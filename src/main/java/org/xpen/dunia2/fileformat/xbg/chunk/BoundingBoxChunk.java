@@ -12,7 +12,7 @@ public class BoundingBoxChunk extends AbstractChunk {
     public float maxZ;
 
     @Override
-    public void decode(ByteBuffer buffer, Chunk chunk) {
+    public void decode(ByteBuffer buffer) {
         this.minX = buffer.getFloat();
         this.minY = buffer.getFloat();
         this.minZ = buffer.getFloat();

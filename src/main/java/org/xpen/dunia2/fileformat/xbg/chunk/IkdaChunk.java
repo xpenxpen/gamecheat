@@ -5,7 +5,7 @@ import java.nio.ByteBuffer;
 public class IkdaChunk extends AbstractChunk {
 
 	@Override
-	public void decode(ByteBuffer buffer, Chunk chunk) {
+	public void decode(ByteBuffer buffer) {
 
 	}
 

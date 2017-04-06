@@ -21,7 +21,7 @@ public class LodChunk extends AbstractChunk {
     }
 
     @Override
-    public void decode(ByteBuffer buffer, Chunk parent) {
+    public void decode(ByteBuffer buffer) {
         
         int count = buffer.getInt();
         LOG.debug("count={}, pos={}", count, buffer.position());

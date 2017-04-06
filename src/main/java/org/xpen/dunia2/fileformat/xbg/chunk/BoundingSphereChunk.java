@@ -10,7 +10,7 @@ public class BoundingSphereChunk extends AbstractChunk {
     public float w;
 
     @Override
-    public void decode(ByteBuffer buffer, Chunk chunk) {
+    public void decode(ByteBuffer buffer) {
         this.x = buffer.getFloat();
         this.y = buffer.getFloat();
         this.z = buffer.getFloat();

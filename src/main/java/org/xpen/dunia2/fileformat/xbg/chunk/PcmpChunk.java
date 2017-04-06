@@ -5,6 +5,10 @@ import java.nio.ByteBuffer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Position Constant Multiplier
+ *
+ */
 public class PcmpChunk extends AbstractChunk {
     private static final Logger LOG = LoggerFactory.getLogger(PcmpChunk.class);
     
@@ -12,7 +16,7 @@ public class PcmpChunk extends AbstractChunk {
     public float y;
 
     @Override
-    public void decode(ByteBuffer buffer, Chunk chunk) {
+    public void decode(ByteBuffer buffer) {
         this.x = buffer.getFloat();
         this.y = buffer.getFloat();
         LOG.debug("x={},y={}",x,y);

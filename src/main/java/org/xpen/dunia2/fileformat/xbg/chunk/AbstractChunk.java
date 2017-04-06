@@ -11,6 +11,7 @@ public abstract class AbstractChunk implements Chunk {
     
     private static final Logger LOG = LoggerFactory.getLogger(AbstractChunk.class);
     
+    public Chunk parent;
     public List<Chunk> children = new ArrayList<Chunk>();
     
     public int type;
@@ -89,6 +90,11 @@ public abstract class AbstractChunk implements Chunk {
             throw new RuntimeException("chunkType not match");
         }
         
+        if (parent!=null) {
+            block.setParent(parent);
+            parent.addChild(block);
+        }
+        
         int unknown04 = buffer.getInt();
         int chunkSize = buffer.getInt();
         int dataSize = buffer.getInt();
@@ -107,10 +113,10 @@ public abstract class AbstractChunk implements Chunk {
         }
         
         for (int i = 0; i < childCount; i++) {
-            block.addChild(decodeBlock(buffer, block));
+        	Chunk decodeBlock = decodeBlock(buffer, block);
         }
         
-        block.decode(buffer, parent);
+        block.decode(buffer);
 
         if (buffer.position() != blockEnd) {
             LOG.warn("type={}, block not end or exceed, reposition to next chunk={}", block.getClass().getSimpleName(), blockEnd);
@@ -123,6 +129,16 @@ public abstract class AbstractChunk implements Chunk {
     @Override
     public void addChild(Chunk chunk) {
         children.add(chunk);
+    }
+
+    @Override
+    public void setParent(Chunk chunk) {
+        parent = chunk;
+    }
+
+    @Override
+    public Chunk getParent() {
+        return parent;
     }
 
 }

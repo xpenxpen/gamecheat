@@ -57,15 +57,16 @@ public class MatExtractor {
 //          
 //      }
         
-        decode1(new File("D:/git/opensource/dunia2/fc3dat/myex/worlds/fc3_main/fc3_main/graphics/_materials/nbabin-m-2010102641657815.material.bin"));
-        decode1(new File("D:/git/opensource/dunia2/fc3dat/myex/worlds/fc3_main/fc3_main/graphics/_materials/yanzhou-m-1006201152940415.material.bin"));
-        decode1(new File("D:/git/opensource/dunia2/fc3dat/myex/worlds/fc3_main/fc3_main/graphics/_materials/grassam-m-1403201250256585.material.bin"));
-        decode1(new File("D:/git/opensource/dunia2/fc3dat/myex/worlds/fc3_main/fc3_main/graphics/_materials/njinnah-m-0106201158152331.material.bin"));
-        decode1(new File("D:/git/opensource/dunia2/fc3dat/myex/worlds/fc3_main/fc3_main/graphics/_materials/smaingot-m-2011031039392746.material.bin"));
-        decode1(new File("D:/git/opensource/dunia2/fc3dat/myex/worlds/fc3_main/fc3_main/graphics/_materials/ocean.material.bin"));
-        decode1(new File("D:/git/opensource/dunia2/fc3dat/myex/worlds/fc3_main/fc3_main/graphics/_materials/JLI-M-107201142503596.material.bin"));
-        decode1(new File("D:/git/opensource/dunia2/fc3dat/myex/worlds/fc3_main/fc3_main/graphics/_materials/JLI-M-107201151201026.material.bin"));
-        decode1(new File("D:/git/opensource/dunia2/fc3dat/myex/worlds/fc3_main/fc3_main/graphics/_materials/YANZHOU-M-3101201251837020.material.bin"));
+//        decode1(new File("D:/git/opensource/dunia2/fc3dat/myex/worlds/fc3_main/fc3_main/graphics/_materials/nbabin-m-2010102641657815.material.bin"));
+//        decode1(new File("D:/git/opensource/dunia2/fc3dat/myex/worlds/fc3_main/fc3_main/graphics/_materials/yanzhou-m-1006201152940415.material.bin"));
+//        decode1(new File("D:/git/opensource/dunia2/fc3dat/myex/worlds/fc3_main/fc3_main/graphics/_materials/grassam-m-1403201250256585.material.bin"));
+//        decode1(new File("D:/git/opensource/dunia2/fc3dat/myex/worlds/fc3_main/fc3_main/graphics/_materials/njinnah-m-0106201158152331.material.bin"));
+//        decode1(new File("D:/git/opensource/dunia2/fc3dat/myex/worlds/fc3_main/fc3_main/graphics/_materials/smaingot-m-2011031039392746.material.bin"));
+//        decode1(new File("D:/git/opensource/dunia2/fc3dat/myex/worlds/fc3_main/fc3_main/graphics/_materials/ocean.material.bin"));
+//        decode1(new File("D:/git/opensource/dunia2/fc3dat/myex/worlds/fc3_main/fc3_main/graphics/_materials/JLI-M-107201142503596.material.bin"));
+//        decode1(new File("D:/git/opensource/dunia2/fc3dat/myex/worlds/fc3_main/fc3_main/graphics/_materials/JLI-M-107201151201026.material.bin"));
+//        decode1(new File("D:/git/opensource/dunia2/fc3dat/myex/worlds/fc3_main/fc3_main/graphics/_materials/YANZHOU-M-3101201251837020.material.bin"));
+        decode1(new File("E:/aliBoxGames/games/5993/myex/worlds/fc3_main/fc3_main/graphics/_materials/VFORTIN-M-2011032246212114.material.bin"));
 
     }
     
@@ -123,18 +124,18 @@ public class MatExtractor {
             unknown08 = buffer.getInt();
             unknown0C = buffer.getInt();
             unknown10 = buffer.getShort();  //0
-            unknown12 = buffer.getShort();  //6
+            unknown12 = buffer.getShort();  //6/9/1
             int fcbn = buffer.getInt();
             if (fcbn != MAGIC_FCBN) {
                 throw new RuntimeException("fcbn wrong");
             }
             
-            unknown18 = buffer.getInt();
-            unknown1C = buffer.getInt();
-            unknown20 = buffer.getInt();
+            unknown18 = buffer.getInt(); //2
+            unknown1C = buffer.getInt(); //26/1/4
+            unknown20 = buffer.getInt(); //25/0/3
             
-            unknown24 = buffer.get();
-            unknown25 = buffer.get();
+            unknown24 = buffer.get();//25/3/0
+            unknown25 = buffer.get();//149
             unknown26 = buffer.getInt();
             if (unknown26 != 0x027CBE75) {
                 throw new RuntimeException("unknown26 wrong");

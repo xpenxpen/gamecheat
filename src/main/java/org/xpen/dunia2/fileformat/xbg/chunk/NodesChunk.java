@@ -18,7 +18,7 @@ public class NodesChunk extends AbstractChunk {
     public List<Node> items = new ArrayList<Node>();
 
     @Override
-    public void decode(ByteBuffer buffer, Chunk chunk) {
+    public void decode(ByteBuffer buffer) {
         int count = buffer.getInt();
         
         for (int i = 0; i < count; i++) {

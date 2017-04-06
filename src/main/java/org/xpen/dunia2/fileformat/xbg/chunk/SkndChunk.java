@@ -22,7 +22,7 @@ public class SkndChunk extends AbstractChunk {
 
 
     @Override
-    public void decode(ByteBuffer buffer, Chunk parent) {
+    public void decode(ByteBuffer buffer) {
     	
     	if (parent.getType() != ChunkType.ROOT) {
     		throw new RuntimeException("MaterialReferenceChunk must be child of RootChunk");

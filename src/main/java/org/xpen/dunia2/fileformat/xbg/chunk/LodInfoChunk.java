@@ -8,7 +8,7 @@ public class LodInfoChunk extends AbstractChunk {
     public int unknown1;
 
     @Override
-    public void decode(ByteBuffer buffer, Chunk chunk) {
+    public void decode(ByteBuffer buffer) {
         this.count = buffer.getInt();
         this.unknown1 = buffer.getInt();
     }

@@ -24,7 +24,7 @@ public class RootChunk extends AbstractChunk {
     public short minorVer;
 
     @Override
-    public void decode(ByteBuffer buffer, Chunk chunk) {
+    public void decode(ByteBuffer buffer) {
         
     }
 

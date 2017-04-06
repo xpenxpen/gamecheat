@@ -14,7 +14,7 @@ public class ClusterChunk extends AbstractChunk {
     public List<byte[]> unknowns = new ArrayList<byte[]>();
 
     @Override
-    public void decode(ByteBuffer buffer, Chunk parent) {
+    public void decode(ByteBuffer buffer) {
         
         int count = buffer.getInt();
         LOG.debug("count={}", count);
