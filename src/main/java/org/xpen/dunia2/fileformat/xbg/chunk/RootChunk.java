@@ -54,6 +54,11 @@ public class RootChunk extends AbstractChunk {
 	        
 			LevelOfDetail levelOfDetail = lodChunk.lods.get(i);
 			for (VertexBuffer vertexBuffer : levelOfDetail.vbs) {
+				bw.write("mtllib abc.mtl");
+				bw.newLine();
+				bw.write("usemtl abc");
+				bw.newLine();
+				
 				bw.write("#number of vert:" + vertexBuffer.verts.size());
 				bw.newLine();
 				for (Vert vert : vertexBuffer.verts) {
@@ -70,12 +75,22 @@ public class RootChunk extends AbstractChunk {
 //						}
 				
 				bw.newLine();
+				bw.write("#number of uv:" + vertexBuffer.verts.size());
+				bw.newLine();
+				for (Vert vert : vertexBuffer.verts) {
+					bw.write("vt " + nf.format(vert.u * ucmpChunk.v + ucmpChunk.u)
+					+ " " + nf.format(vert.v * ucmpChunk.v + ucmpChunk.u));
+					bw.newLine();
+				}
+				
+				bw.newLine();
 				bw.write("#number of face:" + vertexBuffer.faces.size());
 				bw.newLine();
 				for (Face face : vertexBuffer.faces) {
-					bw.write("f " + (face.i1+1)
-					+ " " + (face.i2+1)
-					+ " " + (face.i3+1));
+					bw.write(
+					  "f " + (face.i1+1) + "/" + (face.i1+1)
+					+ " " + (face.i2+1) + "/" + (face.i2+1)
+					+ " " + (face.i3+1) + "/" + (face.i3+1));
 					bw.newLine();
 				}
 			}

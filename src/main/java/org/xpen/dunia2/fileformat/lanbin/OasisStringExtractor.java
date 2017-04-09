@@ -37,14 +37,15 @@ public class OasisStringExtractor {
 	public List<Sector> sectors = new ArrayList<Sector>();
 	public Document document;
 	public Map<Integer, Node> languageMap = new HashMap<Integer, Node>();
+	public boolean printConsole;
     
     public OasisStringExtractor(byte[] bytes) {
         this.bytes = bytes;
     }
 
     public static void main(String[] args) throws Exception {
-        //File file = new File("E:/aliBoxGames/games/5993/ex/common/languages/english/oasisstrings_compressed.bin");
-        String rootFolder = "D:/git/opensource/dunia2/fc3dat/myex/common/languages/english/";
+        //String rootFolder = "D:/git/opensource/dunia2/fc3dat/myex/common/languages/english/";
+        String rootFolder = "E:/aliBoxGames/games/11136/myex/common/languages/english/";
         String binFile = rootFolder + "oasisstrings_compressed.bin";
         String inXmlPath = rootFolder + "oasisstrings.xml";
         String outXmlPath = rootFolder + "oasisstrings_cn.xml";
@@ -55,11 +56,14 @@ public class OasisStringExtractor {
         byte[] bytes = IOUtils.toByteArray(new FileInputStream(new File(binFile)));
         OasisStringExtractor oasisStringExtractor = new OasisStringExtractor(bytes);
         
-        oasisStringExtractor.parseXml(new FileInputStream(inXmlPath));
+        //temp for far cry 4
+        oasisStringExtractor.printConsole = true;
+        
+        //oasisStringExtractor.parseXml(new FileInputStream(inXmlPath));
         
         oasisStringExtractor.decode();
         
-        oasisStringExtractor.writeXml(outXmlPath);
+        //oasisStringExtractor.writeXml(outXmlPath);
         
         stopWatch.stop();
         System.out.println("-----ALL OK, cost time = "+stopWatch.getTime(TimeUnit.SECONDS)+ "s");

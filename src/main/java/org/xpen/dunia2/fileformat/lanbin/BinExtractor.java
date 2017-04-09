@@ -94,7 +94,7 @@ public class BinExtractor {
                 bytes2[1] = buffer.get();
                 bytes2[0] = buffer.get();
             }
-            if (oasisStringExtractor==null) {
+            if (oasisStringExtractor==null || oasisStringExtractor.printConsole) {
                 //System.out.println(Integer.toHexString(bytes2[0]) + "-" + Integer.toHexString(bytes2[1]));
                 System.out.println(Integer.toHexString(startPos)+"--"+Integer.toHexString(buffer.position()) +":"+ id+":"+sb.toString());
             } else {
