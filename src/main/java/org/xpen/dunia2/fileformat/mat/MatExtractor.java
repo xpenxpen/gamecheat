@@ -7,18 +7,13 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xpen.dunia2.fileformat.xbg.XbgExtractor;
+import org.xpen.dunia2.fileformat.fcbn.FcbnExtractor;
 import org.xpen.dunia2.fileformat.xbg.chunk.Chunk;
-import org.xpen.dunia2.fileformat.xbg.chunk.RootChunk;
-import org.xpen.dunia2.fileformat.xbg.chunk.LodChunk.SubMesh;
-import org.xpen.dunia2.fileformat.xbg.chunk.LodChunk.VertexBuffer;
 
 public class MatExtractor {
     public static final int MAGIC_MAT = 0x004D4154; //'\0MAT'
@@ -65,8 +60,8 @@ public class MatExtractor {
 //        decode1(new File("D:/git/opensource/dunia2/fc3dat/myex/worlds/fc3_main/fc3_main/graphics/_materials/ocean.material.bin"));
 //        decode1(new File("D:/git/opensource/dunia2/fc3dat/myex/worlds/fc3_main/fc3_main/graphics/_materials/JLI-M-107201142503596.material.bin"));
 //        decode1(new File("D:/git/opensource/dunia2/fc3dat/myex/worlds/fc3_main/fc3_main/graphics/_materials/JLI-M-107201151201026.material.bin"));
-//        decode1(new File("D:/git/opensource/dunia2/fc3dat/myex/worlds/fc3_main/fc3_main/graphics/_materials/YANZHOU-M-3101201251837020.material.bin"));
-        decode1(new File("E:/aliBoxGames/games/5993/myex/worlds/fc3_main/fc3_main/graphics/_materials/VFORTIN-M-2011032246212114.material.bin"));
+        decode1(new File("D:/git/opensource/dunia2/fc3dat/myex/worlds/fc3_main/fc3_main/graphics/_materials/YANZHOU-M-3101201251837020.material.bin"));
+        //decode1(new File("E:/aliBoxGames/games/5993/myex/worlds/fc3_main/fc3_main/graphics/_materials/VFORTIN-M-2011032246212114.material.bin"));
 
     }
     
@@ -97,8 +92,8 @@ public class MatExtractor {
         public short unknown10;
         public short unknown12;
         public int unknown18;
-        public int unknown1C;
-        public int unknown20;
+        public int totalObjectCount;
+        public int totalValueCount;
         public byte unknown24;
         public byte unknown25;
         public int unknown26;
@@ -109,7 +104,33 @@ public class MatExtractor {
             return ReflectionToStringBuilder.toString(this);
         }
         
-        public void decode(ByteBuffer buffer) {
+        public void decode(ByteBuffer buffer) throws Exception {
+            
+            int magicMesh = buffer.getInt();
+            if (magicMesh != MAGIC_MAT) {
+                throw new RuntimeException("magic <> 'MAT'");
+            }
+            
+            unknown0000 = buffer.getInt();
+            if (unknown0000 != 0) {
+                throw new RuntimeException("unknown0000 wrong");
+            }
+            
+            unknown08 = buffer.getInt();
+            unknown0C = buffer.getInt();
+            unknown10 = buffer.getShort();  //0
+            unknown12 = buffer.getShort();  //6/9/1
+            
+            byte[] array = buffer.array();
+            byte[] dest = new byte[array.length-20];
+            System.arraycopy(array, 20, dest, 0, array.length-20);
+            
+            FcbnExtractor fcbnExtractor = new FcbnExtractor(dest);
+            fcbnExtractor.decode();
+            
+       }
+        
+        public void decode2(ByteBuffer buffer) {
             
             int magicMesh = buffer.getInt();
             if (magicMesh != MAGIC_MAT) {
@@ -131,8 +152,8 @@ public class MatExtractor {
             }
             
             unknown18 = buffer.getInt(); //2
-            unknown1C = buffer.getInt(); //26/1/4
-            unknown20 = buffer.getInt(); //25/0/3
+            totalObjectCount = buffer.getInt(); //26/1/4
+            totalValueCount = buffer.getInt(); //25/0/3
             
             unknown24 = buffer.get();//25/3/0
             unknown25 = buffer.get();//149

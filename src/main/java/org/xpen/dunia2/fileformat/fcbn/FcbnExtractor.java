@@ -61,20 +61,21 @@ public class FcbnExtractor {
 //        decode1(new File("D:/git/opensource/dunia2/fc3dat/myex/worlds/fc3_main/fc3_main/graphics/_materials/JLI-M-107201151201026.material.bin"));
 //        decode1(new File("D:/git/opensource/dunia2/fc3dat/myex/worlds/fc3_main/fc3_main/graphics/_materials/YANZHOU-M-3101201251837020.material.bin"));
         decode1(new File("D:/git/opensource/dunia2/fc3dat/myex/common/generated/databases/generic/shoppingitems.fcb"));
+        //decode1(new File("D:/git/opensource/dunia2/fc3dat/myex/common/generated/databases/generic/vehiclecallingservice.fcb"));
 
     }
     
     private static void decode1(File file) throws Exception {
         LOG.debug("Starting:{}", file);
-        FcbnExtractor matExtractor = new FcbnExtractor(file);
-        matExtractor.decode();
+        FcbnExtractor fcbnExtractor = new FcbnExtractor(file);
+        fcbnExtractor.decode();
     }
 
     /**
      * FCBN File format
      * 4 'FCbn'
      */
-     private void decode() throws Exception {
+     public void decode() throws Exception {
         ByteBuffer buffer = ByteBuffer.wrap(bytes);
         buffer.order(ByteOrder.LITTLE_ENDIAN);
         
@@ -122,13 +123,18 @@ public class FcbnExtractor {
             int totalObjectCount = buffer.getInt();
             int totalValueCount = buffer.getInt();
             
-            Pair<Integer, Boolean> pair = BinaryObject.getCount(buffer);
+            //Pair<Integer, Boolean> pair = BinaryObject.getCount(buffer);
             
             //read count
-            LOG.debug("totalObjectCount={}, totalValueCount={}, childCount={}", totalObjectCount, totalValueCount, pair.getLeft());
+            LOG.debug("totalObjectCount={}, totalValueCount={}", totalObjectCount, totalValueCount);
 
             BinaryObject bo = new BinaryObject();
-            bo.decode(buffer, pair.getLeft());
+            bo.level=0;
+            bo.decode(buffer);
+            
+            StringBuilder sb = new StringBuilder();
+            bo.dump2Xml(sb);
+            System.out.println(sb.toString());
        }
     }
 
