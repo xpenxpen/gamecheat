@@ -2,29 +2,24 @@ package org.xpen.dunia2.fileformat.fcbn;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.RandomAccessFile;
+import java.io.FileOutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
-import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xpen.dunia2.fileformat.xbg.chunk.Chunk;
 
 public class FcbnExtractor {
     public static final int MAGIC_FCBN = 0x4643626E; //'FCbn'
     
     private static final Logger LOG = LoggerFactory.getLogger(FcbnExtractor.class);
     
-    private RandomAccessFile raf;
-    private FileChannel fileChannel;
     private byte[] bytes;
     private File file;
-    public Chunk root;
+    public File outFile;
     
     public FcbnExtractor(byte[] bytes) {
         this.bytes = bytes;
@@ -62,12 +57,17 @@ public class FcbnExtractor {
 //        decode1(new File("D:/git/opensource/dunia2/fc3dat/myex/worlds/fc3_main/fc3_main/graphics/_materials/YANZHOU-M-3101201251837020.material.bin"));
         decode1(new File("D:/git/opensource/dunia2/fc3dat/myex/common/generated/databases/generic/shoppingitems.fcb"));
         //decode1(new File("D:/git/opensource/dunia2/fc3dat/myex/common/generated/databases/generic/vehiclecallingservice.fcb"));
+        //decode1(new File("D:/git/opensource/dunia2/fc3dat/myex/common/generated/nomadobjecttemplates.fcb"));
 
     }
     
-    private static void decode1(File file) throws Exception {
+    public static void decode1(File file) throws Exception {
         LOG.debug("Starting:{}", file);
         FcbnExtractor fcbnExtractor = new FcbnExtractor(file);
+        String absolutePathIn = file.getAbsolutePath();
+        String fullPath = FilenameUtils.getFullPath(absolutePathIn);
+        String baseName = FilenameUtils.getBaseName(absolutePathIn);
+        fcbnExtractor.outFile = new File(fullPath + baseName + ".xml");
         fcbnExtractor.decode();
     }
 
@@ -85,25 +85,9 @@ public class FcbnExtractor {
     }
      
     public class Unknown0 {
-        public int unknown0000;
-        public int unknown08;
-        public int unknown0C;
-        public short unknown10;
-        public short unknown12;
-        public int unknown18;
-        public int unknown1C;
-        public int unknown20;
-        public byte unknown24;
-        public byte unknown25;
-        public int unknown26;
-        public int unknown2A;
         
-        @Override
-        public String toString() {
-            return ReflectionToStringBuilder.toString(this);
-        }
         
-        public void decode(ByteBuffer buffer) {
+        public void decode(ByteBuffer buffer) throws Exception {
             
             int magicMesh = buffer.getInt();
             if (magicMesh != MAGIC_FCBN) {
@@ -133,8 +117,9 @@ public class FcbnExtractor {
             bo.decode(buffer);
             
             StringBuilder sb = new StringBuilder();
+            sb.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
             bo.dump2Xml(sb);
-            System.out.println(sb.toString());
+            IOUtils.write(sb.toString(), new FileOutputStream(outFile), Charset.forName("ISO-8859-1"));
        }
     }
 

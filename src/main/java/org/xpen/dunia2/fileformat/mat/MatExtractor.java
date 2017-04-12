@@ -6,8 +6,8 @@ import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
-import java.nio.charset.Charset;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.slf4j.Logger;
@@ -91,13 +91,8 @@ public class MatExtractor {
         public int unknown0C;
         public short unknown10;
         public short unknown12;
-        public int unknown18;
         public int totalObjectCount;
         public int totalValueCount;
-        public byte unknown24;
-        public byte unknown25;
-        public int unknown26;
-        public int unknown2A;
         
         @Override
         public String toString() {
@@ -126,60 +121,11 @@ public class MatExtractor {
             System.arraycopy(array, 20, dest, 0, array.length-20);
             
             FcbnExtractor fcbnExtractor = new FcbnExtractor(dest);
+            String absolutePathIn = file.getAbsolutePath();
+            String fullPath = FilenameUtils.getFullPath(absolutePathIn);
+            String baseName = FilenameUtils.getBaseName(absolutePathIn);
+            fcbnExtractor.outFile = new File(fullPath + baseName + ".xml");
             fcbnExtractor.decode();
-            
-       }
-        
-        public void decode2(ByteBuffer buffer) {
-            
-            int magicMesh = buffer.getInt();
-            if (magicMesh != MAGIC_MAT) {
-                throw new RuntimeException("magic <> 'MAT'");
-            }
-            
-            unknown0000 = buffer.getInt();
-            if (unknown0000 != 0) {
-                throw new RuntimeException("unknown0000 wrong");
-            }
-            
-            unknown08 = buffer.getInt();
-            unknown0C = buffer.getInt();
-            unknown10 = buffer.getShort();  //0
-            unknown12 = buffer.getShort();  //6/9/1
-            int fcbn = buffer.getInt();
-            if (fcbn != MAGIC_FCBN) {
-                throw new RuntimeException("fcbn wrong");
-            }
-            
-            unknown18 = buffer.getInt(); //2
-            totalObjectCount = buffer.getInt(); //26/1/4
-            totalValueCount = buffer.getInt(); //25/0/3
-            
-            unknown24 = buffer.get();//25/3/0
-            unknown25 = buffer.get();//149
-            unknown26 = buffer.getInt();
-            if (unknown26 != 0x027CBE75) {
-                throw new RuntimeException("unknown26 wrong");
-            }
-            unknown2A = buffer.getInt();
-            if (unknown2A != 0x5E237E06) {
-                throw new RuntimeException("unknown2A wrong");
-            }
-            
-            byte keyLength = buffer.get();
-            byte[] key = new byte[keyLength];
-            buffer.get(key);
-            String keyName = new String(key, 0, keyLength - 1, Charset.forName("UTF-8"));
-            int u3f = buffer.getInt();
-            
-            //shader, see common\engine\shaders\materialdescriptors
-            
-            byte shaderLength = buffer.get();
-            byte[] shader = new byte[shaderLength];
-            buffer.get(shader);
-            String shaderName = new String(shader, 0, shaderLength - 1, Charset.forName("UTF-8"));
-            
-            LOG.debug("keyName={}, shaderName={}", keyName, shaderName);
             
        }
     }

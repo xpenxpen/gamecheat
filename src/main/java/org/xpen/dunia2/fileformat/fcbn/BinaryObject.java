@@ -18,7 +18,7 @@ public class BinaryObject {
     
     public int level;
     public long position;
-    public int nameHash;
+    public int nameHash; //TODO this is CRC32
     public List<Pair<Integer, byte[]>> fields = new ArrayList<Pair<Integer, byte[]>>();
     public List<BinaryObject> children = new ArrayList<BinaryObject>();
     
