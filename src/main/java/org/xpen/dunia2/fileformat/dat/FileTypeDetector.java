@@ -12,15 +12,24 @@ public class FileTypeDetector {
     
     static {
         fileHandlersMap.put("unknown", new SimpleCopyHandler("unknown"));
+        fileHandlersMap.put("barkdb", new SimpleCopyHandler("barkDataBase.xml"));
+        fileHandlersMap.put("barkmgr", new SimpleCopyHandler("barkManager.xml"));
         fileHandlersMap.put("bik", new SimpleCopyHandler("bik"));
+        fileHandlersMap.put("capi", new SimpleCopyHandler("capi.txt"));
+        fileHandlersMap.put("cinema", new SimpleCopyHandler("cinemaPostFX.xml"));
+        fileHandlersMap.put("cinv", new SimpleCopyHandler("collectionInventory.xml"));
         fileHandlersMap.put("cseq", new SimpleCopyHandler("cseq"));
         fileHandlersMap.put("fcb", new SimpleCopyHandler("fcb"));
         fileHandlersMap.put("feu", new SimpleCopyHandler("feu"));
+        fileHandlersMap.put("helpmenu", new SimpleCopyHandler("help_menu_topics.xml"));
         fileHandlersMap.put("lua", new SimpleCopyHandler("lua"));
         fileHandlersMap.put("mat", new SimpleCopyHandler("material.bin"));
+        fileHandlersMap.put("newpart", new SimpleCopyHandler("newPartLib.xml"));
+        fileHandlersMap.put("oinv", new SimpleCopyHandler("objectInventory.xml"));
         fileHandlersMap.put("png", new SimpleCopyHandler("png"));
         fileHandlersMap.put("root", new SimpleCopyHandler("root.xml"));
         fileHandlersMap.put("spk", new SimpleCopyHandler("spk"));
+        fileHandlersMap.put("stab", new SimpleCopyHandler("stringtable.xml"));
         fileHandlersMap.put("xbg", new SimpleCopyHandler("xbg"));
         fileHandlersMap.put("xbt", new XbtHandler());
         fileHandlersMap.put("xml", new SimpleCopyHandler("xml"));
@@ -63,7 +72,7 @@ public class FileTypeDetector {
             if (magic == 0x00584254 || magic == 0x54425800) {
                 return "xbt";
             }
-            if (magic == 0x53504801) { // 'SPK\1'
+            if (magic == 0x53504B01 || magic == 0x53504B04) { // 'SPK\1' 'SPK\4'
                 return "spk";
             }
             if (magic == 0x4D455348) { // 'MESH'
@@ -94,13 +103,39 @@ public class FileTypeDetector {
         if (text.startsWith("-- {\\v/} Domino auto-generated LUA script file")) {
             return "lua";
         }
-        if (text.startsWith("<Root>")) {
+        if (text.startsWith("<BarkDataBase>")) {
+            return "barkdb";
+        }
+        if (text.startsWith("<BarkManager>")) {
+            return "barkmgr";
+        }
+        if (text.startsWith("#CAPI_Pawn")) {
+            return "capi";
+        }
+        if (text.startsWith("<CinemaPostFX>")) {
+            return "cinema";
+        }
+        if (text.startsWith("<CollectionInventory>")) {
+            return "cinv";
+        }
+        if (text.startsWith("<help_menu_topics>")) {
+            return "helpmenu";
+        }
+        if (text.startsWith("<NewPartLib>")) {
+            return "newpart";
+        }
+        if (text.startsWith("<ObjectInventory>")) {
+            return "oinv";
+        }
+        if (text.startsWith("<Root>") || text.startsWith("<root>")) {
             return "root";
         }
         if (text.startsWith("<Sequence>")) {
             return "cseq";
         }
-        
+        if (text.startsWith("<stringtable")) {
+            return "stab";
+        }
         return "unknown";
     }
     
