@@ -2,6 +2,7 @@ package org.xpen.dunia2.fileformat.fat2;
 
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -16,6 +17,7 @@ public class FileListManager {
     private static final Logger LOG = LoggerFactory.getLogger(FileListManager.class);
     
     private Map<Long, String> crcMap = new HashMap<Long, String>();
+    public List<String> matchList = new ArrayList<String>();
     
     public void load(InputStream is) throws Exception {
         List<String> readLines = IOUtils.readLines(is, Charset.forName("UTF-8"));
@@ -33,6 +35,10 @@ public class FileListManager {
 
     public Map<Long, String> getCrcMap() {
         return crcMap;
+    }
+
+    public void addMatch(String str) {
+        matchList.add(str);
     }
     
     

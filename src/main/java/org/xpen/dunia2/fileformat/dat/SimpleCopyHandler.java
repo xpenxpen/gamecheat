@@ -24,7 +24,7 @@ public class SimpleCopyHandler implements FileTypeHandler {
             	if (newFileName.indexOf('.') == -1) {
             		oldFileNameWithoutExt = newFileName;
             	} else {
-                    oldFileNameWithoutExt = newFileName.substring(0, newFileName.indexOf('.'));
+                    oldFileNameWithoutExt = newFileName.substring(0, newFileName.lastIndexOf('.'));
             	}
                 outFile = new File(UserSetting.rootOutputFolder, datFileName + "/" + oldFileNameWithoutExt + "." + extension);
             } else {

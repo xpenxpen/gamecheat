@@ -1,5 +1,7 @@
 package org.xpen.farcry3;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -17,10 +19,12 @@ public class FatExtracter {
     private static final Logger LOG = LoggerFactory.getLogger(FatExtracter.class);
 
     public static void main(String[] args) throws Exception {
-        UserSetting.rootInputFolder = "E:/aliBoxGames/games/5993/FarCry 3/data_win32";
-        UserSetting.rootOutputFolder = "E:/aliBoxGames/games/5993/myex";
-    	//String[] fileNames = {"common", "patch", "igepatch", "ige", "worlds/fc3main/fc3_main"};
-    	String[] fileNames = {"worlds/fc3_main/fc3_main"};
+        //UserSetting.rootInputFolder = "E:/aliBoxGames/games/5993/FarCry 3/data_win32";
+        //UserSetting.rootOutputFolder = "E:/aliBoxGames/games/5993/myex";
+        UserSetting.rootInputFolder = "D:/git/opensource/dunia2/fc3dat";
+        UserSetting.rootOutputFolder = "D:/git/opensource/dunia2/fc3dat/myex";
+    	//String[] fileNames = {"common", "patch", "igepatch", "ige", "worlds/fc3_main/fc3_main", "worlds/fc3_main/fc3_main_english", "worlds/fc3_main/fc3_main_vistas", "worlds/multicommon/multicommon"};
+    	String[] fileNames = {"worlds/multicommon/multicommon"};
         
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
@@ -47,6 +51,12 @@ public class FatExtracter {
             DatFile datFile = new DatFile(fileName, fat2File, flm);
             datFile.decode();
             datFile.close();
+            
+//            BufferedWriter bw = new BufferedWriter(new FileWriter("matched.txt"));
+//            for (String str:flm.matchList) {
+//                bw.write(str + "\n");
+//            }
+//            bw.close();
         }
         
         stopWatch.stop();

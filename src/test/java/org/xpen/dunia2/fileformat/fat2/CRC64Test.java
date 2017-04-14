@@ -15,9 +15,8 @@ public class CRC64Test {
         System.out.println(Arrays.toString(crc64.crcTable));
         System.out.println(Arrays.toString(crc64.table));
         
-        //long update = crc64.update("aa");
-        long update = crc64.update("hidSingleObject");
-        Assert.assertEquals(123, update);
+        long update = crc64.update("domino\\library\\coop\\helpers.carriablereset.debug.lua");
+        Assert.assertEquals(-1644077453726826717L, update);
         
     }
     @Test

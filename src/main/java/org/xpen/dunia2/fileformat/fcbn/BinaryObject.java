@@ -113,7 +113,11 @@ public class BinaryObject {
             byte[] right = field.getRight();
             if (right.length >= 2 && (right[right.length-1]==0) && (right[right.length-2]!=0)) {
                 //treat as string
-                sb.append(new String(right, Charset.forName("ISO-8859-1")));
+                String string = new String(right, 0, right.length-1, Charset.forName("ISO-8859-1"));
+                if (string.indexOf('\\')!=-1) {
+                    System.out.println(string);
+                }
+                sb.append(string);
             } else {
                 sb.append(Hex.encodeHexString(right));
             }

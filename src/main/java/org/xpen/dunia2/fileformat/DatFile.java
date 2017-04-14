@@ -87,6 +87,7 @@ public class DatFile {
         if (crcMap.containsKey(entry.nameHash.longValue())) {
         	String fileName = crcMap.get(entry.nameHash.longValue());
         	newFileName = fileName;
+        	//flm.addMatch(fileName);
         } else {
             newFileName = StringUtils.leftPad(entry.nameHash.toString(16), 16, '0');
             isUnknown = true;
