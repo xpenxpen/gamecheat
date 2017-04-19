@@ -193,15 +193,12 @@ public class Fat2File {
         //Check SUM(SubFats) = subfat TotalEntryCount
         int totalEntryCountCheck = 0;
         for (SubFatEntry subFatEntry : subFats) {
-            for (Entry entry : subFatEntry.entries) {
-                totalEntryCountCheck++;
-            }
-            
+            totalEntryCountCheck += subFatEntry.entries.size();
         }
         
-//        if (totalEntryCountCheck != subfatTotalEntryCount) {
-//            throw new RuntimeException("subfat total entry count mismatch(" + totalEntryCountCheck + "!=" + subfatTotalEntryCount +")");
-//        }
+        if (totalEntryCountCheck != subfatTotalEntryCount) {
+            throw new RuntimeException("subfat total entry count mismatch(" + totalEntryCountCheck + "!=" + subfatTotalEntryCount +")");
+        }
         
         for (Entry entry : entries) {
         	sanityCheckEntry(entry);
@@ -211,6 +208,8 @@ public class Fat2File {
                 entryCount, subfatCount, totalEntryCountCheck, subfatTotalEntryCount);
         
         buffer.clear();
+        
+        LOG.debug("fileChannel.position()={}, size()={}", fileChannel.position(), fileChannel.size());
         
     }
     

@@ -10,16 +10,18 @@ import org.xpen.farcry3.UserSetting;
 public class SimpleCopyHandler implements FileTypeHandler {
     
     private String extension;
+    private boolean keepOldFileName;
 
-    public SimpleCopyHandler(String extension) {
+    public SimpleCopyHandler(String extension, boolean keepOldFileName) {
         this.extension = extension;
+        this.keepOldFileName = keepOldFileName;
     }
 
     @Override
     public void handle(byte[] b, String datFileName, String newFileName, boolean isUnknown) throws Exception {
         File outFile = null;
         if (!isUnknown) {
-            if (!extension.equals("unknown")) {
+            if ((!extension.equals("unknown")) && (!keepOldFileName)) {
             	String oldFileNameWithoutExt = null;
             	if (newFileName.indexOf('.') == -1) {
             		oldFileNameWithoutExt = newFileName;

@@ -62,9 +62,9 @@ public class MatExtractor {
 //        decode1(new File("D:/git/opensource/dunia2/fc3dat/myex/worlds/fc3_main/fc3_main/graphics/_materials/ocean.material.bin"));
 //        decode1(new File("D:/git/opensource/dunia2/fc3dat/myex/worlds/fc3_main/fc3_main/graphics/_materials/JLI-M-107201142503596.material.bin"));
 //        decode1(new File("D:/git/opensource/dunia2/fc3dat/myex/worlds/fc3_main/fc3_main/graphics/_materials/JLI-M-107201151201026.material.bin"));
-        //decode1(new File("D:/git/opensource/dunia2/fc3dat/myex/worlds/fc3_main/fc3_main/graphics/_materials/YANZHOU-M-3101201251837020.material.bin"));
+        decode1(new File("D:/git/opensource/dunia2/fc3dat/myex/worlds/fc3_main/fc3_main/graphics/_materials/YANZHOU-M-3101201251837020.material.bin"));
         //decode1(new File("E:/aliBoxGames/games/5993/myex/worlds/fc3_main/fc3_main/graphics/_materials/VFORTIN-M-2011032246212114.material.bin"));
-        detectUnkownFile();
+        //detectUnkownFile();
     }
     
     private static void detectUnkownFile() throws Exception {

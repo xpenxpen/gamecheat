@@ -11,28 +11,28 @@ public class FileTypeDetector {
     private static Map<String, FileTypeHandler> fileHandlersMap = new HashMap<String, FileTypeHandler>();
     
     static {
-        fileHandlersMap.put("unknown", new SimpleCopyHandler("unknown"));
-        fileHandlersMap.put("barkdb", new SimpleCopyHandler("barkDataBase.xml"));
-        fileHandlersMap.put("barkmgr", new SimpleCopyHandler("barkManager.xml"));
-        fileHandlersMap.put("bik", new SimpleCopyHandler("bik"));
-        fileHandlersMap.put("capi", new SimpleCopyHandler("capi.txt"));
-        fileHandlersMap.put("cinema", new SimpleCopyHandler("cinemaPostFX.xml"));
-        fileHandlersMap.put("cinv", new SimpleCopyHandler("collectionInventory.xml"));
-        fileHandlersMap.put("cseq", new SimpleCopyHandler("cseq"));
-        fileHandlersMap.put("fcb", new SimpleCopyHandler("fcb"));
-        fileHandlersMap.put("feu", new SimpleCopyHandler("feu"));
-        fileHandlersMap.put("helpmenu", new SimpleCopyHandler("help_menu_topics.xml"));
-        fileHandlersMap.put("lua", new SimpleCopyHandler("lua"));
-        fileHandlersMap.put("mat", new SimpleCopyHandler("material.bin"));
-        fileHandlersMap.put("newpart", new SimpleCopyHandler("newPartLib.xml"));
-        fileHandlersMap.put("oinv", new SimpleCopyHandler("objectInventory.xml"));
-        fileHandlersMap.put("png", new SimpleCopyHandler("png"));
-        fileHandlersMap.put("root", new SimpleCopyHandler("root.xml"));
-        fileHandlersMap.put("spk", new SimpleCopyHandler("spk"));
-        fileHandlersMap.put("stab", new SimpleCopyHandler("stringtable.xml"));
-        fileHandlersMap.put("xbg", new SimpleCopyHandler("xbg"));
+        fileHandlersMap.put("unknown", new SimpleCopyHandler("unknown", true));
+        fileHandlersMap.put("barkdb", new SimpleCopyHandler("barkDataBase.xml", false));
+        fileHandlersMap.put("barkmgr", new SimpleCopyHandler("barkManager.xml", false));
+        fileHandlersMap.put("bik", new SimpleCopyHandler("bik", true));
+        fileHandlersMap.put("capi", new SimpleCopyHandler("capi.txt", false));
+        fileHandlersMap.put("cinema", new SimpleCopyHandler("cinemaPostFX.xml", false));
+        fileHandlersMap.put("cinv", new SimpleCopyHandler("collectionInventory.xml", false));
+        fileHandlersMap.put("cseq", new SimpleCopyHandler("cseq", true));
+        fileHandlersMap.put("fcb", new SimpleCopyHandler("fcb", true));
+        fileHandlersMap.put("feu", new SimpleCopyHandler("feu", true));
+        fileHandlersMap.put("helpmenu", new SimpleCopyHandler("help_menu_topics.xml", false));
+        fileHandlersMap.put("lua", new SimpleCopyHandler("lua", true));
+        fileHandlersMap.put("mat", new SimpleCopyHandler("material.bin", true));
+        fileHandlersMap.put("newpart", new SimpleCopyHandler("newPartLib.xml", false));
+        fileHandlersMap.put("oinv", new SimpleCopyHandler("objectInventory.xml", false));
+        fileHandlersMap.put("png", new SimpleCopyHandler("png", false));
+        fileHandlersMap.put("root", new SimpleCopyHandler("root.xml", false));
+        fileHandlersMap.put("spk", new SimpleCopyHandler("spk", true));
+        fileHandlersMap.put("stab", new SimpleCopyHandler("stringtable.xml", false));
+        fileHandlersMap.put("xbg", new SimpleCopyHandler("xbg", true));
         fileHandlersMap.put("xbt", new XbtHandler());
-        fileHandlersMap.put("xml", new SimpleCopyHandler("xml"));
+        fileHandlersMap.put("xml", new SimpleCopyHandler("xml", false));
     }
     
     public static String detect(byte[] bytes) {

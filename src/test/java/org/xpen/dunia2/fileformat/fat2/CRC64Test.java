@@ -24,6 +24,6 @@ public class CRC64Test {
         CRC32 crc32 = new CRC32();
         
         crc32.update("hidSingleObject".getBytes());
-        Assert.assertEquals(1643932418, crc32.getValue());
+        Assert.assertEquals("61fc6b02", Long.toHexString(crc32.getValue()));
         
     }}

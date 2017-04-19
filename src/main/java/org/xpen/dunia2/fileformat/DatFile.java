@@ -78,7 +78,7 @@ public class DatFile {
         String detectedType = FileTypeDetector.detect(b);
         FileTypeHandler fileTypeHandler = FileTypeDetector.getFileTypeHandler(detectedType);
         if (fileTypeHandler == null) {
-            fileTypeHandler = new SimpleCopyHandler("unknown");
+            fileTypeHandler = new SimpleCopyHandler("unknown", true);
         }
         
         Map<Long, String> crcMap = flm.getCrcMap();
