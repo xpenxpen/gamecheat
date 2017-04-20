@@ -1,6 +1,7 @@
 package org.xpen.dunia2.fileformat;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 import java.util.List;
@@ -16,6 +17,7 @@ import org.xpen.dunia2.fileformat.dat.SimpleCopyHandler;
 import org.xpen.dunia2.fileformat.fat2.CompressionScheme;
 import org.xpen.dunia2.fileformat.fat2.Entry;
 import org.xpen.dunia2.fileformat.fat2.FileListManager;
+import org.xpen.dunia2.fileformat.fat2.SubFatEntry;
 import org.xpen.farcry3.UserSetting;
 
 public class DatFile {
@@ -44,6 +46,21 @@ public class DatFile {
 
 	public void decode() throws Exception {
         List<Entry> entries = fat2File.getEntries();
+        decode(entries);
+        
+        //sub
+        List<SubFatEntry> subFats = fat2File.getSubFats();
+        for (SubFatEntry subFatEntry : subFats) {
+            decode(subFatEntry.entries);
+        }
+    }
+
+    /**
+     * @param entries
+     * @throws IOException
+     * @throws Exception
+     */
+    private void decode(List<Entry> entries) throws IOException, Exception {
         for (Entry entry : entries) {
             LOG.debug("processing " + entry.toString());
         	raf.seek(entry.offset);

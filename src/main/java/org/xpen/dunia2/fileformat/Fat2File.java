@@ -243,4 +243,8 @@ public class Fat2File {
         return entries;
     }
 
+    public List<SubFatEntry> getSubFats() {
+        return subFats;
+    }
+
 }

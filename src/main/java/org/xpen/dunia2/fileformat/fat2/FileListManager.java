@@ -18,6 +18,8 @@ public class FileListManager {
     
     private Map<Long, String> crcMap = new HashMap<Long, String>();
     public List<String> matchList = new ArrayList<String>();
+    public boolean hasSubFat;
+    public List<String> subFatList = new ArrayList<String>();
     
     public void load(InputStream is) throws Exception {
         List<String> readLines = IOUtils.readLines(is, Charset.forName("UTF-8"));
@@ -28,7 +30,14 @@ public class FileListManager {
             String replaceStr = line.replace('/', '\\').toLowerCase(Locale.ENGLISH);
             long crc = new CRC64().update(replaceStr);
             
+            if (crcMap.containsKey(crc)) {
+                throw new RuntimeException("dulplicate CRC:"+crc);
+            }
             crcMap.put(crc, replaceStr);
+            if (replaceStr.startsWith("subfat")) {
+                hasSubFat = true;
+                subFatList.add(replaceStr);
+            }
             LOG.debug("crc={},({}) replaceStr={}", crc, Long.toHexString(crc), replaceStr);
         }
     }

@@ -1,9 +1,6 @@
 package org.xpen.farcry3;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.time.StopWatch;
@@ -13,6 +10,7 @@ import org.xpen.dunia2.fileformat.DatFile;
 import org.xpen.dunia2.fileformat.Fat2File;
 import org.xpen.dunia2.fileformat.fat2.Entry;
 import org.xpen.dunia2.fileformat.fat2.FileListManager;
+import org.xpen.dunia2.fileformat.fat2.SubFatEntry;
 
 public class FatExtracter {
     
@@ -24,7 +22,7 @@ public class FatExtracter {
         UserSetting.rootInputFolder = "D:/git/opensource/dunia2/fc3dat";
         UserSetting.rootOutputFolder = "D:/git/opensource/dunia2/fc3dat/myex";
     	//String[] fileNames = {"common", "patch", "igepatch", "ige", "worlds/fc3_main/fc3_main", "worlds/fc3_main/fc3_main_english", "worlds/fc3_main/fc3_main_vistas", "worlds/multicommon/multicommon"};
-    	String[] fileNames = {"worlds/multicommon/multicommon"};
+    	String[] fileNames = {"worlds/fc3_main/fc3_main"};
         
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
@@ -46,7 +44,15 @@ public class FatExtracter {
             FileListManager flm = new FileListManager();
             flm.load(FatExtracter.class.getClassLoader().getResourceAsStream(
             		"farcry3/files/" + fileName + ".filelist"));
-            Map<Long, String> crcMap = flm.getCrcMap();
+            
+            //load sub
+            if (flm.hasSubFat) {
+                for (String subFat : flm.subFatList) {
+                    flm.load(FatExtracter.class.getClassLoader().getResourceAsStream(
+                            "farcry3/files/" + fileName + "_subfats/" + subFat.substring(0, subFat.indexOf(".")) +".filelist"));
+                }
+            }
+            
             
             DatFile datFile = new DatFile(fileName, fat2File, flm);
             datFile.decode();
