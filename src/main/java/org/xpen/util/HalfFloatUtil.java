@@ -1,4 +1,4 @@
-package org.xpen.dunia2.fileformat.xbg;
+package org.xpen.util;
 
 public class HalfFloatUtil {
 	public static float toFloat(short hbits) {

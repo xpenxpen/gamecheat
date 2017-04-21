@@ -2,6 +2,7 @@ package org.xpen.dunia2.fileformat.xbg;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.xpen.util.HalfFloatUtil;
 
 public class HalfFloatUtilTest {
 	

@@ -7,7 +7,6 @@ import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +14,7 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xpen.farcry3.UserSetting;
+import org.xpen.util.ByteBufferUtil;
 
 public class PckFile {
     
@@ -80,20 +80,13 @@ public class PckFile {
                 newBuffer.put(newTempBuffer);
             }
             newBuffer.flip();
-           
-            byte[] b = new byte[1];
-            newBuffer.get(b);
-            StringBuilder sb = new StringBuilder();
             
-            while (b[0]!=0) {
-                sb.append(new String(b, Charset.forName("ISO-8859-1")));
-                newBuffer.get(b);
-            }
+            String fileName = ByteBufferUtil.getNullTerminatedString(newBuffer);
             
             Entry entry = new Entry();
             entry.start = newBuffer.getLong();
             entry.length = newBuffer.getLong();
-            entry.fileName = sb.toString();
+            entry.fileName = fileName;
             entries.add(entry);
             
             pos = newBuffer.position();
