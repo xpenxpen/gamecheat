@@ -6,17 +6,19 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xpen.farcry3.UserSetting;
 import org.xpen.forceofnature.pck.Entry;
 import org.xpen.forceofnature.pck.PckFile;
+import org.xpen.util.UserSetting;
 
 public class PckExtractor {
     
     private static final Logger LOG = LoggerFactory.getLogger(PckExtractor.class);
 
 	public static void main(String[] args) throws Exception {
-        UserSetting.rootInputFolder = "E:/baiduyundownload/Force.of.Nature.v1.0.12.CHS.1.2-ALI213/Force of Nature/Data";
-        UserSetting.rootOutputFolder = "E:/baiduyundownload/Force.of.Nature.v1.0.12.CHS.1.2-ALI213/Force of Nature/myex";
+//        UserSetting.rootInputFolder = "E:/baiduyundownload/Force.of.Nature.v1.0.12.CHS.1.2-ALI213/Force of Nature/Data";
+//        UserSetting.rootOutputFolder = "E:/baiduyundownload/Force.of.Nature.v1.0.12.CHS.1.2-ALI213/Force of Nature/myex";
+        UserSetting.rootInputFolder = "D:/git/opensource/dunia2/fon";
+        UserSetting.rootOutputFolder = "D:/git/opensource/dunia2/fon/myex";
     	String[] fileNames = {"Data", "Textures", "Objects", "Sounds"};
     	//String[] fileNames = {"Sounds"};
         

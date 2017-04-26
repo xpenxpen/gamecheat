@@ -6,7 +6,7 @@ import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import org.xpen.farcry3.UserSetting;
+import org.xpen.util.UserSetting;
 
 public class XbtHandler implements FileTypeHandler {
 

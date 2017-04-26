@@ -17,4 +17,18 @@ public class ByteBufferUtil {
         
         return sb.toString();
     }
+    
+    public static String getFixedLengthString(ByteBuffer buffer, int length) {
+        byte[] b = new byte[length];
+        buffer.get(b);
+        
+        return new String(b, Charset.forName("ISO-8859-1"));
+    }
+    
+    public static String getNullTerminatedFixedLengthString(ByteBuffer buffer, int length) {
+        byte[] b = new byte[length];
+        buffer.get(b);
+        
+        return new String(b, 0, length - 1, Charset.forName("ISO-8859-1"));
+    }
 }

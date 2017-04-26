@@ -18,7 +18,7 @@ import org.xpen.dunia2.fileformat.fat2.CompressionScheme;
 import org.xpen.dunia2.fileformat.fat2.Entry;
 import org.xpen.dunia2.fileformat.fat2.FileListManager;
 import org.xpen.dunia2.fileformat.fat2.SubFatEntry;
-import org.xpen.farcry3.UserSetting;
+import org.xpen.util.UserSetting;
 
 public class DatFile {
     

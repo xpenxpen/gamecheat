@@ -5,7 +5,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 
 import org.apache.commons.io.IOUtils;
-import org.xpen.farcry3.UserSetting;
+import org.xpen.util.UserSetting;
 
 public class SimpleCopyHandler implements FileTypeHandler {
     

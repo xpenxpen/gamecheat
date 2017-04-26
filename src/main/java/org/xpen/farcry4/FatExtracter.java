@@ -11,17 +11,19 @@ import org.xpen.dunia2.fileformat.DatFile;
 import org.xpen.dunia2.fileformat.Fat2File;
 import org.xpen.dunia2.fileformat.fat2.Entry;
 import org.xpen.dunia2.fileformat.fat2.FileListManager;
-import org.xpen.farcry3.UserSetting;
+import org.xpen.util.UserSetting;
 
 public class FatExtracter {
     
     private static final Logger LOG = LoggerFactory.getLogger(FatExtracter.class);
 
     public static void main(String[] args) throws Exception {
-        UserSetting.rootInputFolder = "E:/aliBoxGames/games/11136/Far Cry 4/data_win32";
-        UserSetting.rootOutputFolder = "E:/aliBoxGames/games/11136/myex";
+        //UserSetting.rootInputFolder = "E:/aliBoxGames/games/11136/Far Cry 4/data_win32";
+        //UserSetting.rootOutputFolder = "E:/aliBoxGames/games/11136/myex";
+        UserSetting.rootInputFolder = "D:/git/opensource/dunia2/fc4dat";
+        UserSetting.rootOutputFolder = "D:/git/opensource/dunia2/fc4dat/myex";
     	//String[] fileNames = {"common", "patch", "ige", "worlds/fcc_main/fcc_main"};
-    	String[] fileNames = {"ige"};
+    	String[] fileNames = {"worlds/fcc_main/fcc_main"};
         
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();

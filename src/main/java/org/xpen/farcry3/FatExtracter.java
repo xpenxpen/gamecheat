@@ -10,7 +10,7 @@ import org.xpen.dunia2.fileformat.DatFile;
 import org.xpen.dunia2.fileformat.Fat2File;
 import org.xpen.dunia2.fileformat.fat2.Entry;
 import org.xpen.dunia2.fileformat.fat2.FileListManager;
-import org.xpen.dunia2.fileformat.fat2.SubFatEntry;
+import org.xpen.util.UserSetting;
 
 public class FatExtracter {
     

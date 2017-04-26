@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.xpen.dunia2.fileformat.Fat2File;
 import org.xpen.dunia2.fileformat.fat2.CRC64;
 import org.xpen.dunia2.fileformat.fat2.Entry;
-import org.xpen.farcry3.UserSetting;
+import org.xpen.util.UserSetting;
 
 public class FileNameGuesser {
     
