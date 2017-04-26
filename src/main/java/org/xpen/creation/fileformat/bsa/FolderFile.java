@@ -6,6 +6,7 @@ public class FolderFile {
     public long hash;
     public int fileSize;
     public int offset;
+    public boolean compressed;
     public String folderPath;
     public String fileName;
     

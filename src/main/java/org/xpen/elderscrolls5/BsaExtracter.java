@@ -13,12 +13,12 @@ public class BsaExtracter {
     private static final Logger LOG = LoggerFactory.getLogger(BsaExtracter.class);
 
     public static void main(String[] args) throws Exception {
-        //UserSetting.rootInputFolder = "E:/aliBoxGames/games/5993/FarCry 3/data_win32";
-        //UserSetting.rootOutputFolder = "E:/aliBoxGames/games/5993/myex";
-        UserSetting.rootInputFolder = "D:/git/opensource/dunia2/skyrimdat";
-        UserSetting.rootOutputFolder = "D:/git/opensource/dunia2/skyrimdat/myex";
-    	//String[] fileNames = {"Skyrim - Interface.bsa"};
-    	String[] fileNames = {"Skyrim - Interface"};
+        UserSetting.rootInputFolder = "E:/aliBoxGames/games/10087/Skyrim/Data";
+        UserSetting.rootOutputFolder = "E:/aliBoxGames/games/10087/myex";
+        //UserSetting.rootInputFolder = "D:/git/opensource/dunia2/skyrimdat";
+        //UserSetting.rootOutputFolder = "D:/git/opensource/dunia2/skyrimdat/myex";
+    	//String[] fileNames = {"Skyrim - Interface", "Skyrim - Textures", "Skyrim - Meshes"};
+    	String[] fileNames = {"Skyrim - Meshes"};
         
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();

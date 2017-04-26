@@ -1,7 +1,9 @@
 package org.xpen.creation.fileformat;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
@@ -15,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xpen.creation.fileformat.bsa.Folder;
 import org.xpen.creation.fileformat.bsa.FolderFile;
+import org.xpen.creation.fileformat.bsa.Lz4Compressor;
 import org.xpen.util.ByteBufferUtil;
 import org.xpen.util.UserSetting;
 
@@ -30,6 +33,8 @@ public class BsaFile {
     private int headerLength;
     private int flag1;
     private int flag2;
+    private boolean compressed;
+    private boolean containsFileNameBlobs;
     private int folderCount;
     private int fileCount;
     private int folderNamesLength;
@@ -68,7 +73,7 @@ public class BsaFile {
      *
      */
     public void decode() throws Exception {
-        ByteBuffer buffer = ByteBuffer.allocate(36);
+        ByteBuffer buffer = ByteBuffer.allocate(80);
         buffer.order(ByteOrder.LITTLE_ENDIAN);
         
         buffer.limit(HEADER_LENGTH);
@@ -80,17 +85,18 @@ public class BsaFile {
             throw new RuntimeException("bad magic");
         }
         
-        int version = buffer.getInt();
+        this.version = buffer.getInt();
         if (version != 104) {
             throw new RuntimeException("unsupported file version");
         }
-        this.version = version;
         
         this.headerLength = buffer.getInt();
         if (headerLength != HEADER_LENGTH) {
             throw new RuntimeException("unsupported header length");
         }
-        this.flag1 = buffer.getInt();  //3
+        this.flag1 = buffer.getInt();
+        this.compressed = ((flag1 & 0x04) == 0x04);
+        this.containsFileNameBlobs = ((flag1 & 0x100) > 0 && version == 0x68);
         this.folderCount = buffer.getInt(); //7
         this.fileCount = buffer.getInt();
         
@@ -98,8 +104,8 @@ public class BsaFile {
         this.fileNamesLength= buffer.getInt();
         this.flag2 = buffer.getInt();
 
-        LOG.debug("folderCount={}, fileCount={}, folderNamesLength={}, fileNamesLength={}",
-                folderCount, fileCount, folderNamesLength, fileNamesLength);
+        LOG.debug("folderCount={}, fileCount={}, folderNamesLength={}, fileNamesLength={},flag1={}, flag2={}, version={}",
+                folderCount, fileCount, folderNamesLength, fileNamesLength,flag1, flag2, version);
         
         buffer.clear();
         
@@ -149,6 +155,7 @@ public class BsaFile {
                 folderFile.fileSize = buffer.getInt();
                 folderFile.offset = buffer.getInt();
                 folderFile.folderPath = folderPath;
+                folderFile.compressed = this.compressed;
             }
             
         }
@@ -172,14 +179,48 @@ public class BsaFile {
             FolderFile folderFile = folderFiles.get(i);
             folderFile.fileName = ByteBufferUtil.getNullTerminatedString(buffer);
         }
-        //LOG.debug("folderFiles={}", folderFiles);
+        LOG.debug("folderFiles={}", folderFiles);
         //LOG.debug("fileChannel.position()={}, size()={}", fileChannel.position(), fileChannel.size());
         
-        for (int i = 0; i < fileCount; i++) {
+        extract();
+        
+    }
+
+	private void extract() throws IOException, FileNotFoundException {
+        ByteBuffer buffer = ByteBuffer.allocate(4);
+        buffer.order(ByteOrder.LITTLE_ENDIAN);
+        
+		for (int i = 0; i < fileCount; i++) {
             FolderFile folderFile = folderFiles.get(i);
-            byte[] b = new byte[folderFile.fileSize];
+            
+            byte[] b = null;
             raf.seek(folderFile.offset);
-            raf.readFully(b);
+            fileChannel.position(folderFile.offset);
+            
+            if (folderFile.compressed) {
+                //LOG.debug("fileChannel.position={}",fileChannel.position());
+                buffer.limit(4);
+                buffer.rewind();
+                fileChannel.read(buffer);
+                buffer.flip();
+                
+                int uncompressedSize = buffer.getInt();
+                //if (!folderFile.fileName.equals("alduin.nif")) {
+                //	continue;
+                //}
+                LOG.debug("folderPath={}, fileName={}, folderFile.offset={}, uncompressedSize={}",
+                		folderFile.folderPath, folderFile.fileName, folderFile.offset, uncompressedSize);
+                //if (uncompressedSize <=0 || uncompressedSize>10000000) {
+                //	continue;
+                //}
+                byte[] inb = new byte[folderFile.fileSize - 4];
+                b = new byte[uncompressedSize];
+                raf.readFully(inb);
+                Lz4Compressor.decompress(inb, b);
+            } else {
+                b = new byte[folderFile.fileSize];
+                raf.readFully(b);
+            }
             
             File outFile = null;
             outFile = new File(UserSetting.rootOutputFolder, fileName + "/" + folderFile.folderPath.replace('\\', '/') + "/" + folderFile.fileName);
@@ -192,8 +233,7 @@ public class BsaFile {
             os.close();
 
         }
-        
-    }
+	}
 
 	public void close() throws Exception {
         fileChannel.close();
