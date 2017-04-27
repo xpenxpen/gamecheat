@@ -17,7 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xpen.creation.fileformat.bsa.Folder;
 import org.xpen.creation.fileformat.bsa.FolderFile;
-import org.xpen.creation.fileformat.bsa.Lz4Compressor;
+import org.xpen.creation.fileformat.bsa.ZlibCompressor;
 import org.xpen.util.ByteBufferUtil;
 import org.xpen.util.UserSetting;
 
@@ -104,8 +104,8 @@ public class BsaFile {
         this.fileNamesLength= buffer.getInt();
         this.flag2 = buffer.getInt();
 
-        LOG.debug("folderCount={}, fileCount={}, folderNamesLength={}, fileNamesLength={},flag1={}, flag2={}, version={}",
-                folderCount, fileCount, folderNamesLength, fileNamesLength,flag1, flag2, version);
+        LOG.debug("folderCount={}, fileCount={}, folderNamesLength={}, fileNamesLength={},flag1={}, flag2={}, version={}, containsFileNameBlobs={}",
+                folderCount, fileCount, folderNamesLength, fileNamesLength,flag1, flag2, version, containsFileNameBlobs);
         
         buffer.clear();
         
@@ -179,7 +179,7 @@ public class BsaFile {
             FolderFile folderFile = folderFiles.get(i);
             folderFile.fileName = ByteBufferUtil.getNullTerminatedString(buffer);
         }
-        LOG.debug("folderFiles={}", folderFiles);
+        //LOG.debug("folderFiles={}", folderFiles);
         //LOG.debug("fileChannel.position()={}, size()={}", fileChannel.position(), fileChannel.size());
         
         extract();
@@ -205,18 +205,17 @@ public class BsaFile {
                 buffer.flip();
                 
                 int uncompressedSize = buffer.getInt();
-                //if (!folderFile.fileName.equals("alduin.nif")) {
-                //	continue;
-                //}
-                LOG.debug("folderPath={}, fileName={}, folderFile.offset={}, uncompressedSize={}",
-                		folderFile.folderPath, folderFile.fileName, folderFile.offset, uncompressedSize);
-                //if (uncompressedSize <=0 || uncompressedSize>10000000) {
-                //	continue;
-                //}
-                byte[] inb = new byte[folderFile.fileSize - 4];
+                //LOG.debug("folderPath={}, fileName={}, folderFile.offset={}, uncompressedSize={}",
+                //		folderFile.folderPath, folderFile.fileName, folderFile.offset, uncompressedSize);
+                byte[] inb = new byte[folderFile.fileSize-4];
                 b = new byte[uncompressedSize];
+                raf.seek(folderFile.offset+4);
                 raf.readFully(inb);
-                Lz4Compressor.decompress(inb, b);
+                try {
+                    ZlibCompressor.decompress(inb, b);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
             } else {
                 b = new byte[folderFile.fileSize];
                 raf.readFully(b);
