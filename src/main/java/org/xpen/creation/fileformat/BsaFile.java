@@ -24,6 +24,7 @@ import org.xpen.util.UserSetting;
 public class BsaFile {
     public static final int MAGIC_BSA = 0x415342; //'BSA'
     public static final int HEADER_LENGTH = 0x24;
+    public static final int MAX_FOLDER_LENGTH = 96;
     
     private static final Logger LOG = LoggerFactory.getLogger(BsaFile.class);
     
@@ -73,7 +74,7 @@ public class BsaFile {
      *
      */
     public void decode() throws Exception {
-        ByteBuffer buffer = ByteBuffer.allocate(80);
+        ByteBuffer buffer = ByteBuffer.allocate(MAX_FOLDER_LENGTH);
         buffer.order(ByteOrder.LITTLE_ENDIAN);
         
         buffer.limit(HEADER_LENGTH);
@@ -97,7 +98,7 @@ public class BsaFile {
         this.flag1 = buffer.getInt();
         this.compressed = ((flag1 & 0x04) == 0x04);
         this.containsFileNameBlobs = ((flag1 & 0x100) > 0 && version == 0x68);
-        this.folderCount = buffer.getInt(); //7
+        this.folderCount = buffer.getInt();
         this.fileCount = buffer.getInt();
         
         this.folderNamesLength= buffer.getInt();
@@ -197,6 +198,13 @@ public class BsaFile {
             raf.seek(folderFile.offset);
             fileChannel.position(folderFile.offset);
             
+            byte fileNameLength = 0;
+            if (containsFileNameBlobs) {
+            	fileNameLength = raf.readByte();
+            	raf.seek(folderFile.offset + 1 + fileNameLength);
+                fileChannel.position(folderFile.offset + 1 + fileNameLength);
+            }
+            
             if (folderFile.compressed) {
                 //LOG.debug("fileChannel.position={}",fileChannel.position());
                 buffer.limit(4);
@@ -205,11 +213,16 @@ public class BsaFile {
                 buffer.flip();
                 
                 int uncompressedSize = buffer.getInt();
-                //LOG.debug("folderPath={}, fileName={}, folderFile.offset={}, uncompressedSize={}",
-                //		folderFile.folderPath, folderFile.fileName, folderFile.offset, uncompressedSize);
-                byte[] inb = new byte[folderFile.fileSize-4];
+//                LOG.debug("folderPath={}, fileName={}, folderFile.offset={}, folderFile.fileSize={}, uncompressedSize={}",
+//                		folderFile.folderPath, folderFile.fileName, folderFile.offset, folderFile.fileSize, uncompressedSize);
+                
+                int inbLength = folderFile.fileSize - 4;
+                if (containsFileNameBlobs) {
+                	inbLength = inbLength - 1 - fileNameLength;
+                }
+                byte[] inb = new byte[inbLength];
                 b = new byte[uncompressedSize];
-                raf.seek(folderFile.offset+4);
+                //raf.skipBytes(4);
                 raf.readFully(inb);
                 try {
                     ZlibCompressor.decompress(inb, b);

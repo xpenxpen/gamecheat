@@ -17,8 +17,8 @@ public class BsaExtracter {
         UserSetting.rootOutputFolder = "E:/aliBoxGames/games/10087/myex";
         //UserSetting.rootInputFolder = "D:/git/opensource/dunia2/skyrimdat";
         //UserSetting.rootOutputFolder = "D:/git/opensource/dunia2/skyrimdat/myex";
-    	//String[] fileNames = {"Skyrim - Interface", "Skyrim - Textures", "Skyrim - Meshes"};
-    	String[] fileNames = {"Skyrim - Meshes"};
+    	//String[] fileNames = {"Skyrim - Animations", "Skyrim - Interface", "Skyrim - Meshes", "Skyrim - Misc", "Skyrim - Shaders", "Skyrim - Sounds", "Skyrim - Textures"};
+    	String[] fileNames = {"Skyrim - Shaders", "Skyrim - Sounds"};
         
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
