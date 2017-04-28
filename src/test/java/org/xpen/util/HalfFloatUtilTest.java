@@ -1,4 +1,4 @@
-package org.xpen.dunia2.fileformat.xbg;
+package org.xpen.util;
 
 import org.junit.Assert;
 import org.junit.Test;
