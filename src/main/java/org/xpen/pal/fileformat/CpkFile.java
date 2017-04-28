@@ -11,13 +11,16 @@ import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xpen.dunia2.fileformat.dat.LzoCompressor;
+import org.xpen.util.ByteBufferUtil;
 import org.xpen.util.UserSetting;
 import org.xpen.util.XxTea;
 
@@ -36,6 +39,7 @@ public class CpkFile {
 //    private List<Folder> folders = new ArrayList<Folder>();
     private List<FatEntry> fatEntries = new ArrayList<FatEntry>();
     private String fileName;
+    private Map<Integer, String> folderMap = new HashMap<Integer, String>();
     
     
     public CpkFile(String fileName) throws Exception {
@@ -102,8 +106,14 @@ public class CpkFile {
         
         for (int i = 0; i < headerInfo._06dwFileNum; i++) {
             FatEntry fatEntry = new FatEntry();
-            fatEntries.add(fatEntry);
             fatEntry.decode(buffer);
+            
+            //sort folder first. We need build folderMap first
+            if (fatEntry.isFolder) {
+                fatEntries.add(0, fatEntry);
+            } else {
+                fatEntries.add(fatEntry);
+            }
         }
         
         LOG.debug("fatEntries={}", fatEntries);
@@ -127,14 +137,25 @@ public class CpkFile {
             FatEntry fatEntry = fatEntries.get(i);
             
             raf.seek(fatEntry._04dwSeek);
+            if (fatEntry.isFolder) {
+                String folderName = ByteBufferUtil.getNullTerminatedString(raf);
+                folderMap.put(fatEntry.crc, folderName);
+                LOG.debug("putting map, {}, {}", fatEntry.crc, folderName);
+                continue;
+            }
+            
             byte[] bytes = new byte[fatEntry._05dwLenght1];
             raf.readFully(bytes);
             
             byte[] outBytes = new byte[fatEntry._06dwLenght2];
             LzoCompressor.decompress(bytes, 0, fatEntry._05dwLenght1, outBytes, 0, fatEntry._06dwLenght2);
+
             
+            String fName = ByteBufferUtil.getNullTerminatedString(raf);
+            String parentFolder = folderMap.get(fatEntry.parent);
+
             File outFile = null;
-            outFile = new File(UserSetting.rootOutputFolder, fileName + "/" + i);
+            outFile = new File(UserSetting.rootOutputFolder, fileName + "/" + parentFolder + "/" + fName);
             File parentFile = outFile.getParentFile();
             parentFile.mkdirs();
             
@@ -194,23 +215,31 @@ public class CpkFile {
 
     public class FatEntry {
         public int crc;
-        public int _02dwUnk;
-        public int _03dwUnk;
+        public int flag;
+        public int parent;
         public int _04dwSeek;
         public int _05dwLenght1;
         public int _06dwLenght2;
         public int _07dwNumber;
         public int _08dwEnd;
+        public boolean isFolder;
         
         public void decode(ByteBuffer buffer) {
             this.crc = buffer.getInt();
-            this._02dwUnk = buffer.getInt();
-            this._03dwUnk = buffer.getInt();
+            this.flag = buffer.getInt();
+            this.parent = buffer.getInt();
             this._04dwSeek = buffer.getInt();
             this._05dwLenght1 = buffer.getInt();
             this._06dwLenght2 = buffer.getInt();
             this._07dwNumber = buffer.getInt();
             this._08dwEnd = buffer.getInt();
+            
+//            if ((flag & 0x02) != 0) {
+//                isFolder = true;
+//            }
+            if (parent == 0) {
+                isFolder = true;
+            }
         }
         
         @Override
