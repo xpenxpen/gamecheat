@@ -40,6 +40,7 @@ public class CpkFile {
     private List<FatEntry> fatEntries = new ArrayList<FatEntry>();
     private String fileName;
     private Map<Integer, String> folderMap = new HashMap<Integer, String>();
+    private List<FatEntry> toBeProcessedfolderList = new ArrayList<FatEntry>();
     
     
     public CpkFile(String fileName) throws Exception {
@@ -92,12 +93,18 @@ public class CpkFile {
     private void decodeFat() throws Exception {
         //byte[] encryptedBytes = new byte[headerInfo._05dwLenSub * 0x20];
         //byte[] encryptedBytes = new byte[0x1000];
-        byte[] encryptedBytes = new byte[0x1000];
+    	int byteNum = headerInfo._06dwFileNum * 32;
+    	int plus1 = 0;
+    	if (byteNum % 0x1000 != 0) {
+    		plus1++;
+    	}
+    	int actualNum = (byteNum / 0x1000 + plus1) * 0x1000;
+        byte[] encryptedBytes = new byte[actualNum];
         raf.readFully(encryptedBytes);
+        //byte[] decryptedBytes = new byte[actualNum];
+        //raf.readFully(decryptedBytes);
         
-        //TEA tea = new TEA(CpkFile.CIPHER.getBytes(Charset.forName("ISO-8859-1")));
         byte[] decryptedBytes = XxTea.decrypt(encryptedBytes, CIPHER.getBytes(Charset.forName("ISO-8859-1")));
-        //byte[] decryptedBytes = tea.decrypt(encryptedBytes);
         
         debugDumpFat(decryptedBytes);
         
@@ -107,13 +114,32 @@ public class CpkFile {
         for (int i = 0; i < headerInfo._06dwFileNum; i++) {
             FatEntry fatEntry = new FatEntry();
             fatEntry.decode(buffer);
+            //LOG.debug("i={}, fatEntry={}", i, fatEntry);
             
             //sort folder first. We need build folderMap first
             if (fatEntry.isFolder) {
-                fatEntries.add(0, fatEntry);
+            	toBeProcessedfolderList.add(fatEntry);
+                LOG.debug("i={}, fatEntry={}", i, fatEntry);
             } else {
                 fatEntries.add(fatEntry);
             }
+        }
+        
+        folderMap.put(0, "");
+        
+        while (toBeProcessedfolderList.size() != 0) {
+            //LOG.debug("toBeProcessedfolderList.size={}", toBeProcessedfolderList.size());
+	        for (int i = toBeProcessedfolderList.size() - 1; i >= 0; i--) {
+	        	FatEntry fatEntry = toBeProcessedfolderList.get(i);
+	            if (folderMap.containsKey(fatEntry.parent)) {
+	                raf.seek(fatEntry._04dwSeek);
+	                String folderName = ByteBufferUtil.getNullTerminatedString(raf);
+	                String currentFolderName = folderMap.get(fatEntry.parent) + "/" + folderName;
+	                folderMap.put(fatEntry.crc, currentFolderName);
+	                LOG.debug("putting map, {}, {}", fatEntry.crc, currentFolderName);
+	                toBeProcessedfolderList.remove(i);
+	            }
+	        }
         }
         
         LOG.debug("fatEntries={}", fatEntries);
@@ -133,16 +159,10 @@ public class CpkFile {
     }
 
     private void decodeDat() throws Exception {
-        for (int i = 0; i < headerInfo._06dwFileNum; i++) {
+        for (int i = 0; i < fatEntries.size(); i++) {
             FatEntry fatEntry = fatEntries.get(i);
             
             raf.seek(fatEntry._04dwSeek);
-            if (fatEntry.isFolder) {
-                String folderName = ByteBufferUtil.getNullTerminatedString(raf);
-                folderMap.put(fatEntry.crc, folderName);
-                LOG.debug("putting map, {}, {}", fatEntry.crc, folderName);
-                continue;
-            }
             
             byte[] bytes = new byte[fatEntry._05dwLenght1];
             raf.readFully(bytes);
@@ -155,7 +175,7 @@ public class CpkFile {
             String parentFolder = folderMap.get(fatEntry.parent);
 
             File outFile = null;
-            outFile = new File(UserSetting.rootOutputFolder, fileName + "/" + parentFolder + "/" + fName);
+            outFile = new File(UserSetting.rootOutputFolder, fileName + parentFolder + "/" + fName);
             File parentFile = outFile.getParentFile();
             parentFile.mkdirs();
             
@@ -203,6 +223,7 @@ public class CpkFile {
             this._09dwUnk = buffer.getInt();
             this._0AdwUnk = buffer.getInt();
             this._0BdwUnk = buffer.getInt();
+    	    this._0CdwFileSize = buffer.getInt();
             buffer.get(this._10dwUnk);
 
 	    }
@@ -234,10 +255,7 @@ public class CpkFile {
             this._07dwNumber = buffer.getInt();
             this._08dwEnd = buffer.getInt();
             
-//            if ((flag & 0x02) != 0) {
-//                isFolder = true;
-//            }
-            if (parent == 0) {
+            if ((flag & 0x02) != 0) {
                 isFolder = true;
             }
         }
