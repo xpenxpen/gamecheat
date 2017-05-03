@@ -27,31 +27,41 @@ DAE  https://en.wikipedia.org/wiki/COLLADA
 
 
 
-xbt to dds:
-Remove 36 byte from begin file
+0x00--0x80  OK
+0x80--0x1080 OK (part) xxtea
+0x1080-0x22DD0 garbage? if fileNum is small, then is useless misleading fat, otherwise is real fat
+0x22DD0-0xFF07E  all 0
+0xFF07F-0x10007E  another xxtea? unknown
+0x100080-END DAT
 
-oasisstrings_compressed.bin structure
+1048704 0   1048704     
+1048773 12770   1061543     69
+1061607 1644    1063251     64
+1063318 0   1063318     67
+1063386 173810  1237196     68
+1237264 306933  1544197     68
+1544269 203510  1747779     72
+1747847 52764   1800611     68
+1800690 0   1800690     79
+1800765 4306    1805071     75
+1805136 8672    1813808     65
+1813873 6939    1820812     65
+1820877 6977    1827854     65
+1827919 5376    1833295     65
+1833360 5128    1838488     65
+1838553 3359    1841912     65
+1841977 8056    1850033     65
+1850098 7014    1857112     65
+1857177 9522    1866699     65
+1866766 15903   1882669     67
+1882736 9140    1891876     67
+1891946 12242   1904188     70
+1904258 4405    1908663     70
+1908733 3774    1912507     70
+1912577 12039   1924616     70
+1924684 19153   1943837     68
+1943905 25268   1969173     68
+1969240 0   1969240     67
+1969304 469 1969773     64
 
-int stringTableCount;
-struct stringTable{    
-    int unknown;
-    int sectorCount;
-    struct section{
-        int sectorHash;//crc32 of sector name
-        int stringCount;
-        struct{
-            int id;    //line id
-            int sec;   //same as sectorHash
-            int _enum; //crc32 hash of enum attribute in string
-            int pack; //crc32 Hash of 'Main'    
-        }lines[stringCount]<optimize=false>;
-        int cmpPartCount; //Number of lzo compressed parts
-        struct{
-            int unknown;
-            int cs;//compressed size of data
-            int ds; //decompressed size of data
-            ubyte cmpData[cs]; //These bytes are lzo compressed (lzo1x)
-       }parts[cmpPartCount]<optimize=false>;   
-    }sectors[sectorCount]<optimize=false>;
-}all[stringTableCount]<optimize=false>;
 
