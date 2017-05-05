@@ -17,8 +17,12 @@ public class CpkExtracter {
         UserSetting.rootOutputFolder = "F:/game/pal4/myex";
         //UserSetting.rootInputFolder = "D:/git/opensource/dunia2/paladindat";
         //UserSetting.rootOutputFolder = "D:/git/opensource/dunia2/paladindat/myex";
-    	//String[] fileNames = {"2d", "database", "Effect", "MatFX", "palobject"};
-    	String[] fileNames = {"palobject"};
+//    	String[] fileNames = {"2d", "database", "Effect", "MatFX",
+//    			"PALActor", "palobject", "palweapon", "scenedata", "script",
+//    			"ui", "VideoA", "videob"};
+    	String[] fileNames = {"scenedata"};
+    	
+    	//TODO bug PALActor ui VideoA
         
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();

@@ -90,25 +90,33 @@ public class CpkFile {
     }
 
 
+    /**
+     * 0x0080--0x1080 xxtea
+     * 0x1080--       plain
+     */
     private void decodeFat() throws Exception {
         //byte[] encryptedBytes = new byte[headerInfo._05dwLenSub * 0x20];
         //byte[] encryptedBytes = new byte[0x1000];
     	int byteNum = headerInfo._06dwFileNum * 32;
-    	int plus1 = 0;
-    	if (byteNum % 0x1000 != 0) {
-    		plus1++;
+    	if (byteNum < 0x1000) {
+    		byteNum = 0x1000;
     	}
-    	int actualNum = (byteNum / 0x1000 + plus1) * 0x1000;
-        byte[] encryptedBytes = new byte[actualNum];
+    	
+		byte[] encryptedBytes = new byte[0x1000];
+        raf.seek(0x0080);
         raf.readFully(encryptedBytes);
-        //byte[] decryptedBytes = new byte[actualNum];
-        //raf.readFully(decryptedBytes);
-        
         byte[] decryptedBytes = XxTea.decrypt(encryptedBytes, CIPHER.getBytes(Charset.forName("ISO-8859-1")));
+        byte[] allFatBytes = new byte[byteNum];
+        System.arraycopy(decryptedBytes, 0, allFatBytes, 0, 0x1000);
+
+    	if (byteNum > 0x1000) {
+    		raf.readFully(allFatBytes, 0x1000, byteNum - 0x1000);
+    	}
+
+    	
+        debugDumpFat(allFatBytes);
         
-        debugDumpFat(decryptedBytes);
-        
-        ByteBuffer buffer = ByteBuffer.wrap(decryptedBytes);
+        ByteBuffer buffer = ByteBuffer.wrap(allFatBytes);
         buffer.order(ByteOrder.LITTLE_ENDIAN);
         
         for (int i = 0; i < headerInfo._06dwFileNum; i++) {
