@@ -34,7 +34,11 @@ public class CpkFile {
     
     private RandomAccessFile raf;
     private FileChannel fileChannel;
-    private HeaderInfo headerInfo ;
+    private HeaderInfo headerInfo;
+    
+    //3:pal3
+    //4:pal4
+    private int cpkType = -1;
     
 //    private List<Folder> folders = new ArrayList<Folder>();
     private List<FatEntry> fatEntries = new ArrayList<FatEntry>();
@@ -78,7 +82,7 @@ public class CpkFile {
         fileChannel.read(buffer);
         buffer.flip();
         
-        headerInfo = new HeaderInfo();
+        headerInfo = new HeaderInfo(this);
         headerInfo.decode(buffer);
         LOG.debug("headerInfo={}", headerInfo);
         
@@ -95,22 +99,28 @@ public class CpkFile {
      * 0x1080--       plain
      */
     private void decodeFat() throws Exception {
-        //byte[] encryptedBytes = new byte[headerInfo._05dwLenSub * 0x20];
-        //byte[] encryptedBytes = new byte[0x1000];
-    	int byteNum = headerInfo._06dwFileNum * 32;
-    	if (byteNum < 0x1000) {
-    		byteNum = 0x1000;
-    	}
-    	
-		byte[] encryptedBytes = new byte[0x1000];
-        raf.seek(0x0080);
-        raf.readFully(encryptedBytes);
-        byte[] decryptedBytes = XxTea.decrypt(encryptedBytes, CIPHER.getBytes(Charset.forName("ISO-8859-1")));
-        byte[] allFatBytes = new byte[byteNum];
-        System.arraycopy(decryptedBytes, 0, allFatBytes, 0, 0x1000);
-
-    	if (byteNum > 0x1000) {
-    		raf.readFully(allFatBytes, 0x1000, byteNum - 0x1000);
+    	byte[] allFatBytes = null;
+    	if (this.cpkType == 4) {
+	        //byte[] encryptedBytes = new byte[headerInfo._05dwLenSub * 0x20];
+	        //byte[] encryptedBytes = new byte[0x1000];
+	    	int byteNum = headerInfo._06dwFileNum * 32;
+	    	if (byteNum < 0x1000) {
+	    		byteNum = 0x1000;
+	    	}
+	    	
+			byte[] encryptedBytes = new byte[0x1000];
+	        raf.seek(0x0080);
+	        raf.readFully(encryptedBytes);
+	        byte[] decryptedBytes = XxTea.decrypt(encryptedBytes, CIPHER.getBytes(Charset.forName("ISO-8859-1")));
+	        allFatBytes = new byte[byteNum];
+	        System.arraycopy(decryptedBytes, 0, allFatBytes, 0, 0x1000);
+	
+	    	if (byteNum > 0x1000) {
+	    		raf.readFully(allFatBytes, 0x1000, byteNum - 0x1000);
+	    	}
+    	} else if (this.cpkType == 3) {
+	        allFatBytes = new byte[headerInfo._06dwFileNum * 28];
+    		raf.readFully(allFatBytes);
     	}
 
     	
@@ -120,7 +130,7 @@ public class CpkFile {
         buffer.order(ByteOrder.LITTLE_ENDIAN);
         
         for (int i = 0; i < headerInfo._06dwFileNum; i++) {
-            FatEntry fatEntry = new FatEntry();
+            FatEntry fatEntry = new FatEntry(this);
             fatEntry.decode(buffer);
             //LOG.debug("i={}, fatEntry={}", i, fatEntry);
             
@@ -175,8 +185,17 @@ public class CpkFile {
             byte[] bytes = new byte[fatEntry._05dwLenght1];
             raf.readFully(bytes);
             
-            byte[] outBytes = new byte[fatEntry._06dwLenght2];
-            LzoCompressor.decompress(bytes, 0, fatEntry._05dwLenght1, outBytes, 0, fatEntry._06dwLenght2);
+            byte[] outBytes;
+            if (fatEntry.flag == 0x10005 && fatEntry._05dwLenght1 == fatEntry._06dwLenght2) {
+            	//plain
+            	outBytes = bytes;
+            } else if (fatEntry.flag == 0x20001) {
+            	//lzo
+                outBytes = new byte[fatEntry._06dwLenght2];
+                LzoCompressor.decompress(bytes, 0, fatEntry._05dwLenght1, outBytes, 0, fatEntry._06dwLenght2);
+            } else {
+            	throw new RuntimeException("Unsupportted flag:" + fatEntry.flag);
+            }
 
             
             String fName = ByteBufferUtil.getNullTerminatedString(raf);
@@ -201,21 +220,27 @@ public class CpkFile {
     }
 
 	public class HeaderInfo {
+		private CpkFile cpkFile;
+		
 	    public int magic; //0x1A545352 "RST"
 	    public int _02dwUnk  ; //04
 	    public int _03dwIndexSeek  ; //08
-	    public int _04dwDataSeek   ; //0C
+	    public int _04dwDataSeek   ; //0C   pal4:100080  pal3:0E0080
 	    public int _05dwLenSub  ; //10
 	    public int _06dwFileNum ; //14
 	    public int _07dwUnk  ; //18
 	    public int _08dwUnk  ; //1C
-	    public int _09dwUnk  ; //20
+	    public int _09dwUnk  ; //20 == 0x14
 	    public int _0AdwUnk  ; //24
 	    public int _0BdwUnk  ; //28
 	    public int _0CdwFileSize  ; //2C
 	    public byte[] _10dwUnk = new byte[80] ; //30~80
 	    
-	    public void decode(ByteBuffer buffer) {
+	    public HeaderInfo(CpkFile cpkFile) {
+			this.cpkFile = cpkFile;
+		}
+
+		public void decode(ByteBuffer buffer) {
 	        this.magic = buffer.getInt();
 	        if (magic != MAGIC_RST) {
 	            throw new RuntimeException("bad magic");
@@ -224,6 +249,13 @@ public class CpkFile {
 	        this._02dwUnk = buffer.getInt();
             this._03dwIndexSeek = buffer.getInt();
             this._04dwDataSeek = buffer.getInt();
+            if (_04dwDataSeek == 0x0E0080) {
+            	this.cpkFile.cpkType = 3;
+            } else if  (_04dwDataSeek == 0x100080) {
+            	this.cpkFile.cpkType = 4;
+            } else {
+            	throw new RuntimeException("bad DataSeek");
+            }
             this._05dwLenSub = buffer.getInt();
             this._06dwFileNum = buffer.getInt();
             this._07dwUnk = buffer.getInt();
@@ -243,6 +275,7 @@ public class CpkFile {
 	}
 
     public class FatEntry {
+    	private CpkFile cpkFile;
         public int crc;
         public int flag;
         public int parent;
@@ -250,10 +283,14 @@ public class CpkFile {
         public int _05dwLenght1;
         public int _06dwLenght2;
         public int _07dwNumber;
-        public int _08dwEnd;
+        public int _08dwEnd; //only for pal4
         public boolean isFolder;
         
-        public void decode(ByteBuffer buffer) {
+        public FatEntry(CpkFile cpkFile) {
+			this.cpkFile = cpkFile;
+		}
+
+		public void decode(ByteBuffer buffer) {
             this.crc = buffer.getInt();
             this.flag = buffer.getInt();
             this.parent = buffer.getInt();
@@ -261,9 +298,12 @@ public class CpkFile {
             this._05dwLenght1 = buffer.getInt();
             this._06dwLenght2 = buffer.getInt();
             this._07dwNumber = buffer.getInt();
-            this._08dwEnd = buffer.getInt();
             
-            if ((flag & 0x02) != 0) {
+            if (cpkFile.cpkType == 4) {
+                this._08dwEnd = buffer.getInt();
+            }
+            
+            if (flag == 0x3 || flag == 0x20011) {
                 isFolder = true;
             }
         }
