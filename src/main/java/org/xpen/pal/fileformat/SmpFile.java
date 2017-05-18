@@ -37,7 +37,7 @@ public class SmpFile extends CpkFile {
             raf.readFully(bytes);
             
             byte[] outBytes;
-            if (fatEntry.flag == 0x20001) {
+            if (fatEntry.flag == 0x10005) {
                 outBytes = XxTea.decrypt(bytes, CIPHER.getBytes(Charset.forName("ISO-8859-1")));
             } else {
                 throw new RuntimeException("Unsupportted flag:" + fatEntry.flag);
@@ -47,7 +47,7 @@ public class SmpFile extends CpkFile {
             String fName = ByteBufferUtil.getNullTerminatedString(raf);
 
             File outFile = null;
-            outFile = new File(UserSetting.rootOutputFolder, fileName + "/" + fName);
+            outFile = new File(UserSetting.rootOutputFolder, fName);
             File parentFile = outFile.getParentFile();
             parentFile.mkdirs();
             
