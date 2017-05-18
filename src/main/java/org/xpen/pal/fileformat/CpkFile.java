@@ -28,7 +28,6 @@ public class CpkFile {
     public static final int MAGIC_RST = 0x1A545352; //'RST'
     public static final int HEADER_LENGTH = 0x80;
     public static final String CIPHER = "Vampire.C.J at Softstar Technology (ShangHai) Co., Ltd";
-    //public static final int MAX_FOLDER_LENGTH = 96;
     
     private static final Logger LOG = LoggerFactory.getLogger(CpkFile.class);
     
@@ -56,22 +55,10 @@ public class CpkFile {
     
     /**
      * CPK File format
-     * 4 'RST'
-     * 4 version
-     * 4 headerLength
-     * 4 flag1
-     * 4 folderCount
-     * 4 fileCount
-     * 4 folderNamesLength
-     * 4 fileNamesLength
-     * 4 flag2
-     * ----folderCount
-     * |
-     * |  LOOP ---folder_file_count
-     * |       |  LOOP file
-     * |       ---
-     * |
-     * ----
+     * 0x00-0x7F header
+     * 0x80-x fat
+     * dat
+     * detail see rest of code
      *
      */
     public void decode() throws Exception {
@@ -95,8 +82,12 @@ public class CpkFile {
 
 
     /**
+     * pal4:
      * 0x0080--0x1080 xxtea
      * 0x1080--       plain
+     * 
+     * pal3:
+     * 0x0080--       plain
      */
     private void decodeFat() throws Exception {
     	byte[] allFatBytes = null;
@@ -145,6 +136,7 @@ public class CpkFile {
         
         folderMap.put(0, "");
         
+        //first process parent folder, then child folder. LOOP forever until all folders are processed
         while (toBeProcessedfolderList.size() != 0) {
             //LOG.debug("toBeProcessedfolderList.size={}", toBeProcessedfolderList.size());
 	        for (int i = toBeProcessedfolderList.size() - 1; i >= 0; i--) {

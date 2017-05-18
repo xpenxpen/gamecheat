@@ -38,20 +38,8 @@ public class MkfFile {
     /**
      * MKF File format
      * 4 entryCount
-     * 4 version
-     * 4 headerLength
-     * 4 flag1
-     * 4 folderCount
-     * 4 fileCount
-     * 4 folderNamesLength
-     * 4 fileNamesLength
-     * 4 flag2
-     * ----folderCount
-     * |
-     * |  LOOP ---folder_file_count
-     * |       |  LOOP file
-     * |       ---
-     * |
+     * ----LOOP
+     * | FAT
      * ----
      *
      */

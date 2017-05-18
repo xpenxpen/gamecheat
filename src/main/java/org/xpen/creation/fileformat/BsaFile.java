@@ -54,7 +54,7 @@ public class BsaFile {
     }
     
     /**
-     * FAT2 File format
+     * BSA File format
      * 4 'BSA'
      * 4 version
      * 4 headerLength
