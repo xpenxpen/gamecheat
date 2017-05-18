@@ -31,8 +31,8 @@ public class CpkFile {
     
     private static final Logger LOG = LoggerFactory.getLogger(CpkFile.class);
     
-    private RandomAccessFile raf;
-    private FileChannel fileChannel;
+    protected RandomAccessFile raf;
+    protected FileChannel fileChannel;
     private HeaderInfo headerInfo;
     
     //3:pal3
@@ -40,11 +40,13 @@ public class CpkFile {
     private int cpkType = -1;
     
 //    private List<Folder> folders = new ArrayList<Folder>();
-    private List<FatEntry> fatEntries = new ArrayList<FatEntry>();
-    private String fileName;
+    protected List<FatEntry> fatEntries = new ArrayList<FatEntry>();
+    protected String fileName;
     private Map<Integer, String> folderMap = new HashMap<Integer, String>();
     private List<FatEntry> toBeProcessedfolderList = new ArrayList<FatEntry>();
     
+    public CpkFile() {
+    }
     
     public CpkFile(String fileName) throws Exception {
     	this.fileName = fileName;
@@ -168,7 +170,7 @@ public class CpkFile {
         os.close();
     }
 
-    private void decodeDat() throws Exception {
+    protected void decodeDat() throws Exception {
         for (int i = 0; i < fatEntries.size(); i++) {
             FatEntry fatEntry = fatEntries.get(i);
             

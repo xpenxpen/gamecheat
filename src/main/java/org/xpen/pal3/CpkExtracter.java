@@ -15,8 +15,6 @@ public class CpkExtracter {
     public static void main(String[] args) throws Exception {
         UserSetting.rootInputFolder = "F:/game/pal3";
         UserSetting.rootOutputFolder = "F:/game/pal3/myex";
-        //UserSetting.rootInputFolder = "D:/git/opensource/dunia2/paladindat";
-        //UserSetting.rootOutputFolder = "D:/git/opensource/dunia2/paladindat/myex";
     	//String[] fileNames = {"basedata/basedata", "music/music", "movie/movie" , "movie/movie_end"};
     	String[] fileNames = {"scene/M01",
     			"scene/M02",
