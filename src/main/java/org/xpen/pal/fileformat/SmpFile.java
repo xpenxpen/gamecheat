@@ -4,13 +4,14 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
+import java.nio.charset.Charset;
 
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xpen.dunia2.fileformat.dat.LzoCompressor;
 import org.xpen.util.ByteBufferUtil;
 import org.xpen.util.UserSetting;
+import org.xpen.util.XxTea;
 
 public class SmpFile extends CpkFile {
     
@@ -37,9 +38,7 @@ public class SmpFile extends CpkFile {
             
             byte[] outBytes;
             if (fatEntry.flag == 0x20001) {
-                //lzo
-                outBytes = new byte[fatEntry._06dwLenght2];
-                LzoCompressor.decompress(bytes, 0, fatEntry._05dwLenght1, outBytes, 0, fatEntry._06dwLenght2);
+                outBytes = XxTea.decrypt(bytes, CIPHER.getBytes(Charset.forName("ISO-8859-1")));
             } else {
                 throw new RuntimeException("Unsupportted flag:" + fatEntry.flag);
             }
