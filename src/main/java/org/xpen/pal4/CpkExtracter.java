@@ -15,12 +15,10 @@ public class CpkExtracter {
     public static void main(String[] args) throws Exception {
         UserSetting.rootInputFolder = "F:/game/pal4/gamedata";
         UserSetting.rootOutputFolder = "F:/game/pal4/myex";
-        //UserSetting.rootInputFolder = "D:/git/opensource/dunia2/paladindat";
-        //UserSetting.rootOutputFolder = "D:/git/opensource/dunia2/paladindat/myex";
     	String[] fileNames = {"2d", "database", "Effect", "MatFX",
     			"PALActor", "palobject", "palweapon", "scenedata", "script",
-    			"ui", "VideoA", "videob"};
-    	/*String[] fileNames = {"PALWorld/m01",
+    			"ui", "VideoA", "videob",
+    	        "PALWorld/m01",
     			"PALWorld/m02",
     			"PALWorld/m03",
     			"PALWorld/m04",
@@ -93,7 +91,7 @@ public class CpkExtracter {
     			"PALWorld/CombatWorld/m19c",
     			"PALWorld/CombatWorld/m20a",
     			"PALWorld/CombatWorld/m20b",
-    			"PALWorld/CombatWorld/q02"};*/
+    			"PALWorld/CombatWorld/q02"};
         
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();

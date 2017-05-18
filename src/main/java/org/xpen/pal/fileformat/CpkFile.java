@@ -104,7 +104,7 @@ public class CpkFile {
 			byte[] encryptedBytes = new byte[0x1000];
 	        raf.seek(0x0080);
 	        raf.readFully(encryptedBytes);
-	        byte[] decryptedBytes = XxTea.decrypt(encryptedBytes, CIPHER.getBytes(Charset.forName("ISO-8859-1")));
+	        byte[] decryptedBytes = XxTea.decrypt(encryptedBytes, CIPHER.getBytes(Charset.forName("ISO-8859-1")), false);
 	        allFatBytes = new byte[byteNum];
 	        System.arraycopy(decryptedBytes, 0, allFatBytes, 0, 0x1000);
 	
@@ -117,7 +117,7 @@ public class CpkFile {
     	}
 
     	
-        debugDumpFat(allFatBytes);
+        //debugDumpFat(allFatBytes);
         
         ByteBuffer buffer = ByteBuffer.wrap(allFatBytes);
         buffer.order(ByteOrder.LITTLE_ENDIAN);

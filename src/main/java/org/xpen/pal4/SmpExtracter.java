@@ -22,12 +22,10 @@ public class SmpExtracter {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
         
-        String[] fileNames = {"p01-3.smp"};
         
         Collection<File> listFiles = FileUtils.listFiles(new File(UserSetting.rootInputFolder), new String[]{"smp"}, false);
         
         for (File file: listFiles) {
-        //for (String fileName: fileNames) {
             String fileName = file.getName();
         	LOG.debug("---------Starting {}", fileName);
             

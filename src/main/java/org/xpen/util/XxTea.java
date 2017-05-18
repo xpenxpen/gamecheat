@@ -11,19 +11,19 @@ public final class XxTea {
 
     private XxTea() {}
 
-    public static final byte[] encrypt(byte[] data, byte[] key) {
+    public static final byte[] encrypt(byte[] data, byte[] key, boolean handleMul4) {
         if (data.length == 0) {
             return data;
         }
         return toByteArray(
-                encrypt(toIntArray(data, false), toIntArray(fixKey(key), false)), false);
+                encrypt(toIntArray(data, false, handleMul4), toIntArray(fixKey(key), false, handleMul4)), false);
     }
-    public static final byte[] decrypt(byte[] data, byte[] key) {
+    public static final byte[] decrypt(byte[] data, byte[] key, boolean handleMul4) {
         if (data.length == 0) {
             return data;
         }
         return toByteArray(
-                decrypt(toIntArray(data, false), toIntArray(fixKey(key), false)), false);
+                decrypt(toIntArray(data, false, handleMul4), toIntArray(fixKey(key), false, handleMul4)), false);
     }
 
 
@@ -83,10 +83,19 @@ public final class XxTea {
         return fixedkey;
     }
 
-    private static int[] toIntArray(byte[] data, boolean includeLength) {
-        int n = (((data.length & 3) == 0)
-                ? (data.length >>> 2)
-                : ((data.length >>> 2) + 1));
+    private static int[] toIntArray(byte[] data, boolean includeLength, boolean handleMul4) {
+    	int n;
+    	//XXTEA can only decrypt data size which is multiple of 4.
+    	//If not multiple of 4. Here is the workaround.
+    	if (handleMul4) {
+    		//pad 0 at tail
+            n = (((data.length & 3) == 0)
+                    ? (data.length >>> 2)
+                    : ((data.length >>> 2) + 1));
+    	} else {
+    		//truncate tail
+    		n = (data.length >>> 2);
+    	}
         int[] result;
 
         if (includeLength) {
@@ -98,6 +107,9 @@ public final class XxTea {
         }
         n = data.length;
         for (int i = 0; i < n; ++i) {
+        	if (i / 4 >= result.length) {
+        		break;
+        	}
             result[i >>> 2] |= (0x000000ff & data[i]) << ((i & 3) << 3);
         }
         return result;

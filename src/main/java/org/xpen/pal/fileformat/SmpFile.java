@@ -38,7 +38,7 @@ public class SmpFile extends CpkFile {
             
             byte[] outBytes;
             if (fatEntry.flag == 0x10005) {
-                outBytes = XxTea.decrypt(bytes, CIPHER.getBytes(Charset.forName("ISO-8859-1")));
+                outBytes = XxTea.decrypt(bytes, CIPHER.getBytes(Charset.forName("ISO-8859-1")), false);
             } else {
                 throw new RuntimeException("Unsupportted flag:" + fatEntry.flag);
             }
