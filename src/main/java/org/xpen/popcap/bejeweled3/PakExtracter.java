@@ -1,4 +1,4 @@
-package org.xpen.plantsvszombies;
+package org.xpen.popcap.bejeweled3;
 
 import java.util.concurrent.TimeUnit;
 
@@ -13,8 +13,8 @@ public class PakExtracter {
     private static final Logger LOG = LoggerFactory.getLogger(PakExtracter.class);
 
     public static void main(String[] args) throws Exception {
-        UserSetting.rootInputFolder = "E:/KuaiwanGames/Games/30";
-        UserSetting.rootOutputFolder = "E:/KuaiwanGames/Games/30/myex";
+        UserSetting.rootInputFolder = "F:/game/bejeweled3/Bejeweled 3";
+        UserSetting.rootOutputFolder = "F:/game/bejeweled3/Bejeweled 3/myex";
     	String[] fileNames = {"main"};
         
         StopWatch stopWatch = new StopWatch();
