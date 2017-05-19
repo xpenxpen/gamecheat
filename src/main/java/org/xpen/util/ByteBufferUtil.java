@@ -39,6 +39,16 @@ public class ByteBufferUtil {
         return new String(b, Charset.forName("ISO-8859-1"));
     }
     
+    public static String getFixedLengthStringXor(ByteBuffer buffer, int length, byte xorKey) {
+        byte[] b = new byte[length];
+        buffer.get(b);
+        for (int i = 0; i < b.length; i++) {
+        	b[i] ^= xorKey;
+        }
+        
+        return new String(b, Charset.forName("ISO-8859-1"));
+    }
+    
     public static String getNullTerminatedFixedLengthString(ByteBuffer buffer, int length) {
         byte[] b = new byte[length];
         buffer.get(b);
