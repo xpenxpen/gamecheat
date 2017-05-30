@@ -15,7 +15,8 @@ public class PakExtracter {
     public static void main(String[] args) throws Exception {
         UserSetting.rootInputFolder = "F:/game/newsword/run/Data";
         UserSetting.rootOutputFolder = "F:/game/newsword/run/Data/myex";
-    	String[] fileNames = {"Patch"};
+    	//String[] fileNames = {"asf", "font", "ini", "map", "mpc", "Patch", "script", "sound"};
+    	String[] fileNames = {"ini"};
         
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
