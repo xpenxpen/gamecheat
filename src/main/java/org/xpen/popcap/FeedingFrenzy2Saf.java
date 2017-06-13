@@ -1,21 +1,21 @@
-package org.xpen.popcap.bejeweled3;
+package org.xpen.popcap;
 
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xpen.popcap.fileformat.PakFile;
+import org.xpen.popcap.fileformat.SafFile;
 import org.xpen.util.UserSetting;
 
-public class PakExtracter {
+public class FeedingFrenzy2Saf {
     
-    private static final Logger LOG = LoggerFactory.getLogger(PakExtracter.class);
+    private static final Logger LOG = LoggerFactory.getLogger(FeedingFrenzy2Saf.class);
 
     public static void main(String[] args) throws Exception {
-        UserSetting.rootInputFolder = "F:/game/bejeweled3/Bejeweled 3";
-        UserSetting.rootOutputFolder = "F:/game/bejeweled3/Bejeweled 3/myex";
-    	String[] fileNames = {"main"};
+        UserSetting.rootInputFolder = "E:/KuaiwanGames/Games/13";
+        UserSetting.rootOutputFolder = "E:/KuaiwanGames/Games/13/myex";
+    	String[] fileNames = {"FF2"};
         
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
@@ -23,9 +23,9 @@ public class PakExtracter {
         for (String fileName: fileNames) {
         	LOG.debug("---------Starting {}", fileName);
             
-        	PakFile pakFile = new PakFile(fileName);
-        	pakFile.decode();
-        	pakFile.close();
+        	SafFile safFile = new SafFile(fileName);
+        	safFile.decode();
+        	safFile.close();
         }
         
         stopWatch.stop();

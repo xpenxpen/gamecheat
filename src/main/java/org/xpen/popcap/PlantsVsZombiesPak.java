@@ -1,4 +1,4 @@
-package org.xpen.popcap.plantsvszombies;
+package org.xpen.popcap;
 
 import java.util.concurrent.TimeUnit;
 
@@ -8,9 +8,9 @@ import org.slf4j.LoggerFactory;
 import org.xpen.popcap.fileformat.PakFile;
 import org.xpen.util.UserSetting;
 
-public class PakExtracter {
+public class PlantsVsZombiesPak {
     
-    private static final Logger LOG = LoggerFactory.getLogger(PakExtracter.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PlantsVsZombiesPak.class);
 
     public static void main(String[] args) throws Exception {
         UserSetting.rootInputFolder = "E:/KuaiwanGames/Games/30";
