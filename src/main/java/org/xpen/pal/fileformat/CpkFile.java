@@ -19,10 +19,10 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xpen.dunia2.fileformat.dat.LzoCompressor;
 import org.xpen.util.ByteBufferUtil;
 import org.xpen.util.UserSetting;
 import org.xpen.util.XxTea;
+import org.xpen.util.compress.LzoCompressor;
 
 public class CpkFile {
     public static final int MAGIC_RST = 0x1A545352; //'RST'

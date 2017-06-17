@@ -1,4 +1,4 @@
-package org.xpen.creation.fileformat.bsa;
+package org.xpen.util.compress;
 
 import com.github.czietsman.lz4.LZ4Factory;
 import com.github.czietsman.lz4.LZ4FastDecompressor;

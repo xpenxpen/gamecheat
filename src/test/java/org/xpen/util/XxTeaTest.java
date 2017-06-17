@@ -9,11 +9,11 @@ import org.anarres.lzo.LzoConstraint;
 import org.anarres.lzo.LzoLibrary;
 import org.anarres.lzo.lzo_uintp;
 import org.apache.commons.io.FileUtils;
-import org.junit.Test;
+import org.junit.Ignore;
 
 public class XxTeaTest {
 	
-    @Test
+    @Ignore
     public void testLzo() throws IOException {
         File file = new File("D:\\git\\opensource\\dunia2\\paladindat\\matfx\\Shader\\ltMap.fx");
         byte[] inBytes = FileUtils.readFileToByteArray(file);

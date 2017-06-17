@@ -1,8 +1,8 @@
-package org.xpen.creation.fileformat.bsa;
+package org.xpen.util.compress;
 
 import java.util.zip.Inflater;
 
-public class ZlibCompressor {
+public class DeflateCompressor {
 	
 	private static Inflater decompressor;
 	

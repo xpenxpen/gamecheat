@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import org.apache.commons.io.IOUtils;
-import org.xpen.dunia2.fileformat.dat.LzoCompressor;
+import org.xpen.util.compress.LzoCompressor;
 
 public class SectorPart {
 	

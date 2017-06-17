@@ -1,4 +1,4 @@
-package org.xpen.dunia2.fileformat.dat;
+package org.xpen.util.compress;
 
 import org.anarres.lzo.LzoAlgorithm;
 import org.anarres.lzo.LzoDecompressor;

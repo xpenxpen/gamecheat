@@ -17,9 +17,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xpen.creation.fileformat.bsa.Folder;
 import org.xpen.creation.fileformat.bsa.FolderFile;
-import org.xpen.creation.fileformat.bsa.ZlibCompressor;
 import org.xpen.util.ByteBufferUtil;
 import org.xpen.util.UserSetting;
+import org.xpen.util.compress.DeflateCompressor;
 
 public class BsaFile {
     public static final int MAGIC_BSA = 0x415342; //'BSA'
@@ -225,7 +225,7 @@ public class BsaFile {
                 //raf.skipBytes(4);
                 raf.readFully(inb);
                 try {
-                    ZlibCompressor.decompress(inb, b);
+                    DeflateCompressor.decompress(inb, b);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
