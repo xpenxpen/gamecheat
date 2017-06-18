@@ -2,6 +2,7 @@ package org.xpen.namco.fileformat;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
@@ -56,6 +57,7 @@ public class ApkFile {
             }
             
             byte[] bytes;
+            boolean hasException = false;
             
             if (fatEntry.compressFlag == 512) {
             	//deflate
@@ -68,7 +70,8 @@ public class ApkFile {
                     DeflateCompressor.decompress(compressedBytes, bytes);
                 } catch (Exception e) {
                 	errorCount++;
-                	continue;
+                	hasException = true;
+                	bytes = noCompress(fatEntry);
                     //throw new RuntimeException(e);
                 }
             } else if (fatEntry.compressFlag == 768) {
@@ -79,17 +82,15 @@ public class ApkFile {
                 raf.readFully(inBytes);
                 bytes = new byte[fatEntry.size];
                 try {
-                	LzmaCompressor.decompress(inBytes, bytes);
+                	bytes = LzmaCompressor.decompress(inBytes);
                 } catch (Exception e) {
                 	errorCount++;
-                	continue;
+                	hasException = true;
+                	bytes = noCompress(fatEntry);
                     //throw new RuntimeException(e);
                 }
             } else if (fatEntry.compressFlag == 0) {
-            	//no compress
-                raf.seek(fatEntry.offset);
-                bytes = new byte[fatEntry.size];
-                raf.readFully(bytes);
+            	bytes = noCompress(fatEntry);
             } else {
             	throw new RuntimeException("fatEntry.compressFlag=" + fatEntry.compressFlag);
             }
@@ -99,6 +100,9 @@ public class ApkFile {
             File outFile = null;
             String extension = FilenameUtils.getExtension(fatEntry.fname);
             outFile = new File(UserSetting.rootOutputFolder + "/" + fileName + "/" + extension, fatEntry.fname);
+            if (hasException) {
+                outFile = new File(UserSetting.rootOutputFolder + "/" + fileName + "/exception/" + extension, fatEntry.fname);
+            }
             File parentFile = outFile.getParentFile();
             parentFile.mkdirs();
             
@@ -110,6 +114,15 @@ public class ApkFile {
         
         LOG.info("errorCount={}", errorCount);
     }
+
+	private byte[] noCompress(FatEntry fatEntry) throws IOException {
+		byte[] bytes;
+		//no compress
+		raf.seek(fatEntry.offset);
+		bytes = new byte[fatEntry.size];
+		raf.readFully(bytes);
+		return bytes;
+	}
 
 
     public void close() throws Exception {

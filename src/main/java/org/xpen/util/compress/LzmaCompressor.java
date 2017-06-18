@@ -9,7 +9,7 @@ import org.apache.commons.compress.compressors.lzma.LZMACompressorInputStream;
 
 public class LzmaCompressor {
 	
-	public static void decompress(byte[] inByte, byte[] outByte) throws IOException {
+	public static byte[] decompress(byte[] inByte) throws IOException {
 		InputStream in = new ByteArrayInputStream(inByte);
 		ByteArrayOutputStream baos = new ByteArrayOutputStream(1024);
         LZMACompressorInputStream lzmaIn = new LZMACompressorInputStream(in, 2048);
@@ -20,8 +20,7 @@ public class LzmaCompressor {
         }
         baos.close();
         lzmaIn.close();
-        byte[] tmpB = baos.toByteArray();
-        System.arraycopy(tmpB, 0, outByte, 0, outByte.length);
+        return baos.toByteArray();
 	}
 
 }
