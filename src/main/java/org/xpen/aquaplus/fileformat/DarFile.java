@@ -1,9 +1,7 @@
 package org.xpen.aquaplus.fileformat;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -11,10 +9,11 @@ import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.xpen.dunia2.fileformat.dat.FileTypeHandler;
+import org.xpen.dunia2.fileformat.dat.SimpleCopyHandler;
 import org.xpen.util.ByteBufferUtil;
 import org.xpen.util.UserSetting;
 import org.xpen.util.compress.DeflateCompressor;
@@ -119,19 +118,21 @@ public class DarFile {
                     //throw new RuntimeException(e);
                 }
         	}
+        	
+        	detectAndHandle(fatEntry, bytes);
 
-            File outFile = null;
-            outFile = new File(UserSetting.rootOutputFolder + "/" + fileName, fatEntry.fname);
-            if (hasException) {
-                outFile = new File(UserSetting.rootOutputFolder + "/" + fileName + "/exception", fatEntry.fname);
-            }
-            File parentFile = outFile.getParentFile();
-            parentFile.mkdirs();
-            
-            OutputStream os = new FileOutputStream(outFile);
-            
-            IOUtils.write(bytes, os);
-            os.close();
+//            File outFile = null;
+//            outFile = new File(UserSetting.rootOutputFolder + "/" + fileName, fatEntry.fname);
+//            if (hasException) {
+//                outFile = new File(UserSetting.rootOutputFolder + "/" + fileName + "/exception", fatEntry.fname);
+//            }
+//            File parentFile = outFile.getParentFile();
+//            parentFile.mkdirs();
+//            
+//            OutputStream os = new FileOutputStream(outFile);
+//            
+//            IOUtils.write(bytes, os);
+//            os.close();
         }
         
         LOG.info("errorCount={}", errorCount);
@@ -146,6 +147,18 @@ public class DarFile {
 		return bytes;
 	}
 
+
+    private void detectAndHandle(FatEntry entry, byte[] b) throws Exception {
+        String detectedType = FileTypeDetector.detect(entry, b);
+        FileTypeHandler fileTypeHandler = FileTypeDetector.getFileTypeHandler(detectedType);
+        if (fileTypeHandler == null) {
+            fileTypeHandler = new SimpleCopyHandler("unknown", true);
+        }
+        
+        boolean isUnknown = false;
+        
+        fileTypeHandler.handle(b, this.fileName, entry.fname, isUnknown);
+    }
 
     public void close() throws Exception {
         fileChannel.close();
