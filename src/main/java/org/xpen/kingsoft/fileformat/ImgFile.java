@@ -60,6 +60,12 @@ public class ImgFile {
 	        width = buffer.getShort() + 1;
 	        height = buffer.getShort() + 1;
 	        
+	        if (this.fileName.equals("END04.IMG")) {
+	        	//FIX SIZE
+	        	width = 320;
+	        	height = 200;
+	        }
+	        
 	        getPallete();
 	        getPixel();
     	} catch (Exception e) {
