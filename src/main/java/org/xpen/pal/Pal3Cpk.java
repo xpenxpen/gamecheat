@@ -1,4 +1,4 @@
-package org.xpen.pal3;
+package org.xpen.pal;
 
 import java.util.concurrent.TimeUnit;
 
@@ -8,9 +8,9 @@ import org.slf4j.LoggerFactory;
 import org.xpen.pal.fileformat.CpkFile;
 import org.xpen.util.UserSetting;
 
-public class CpkExtracter {
+public class Pal3Cpk {
     
-    private static final Logger LOG = LoggerFactory.getLogger(CpkExtracter.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Pal3Cpk.class);
 
     public static void main(String[] args) throws Exception {
         UserSetting.rootInputFolder = "F:/game/pal3";

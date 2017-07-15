@@ -1,4 +1,4 @@
-package org.xpen.pal1;
+package org.xpen.pal;
 
 import java.util.concurrent.TimeUnit;
 
@@ -8,9 +8,9 @@ import org.slf4j.LoggerFactory;
 import org.xpen.pal.fileformat.MkfFile;
 import org.xpen.util.UserSetting;
 
-public class MkfExtracter {
+public class Pal1DosMkf {
     
-    private static final Logger LOG = LoggerFactory.getLogger(MkfExtracter.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Pal1DosMkf.class);
 
     public static void main(String[] args) throws Exception {
         //UserSetting.rootInputFolder = "F:/game/pal4/gamedata";

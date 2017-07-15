@@ -1,4 +1,4 @@
-package org.xpen.farcry4;
+package org.xpen.farcry;
 
 import java.util.List;
 import java.util.Map;
@@ -13,9 +13,9 @@ import org.xpen.dunia2.fileformat.fat2.Entry;
 import org.xpen.dunia2.fileformat.fat2.FileListManager;
 import org.xpen.util.UserSetting;
 
-public class FatExtracter {
+public class FarCry4Fat {
     
-    private static final Logger LOG = LoggerFactory.getLogger(FatExtracter.class);
+    private static final Logger LOG = LoggerFactory.getLogger(FarCry4Fat.class);
 
     public static void main(String[] args) throws Exception {
         //UserSetting.rootInputFolder = "E:/aliBoxGames/games/11136/Far Cry 4/data_win32";
@@ -43,7 +43,7 @@ public class FatExtracter {
             }
             
             FileListManager flm = new FileListManager();
-            flm.load(FatExtracter.class.getClassLoader().getResourceAsStream(
+            flm.load(FarCry4Fat.class.getClassLoader().getResourceAsStream(
             		"farcry4/files/" + fileName + ".filelist"));
             Map<Long, String> crcMap = flm.getCrcMap();
             

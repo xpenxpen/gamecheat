@@ -6,17 +6,29 @@ import java.nio.charset.Charset;
 
 public class ByteBufferUtil {
     
-    public static String getNullTerminatedString(ByteBuffer buffer) {
+    public static String getNullTerminatedString(ByteBuffer buffer, String charset) {
         byte[] b = new byte[1];
         buffer.get(b);
         StringBuilder sb = new StringBuilder();
         
         while (b[0]!=0) {
-            sb.append(new String(b, Charset.forName("ISO-8859-1")));
+        	if (b[0] < 0) {
+        		//handle 2 bytes character like Big5
+        		byte[] b2 = new byte[2];
+        		b2[0] = b[0];
+        		b2[1] = buffer.get();
+                sb.append(new String(b2, Charset.forName(charset)));
+        	} else {
+                sb.append(new String(b, Charset.forName(charset)));
+        	}
             buffer.get(b);
         }
         
         return sb.toString();
+    }
+    
+    public static String getNullTerminatedString(ByteBuffer buffer) {
+        return getNullTerminatedString(buffer, "ISO-8859-1");
     }
     
     public static String getNullTerminatedString(RandomAccessFile raf) throws Exception {

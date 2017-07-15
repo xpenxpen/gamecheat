@@ -1,4 +1,4 @@
-package org.xpen.farcry3;
+package org.xpen.farcry;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -12,9 +12,9 @@ import org.xpen.dunia2.fileformat.fat2.Entry;
 import org.xpen.dunia2.fileformat.fat2.FileListManager;
 import org.xpen.util.UserSetting;
 
-public class FatExtracter {
+public class FarCry3Fat {
     
-    private static final Logger LOG = LoggerFactory.getLogger(FatExtracter.class);
+    private static final Logger LOG = LoggerFactory.getLogger(FarCry3Fat.class);
 
     public static void main(String[] args) throws Exception {
         //UserSetting.rootInputFolder = "E:/aliBoxGames/games/5993/FarCry 3/data_win32";
@@ -42,13 +42,13 @@ public class FatExtracter {
             }
             
             FileListManager flm = new FileListManager();
-            flm.load(FatExtracter.class.getClassLoader().getResourceAsStream(
+            flm.load(FarCry3Fat.class.getClassLoader().getResourceAsStream(
             		"farcry3/files/" + fileName + ".filelist"));
             
             //load sub
             if (flm.hasSubFat) {
                 for (String subFat : flm.subFatList) {
-                    flm.load(FatExtracter.class.getClassLoader().getResourceAsStream(
+                    flm.load(FarCry3Fat.class.getClassLoader().getResourceAsStream(
                             "farcry3/files/" + fileName + "_subfats/" + subFat.substring(0, subFat.indexOf(".")) +".filelist"));
                 }
             }
