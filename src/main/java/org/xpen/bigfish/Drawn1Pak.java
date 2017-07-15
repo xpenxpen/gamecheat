@@ -1,4 +1,4 @@
-package org.xpen.bigfish.drawn1;
+package org.xpen.bigfish;
 
 import java.util.concurrent.TimeUnit;
 
@@ -8,9 +8,9 @@ import org.slf4j.LoggerFactory;
 import org.xpen.bigfish.fileformat.PakFile;
 import org.xpen.util.UserSetting;
 
-public class PakExtracter {
+public class Drawn1Pak {
     
-    private static final Logger LOG = LoggerFactory.getLogger(PakExtracter.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Drawn1Pak.class);
 
     public static void main(String[] args) throws Exception {
         UserSetting.rootInputFolder = "G:/Program Files/Drawn The Painted Tower";

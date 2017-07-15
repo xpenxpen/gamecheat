@@ -1,4 +1,4 @@
-package org.xpen.bigfish.drawn2;
+package org.xpen.bigfish;
 
 import java.util.concurrent.TimeUnit;
 
@@ -8,13 +8,13 @@ import org.slf4j.LoggerFactory;
 import org.xpen.bigfish.fileformat.PakFile;
 import org.xpen.util.UserSetting;
 
-public class PakExtracter {
+public class Drawn3Pak {
     
-    private static final Logger LOG = LoggerFactory.getLogger(PakExtracter.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Drawn3Pak.class);
 
     public static void main(String[] args) throws Exception {
-        UserSetting.rootInputFolder = "G:/Program Files/Drawn_2_Dark_Flight_Collectors_Edition";
-        UserSetting.rootOutputFolder = "G:/Program Files/Drawn_2_Dark_Flight_Collectors_Edition/myex";
+        UserSetting.rootInputFolder = "G:/Program Files/Drawn 3- Trail of Shadows Collector's Edition";
+        UserSetting.rootOutputFolder = "G:/Program Files/Drawn 3- Trail of Shadows Collector's Edition/myex";
     	String[] fileNames = {"data"};
         
         StopWatch stopWatch = new StopWatch();
