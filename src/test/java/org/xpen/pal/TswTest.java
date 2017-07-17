@@ -18,9 +18,12 @@ import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.junit.Test;
+import org.xpen.util.compress.LzoCompressor;
+
 
 
 public class TswTest {
@@ -55,6 +58,15 @@ public class TswTest {
 //        jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 //        jFrame.add(new PanelImageDisplayer());
 //        jFrame.setVisible(true);
+    }
+    
+    @Test
+    public void testLzo() throws Exception {
+        String file = "F:/game/pal1new/run/新仙剑奇侠传/myex/All_Map1/13058阿香0";
+        byte[] b = FileUtils.readFileToByteArray(new File(file));
+        byte[] ub;
+        ub = new byte[10000];
+		LzoCompressor.decompress(b, 0, b.length, ub, 0, ub.length);
     }
 
 	private void getDat() throws Exception {

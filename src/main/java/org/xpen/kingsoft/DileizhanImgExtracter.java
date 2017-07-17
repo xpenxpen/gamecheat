@@ -1,4 +1,4 @@
-package org.xpen.kingsoft.dileizhan;
+package org.xpen.kingsoft;
 
 import java.io.File;
 import java.util.Collection;
@@ -11,9 +11,9 @@ import org.slf4j.LoggerFactory;
 import org.xpen.kingsoft.fileformat.ImgFile;
 import org.xpen.util.UserSetting;
 
-public class ImgExtracter {
+public class DileizhanImgExtracter {
     
-    private static final Logger LOG = LoggerFactory.getLogger(ImgExtracter.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DileizhanImgExtracter.class);
 
     public static void main(String[] args) throws Exception {
         UserSetting.rootInputFolder = "F:/game/抗日地雷战";
