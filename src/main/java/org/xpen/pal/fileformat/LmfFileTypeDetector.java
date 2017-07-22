@@ -7,15 +7,15 @@ import java.util.Map;
 
 import org.xpen.dunia2.fileformat.dat.FileTypeHandler;
 import org.xpen.dunia2.fileformat.dat.SimpleCopyHandler;
-import org.xpen.pal.fileformat.TswFile.FatEntry;
+import org.xpen.pal.fileformat.LmfFile.FatEntry;
 
-public class FileTypeDetector {
+public class LmfFileTypeDetector {
     
     private static Map<String, FileTypeHandler> fileHandlersMap = new HashMap<String, FileTypeHandler>();
     
     static {
         fileHandlersMap.put("unknown", new SimpleCopyHandler("unknown", true));
-        fileHandlersMap.put("wav", new WavHandler("snd", "wav", false));
+        //fileHandlersMap.put("wav", new WavHandler("snd", "wav", false));
         //fileHandlersMap.put("tpl", new TplHandler("tpl", false));
         //fileHandlersMap.put("dds", new SimpleCopyHandler("dds", false));
     }

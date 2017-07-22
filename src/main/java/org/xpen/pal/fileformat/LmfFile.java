@@ -18,9 +18,9 @@ import org.xpen.dunia2.fileformat.dat.SimpleCopyHandler;
 import org.xpen.util.ByteBufferUtil;
 import org.xpen.util.UserSetting;
 
-public class TswFile {
+public class LmfFile {
     
-    private static final Logger LOG = LoggerFactory.getLogger(TswFile.class);
+    private static final Logger LOG = LoggerFactory.getLogger(LmfFile.class);
     
     protected RandomAccessFile raf;
     protected FileChannel fileChannel;
@@ -34,10 +34,10 @@ public class TswFile {
 
 	protected String fileName;
     
-    public TswFile() {
+    public LmfFile() {
     }
     
-    public TswFile(String fileName) throws Exception {
+    public LmfFile(String fileName) throws Exception {
     	this.format = FilenameUtils.getExtension(fileName);
     	this.fileName = FilenameUtils.getBaseName(fileName);
         
@@ -51,26 +51,31 @@ public class TswFile {
     }
 
 	private void decodeFat() throws Exception {
-		fileChannel.position(0x18);
         ByteBuffer buffer = ByteBuffer.allocate(4);
         buffer.order(ByteOrder.LITTLE_ENDIAN);
         buffer.limit(4);
         fileChannel.read(buffer);
         buffer.flip();
         
-        int fatCount = buffer.getInt();
+        int fatStartOffset = buffer.getInt();
+		fileChannel.position(fatStartOffset);
         
-        for (int i = 0; i < fatCount; i++) {
+        
+        while (true) {
         	FatEntry fatEntry = new FatEntry();
-        	fatEntries.add(fatEntry);
         	
-            buffer = ByteBuffer.allocate(44);
+            buffer = ByteBuffer.allocate(16);
             buffer.order(ByteOrder.LITTLE_ENDIAN);
-            buffer.limit(44);
+            buffer.limit(16);
             fileChannel.read(buffer);
             buffer.flip();
             
         	fatEntry.decode(buffer);
+        	
+        	if (fatEntry.offset == 0 && fatEntry.size == 0 && fatEntry.unknown == 0) {
+        		break;
+        	}
+        	fatEntries.add(fatEntry);
         }
 	}
 
@@ -78,9 +83,6 @@ public class TswFile {
 		int errorCount = 0;
         for (int i = 0; i < fatEntries.size(); i++) {
             FatEntry fatEntry = fatEntries.get(i);
-            if (fatEntry.unknown == 0) {
-            	continue;
-            }
             
             byte[] bytes;
             boolean hasException = false;
@@ -128,7 +130,7 @@ public class TswFile {
     	if (this.format.equals("snd")) {
     		detectedType = "wav";
     	} else {
-    		detectedType = FileTypeDetector.detect(entry, b);
+    		detectedType = LmfFileTypeDetector.detect(entry, b);
     	}
     	
         FileTypeHandler fileTypeHandler = FileTypeDetector.getFileTypeHandler(detectedType);
@@ -154,13 +156,11 @@ public class TswFile {
         public int unknown;
 
 		public void decode(ByteBuffer buffer) throws Exception {
-			fname = ByteBufferUtil.getNullTerminatedString(buffer, "Big5");
-			buffer.position(20);
-			size = buffer.getInt();
+			//fname = ByteBufferUtil.getNullTerminatedString(buffer, "Big5");
 			offset = buffer.getInt();
+			size = buffer.getInt();
 			unknown = buffer.getInt();
-			buffer.getInt();
-			buffer.getInt();
+			fname = String.valueOf(unknown);
 			buffer.getInt();
 			LOG.debug(toString());
 		}
