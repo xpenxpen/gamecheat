@@ -24,8 +24,8 @@ public class San3Test {
     protected RandomAccessFile raf;
     protected FileChannel fileChannel;
     public Color[] colors;
-    int width=256;
-    int height=400;
+    int width=64;
+    int height=80;
     BufferedImage bi;
 
     public static void main(String[] args) throws Exception {
@@ -34,7 +34,7 @@ public class San3Test {
 	}
     
     public San3Test() throws Exception {
-        String file = "D:/git/opensource/dunia2/dos/games-master/dos/三国志3/SANGO3/KOEI.DAT";
+        String file = "G:/f/VirtualNes/DOS/rom/san/San4PowerUp/KAODATA.S4";
         InputStream isDato = new FileInputStream(file);
         raf = new RandomAccessFile(new File(file), "r");
         fileChannel = raf.getChannel();

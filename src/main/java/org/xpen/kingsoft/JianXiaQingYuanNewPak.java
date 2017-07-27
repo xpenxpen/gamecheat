@@ -1,4 +1,4 @@
-package org.xpen.kingsoft.swordnew;
+package org.xpen.kingsoft;
 
 import java.util.concurrent.TimeUnit;
 
@@ -8,15 +8,15 @@ import org.slf4j.LoggerFactory;
 import org.xpen.kingsoft.fileformat.PakFile;
 import org.xpen.util.UserSetting;
 
-public class PakExtracter {
+public class JianXiaQingYuanNewPak {
     
-    private static final Logger LOG = LoggerFactory.getLogger(PakExtracter.class);
+    private static final Logger LOG = LoggerFactory.getLogger(JianXiaQingYuanNewPak.class);
 
     public static void main(String[] args) throws Exception {
         UserSetting.rootInputFolder = "F:/game/newsword/run/Data";
         UserSetting.rootOutputFolder = "F:/game/newsword/run/Data/myex";
     	//String[] fileNames = {"asf", "font", "ini", "map", "mpc", "Patch", "script", "sound"};
-    	String[] fileNames = {"ini"};
+    	String[] fileNames = {"sound"};
         
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();

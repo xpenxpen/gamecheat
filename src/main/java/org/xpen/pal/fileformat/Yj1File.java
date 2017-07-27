@@ -54,6 +54,7 @@ public class Yj1File {
         
         decodeHeader();
         decodeHuffmanTree();
+        decodeBlock();
         
     }
 
@@ -99,8 +100,27 @@ public class Yj1File {
         LOG.debug("bitSet.toByteArray()={}", bitSet.toByteArray());
         
         
-        LOG.debug("huffmanTreeEntries={}", huffmanTreeEntries);
+        for (int i = 0; i < huffmanTreeEntries.size(); i++) {
+            LOG.debug((i+1) + "huffmanTreeEntries->" + huffmanTreeEntries.get(i).flag + ", " + huffmanTreeEntries.get(i).value);
+        }
         
+        
+    }
+
+    private void decodeBlock() throws Exception {
+        for (int i = 0; i < header.blockCount; i++) {
+            ByteBuffer buffer = ByteBuffer.allocate(20);
+            buffer.order(ByteOrder.LITTLE_ENDIAN);
+            
+            fileChannel.read(buffer);
+            buffer.flip();
+            
+            BlockHeader blockHeader = new BlockHeader();
+            blockHeader.decode(buffer);
+            LOG.debug("blockHeader={}", blockHeader);
+            
+            fileChannel.position(fileChannel.position() + blockHeader.compressedLength-20);
+        }
     }
 
 
@@ -135,6 +155,31 @@ public class Yj1File {
     public class HuffmanTreeEntry {
         public boolean flag;
         public byte value;
+        
+        @Override
+        public String toString() {
+            return ReflectionToStringBuilder.toString(this);
+        }
+    }
+
+    public class BlockHeader {
+        public short uncompressedLength;     //本块压缩前长度，最大为0x4000
+        public int compressedLength;       //本块压缩后长度，含块头
+        public byte[] lzssRepeatTable = new byte[4];     //LZSS重复次数表
+        public byte[] lzssOffsetCodeLengthTable = new byte[4];   //LZSS偏移量编码长度表
+        public byte[] lzssRepeatCodeLengthTable = new byte[3];   //LZSS重复次数编码长度表
+        public byte[] codeCountCodeLengthTable = new byte[3];    //同类编码的编码数的编码长度表
+        public byte[] codeCountTable = new byte[2]; //同类编码的编码数表
+        
+        public void decode(ByteBuffer buffer) {
+            this.uncompressedLength = buffer.getShort();
+            this.compressedLength = buffer.getShort() & 0xFFFF;
+            buffer.get(lzssRepeatTable);
+            buffer.get(lzssOffsetCodeLengthTable);
+            buffer.get(lzssRepeatCodeLengthTable);
+            buffer.get(codeCountCodeLengthTable);
+            buffer.get(codeCountTable);
+        }
         
         @Override
         public String toString() {

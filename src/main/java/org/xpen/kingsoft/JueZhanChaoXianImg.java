@@ -11,9 +11,9 @@ import org.slf4j.LoggerFactory;
 import org.xpen.kingsoft.fileformat.ImgFile;
 import org.xpen.util.UserSetting;
 
-public class JueZhanChaoXianImgExtracter {
+public class JueZhanChaoXianImg {
     
-    private static final Logger LOG = LoggerFactory.getLogger(JueZhanChaoXianImgExtracter.class);
+    private static final Logger LOG = LoggerFactory.getLogger(JueZhanChaoXianImg.class);
 
     public static void main(String[] args) throws Exception {
         UserSetting.rootInputFolder = "D:/game/决战朝鲜";
