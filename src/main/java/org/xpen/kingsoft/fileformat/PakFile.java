@@ -104,6 +104,7 @@ public class PakFile {
             
             raf.seek(fatEntry.offset);
             int fileSizeCountedBytes = 0;
+            List<Integer> lzoCompressSizes = new ArrayList<Integer>();
             
             //LOOP add them all up, until totalCompressedSize = rawContentSize
             //ex: 02 B0 BC A5 D2 A8 B8 A7 D9 0F 00 04
@@ -123,6 +124,7 @@ public class PakFile {
             fileSizeCountedBytes += 2;
             int totalCompressedSize = 0;
             int compressedSize = buffer.getShort() & 0xFFFF;
+            lzoCompressSizes.add(compressedSize);
             totalCompressedSize += compressedSize;
             
                 
@@ -138,11 +140,6 @@ public class PakFile {
                     fileSizeCountedBytes += 2;
                     compressedSize = buffer.getShort() & 0xFFFF;
             	}
-//                type = 2;
-//                byte[] bb = new byte[10];
-//                raf.readFully(bb);
-//                LOG.debug("i={}, bb={}", i, bb);
-                //fileChannel.position(fileChannel.position() + 10);
                 bytes = new byte[fatEntry.rawContentSize - fileSizeCountedBytes];
                 raf.readFully(bytes);
                 LOG.debug("i={}, fileChannel.position={}, offset={}, compressedSize={}, uncompressedSize={}",
@@ -159,6 +156,7 @@ public class PakFile {
                     
                     fileSizeCountedBytes += 2;
                     compressedSize = buffer.getShort() & 0xFFFF;
+                    lzoCompressSizes.add(compressedSize);
                     totalCompressedSize += compressedSize;
                 }
                 
@@ -174,7 +172,7 @@ public class PakFile {
                 } else {
                     byte[] ub = new byte[fatEntry.uncompressedSize];
                     try {
-                        LzoCompressor.decompress(bytes, 0, fatEntry.compressedSize, ub, 0, fatEntry.uncompressedSize);
+                        LzoCompressor.decompress(bytes, 0, fatEntry.compressedSize, ub, 0, fatEntry.uncompressedSize, lzoCompressSizes);
                         bytes = ub;
                     } catch (Exception e) {
                     	errorCount++;
@@ -185,22 +183,8 @@ public class PakFile {
                 }
             }
             String fourDigit = StringUtils.leftPad(String.valueOf(i + 1), 4, '0');
-//            if (type == 2) {
-//            	fourDigit = fourDigit + ".jfif";
-//            }
             fatEntry.fname = fourDigit;
 
-//            File outFile = null;
-//            String suffix = ".txt";
-//            outFile = new File(UserSetting.rootOutputFolder, fileName + "/" + threeDigit + suffix);
-//            File parentFile = outFile.getParentFile();
-//            parentFile.mkdirs();
-//            
-//            OutputStream os = new FileOutputStream(outFile);
-//            
-//            IOUtils.write(ub, os);
-//            os.close();
-            
         	detectAndHandle(fatEntry, bytes);
         }
         

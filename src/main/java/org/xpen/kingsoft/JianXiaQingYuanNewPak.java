@@ -13,10 +13,10 @@ public class JianXiaQingYuanNewPak {
     private static final Logger LOG = LoggerFactory.getLogger(JianXiaQingYuanNewPak.class);
 
     public static void main(String[] args) throws Exception {
-        UserSetting.rootInputFolder = "F:/game/newsword/run/Data";
-        UserSetting.rootOutputFolder = "F:/game/newsword/run/Data/myex";
-    	//String[] fileNames = {"asf", "font", "ini", "map", "mpc", "Patch", "script", "sound"};
-    	String[] fileNames = {"sound"};
+        UserSetting.rootInputFolder = "F:/game/新剑侠情缘/Data";
+        UserSetting.rootOutputFolder = "F:/game/新剑侠情缘/Data/myex";
+    	String[] fileNames = {"asf", "font", "ini", "map", "mpc", "Patch", "script", "sound"};
+    	//String[] fileNames = {"sound"};
         
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();

@@ -13,7 +13,7 @@ public class PakFileTypeDetector {
     
     static {
         fileHandlersMap.put("unknown", new SimpleCopyHandler("unknown", false));
-        //fileHandlersMap.put("tpl", new TplHandler("tpl", false));
+        fileHandlersMap.put("asf", new AsfHandler());
         fileHandlersMap.put("bmp", new SimpleCopyHandler("bmp", false));
         fileHandlersMap.put("jfif", new SimpleCopyHandler("jfif", false));
         fileHandlersMap.put("txt", new SimpleCopyHandler("txt", false));
@@ -29,6 +29,15 @@ public class PakFileTypeDetector {
         }
         if (entry.datFileName.equals("script")) {
         	return "txt";
+        }
+        if (entry.datFileName.equals("asf")) {
+            if (bytes.length >= 4
+                && bytes[0] == 'A'
+                && bytes[1] == 'S'
+                && bytes[2] == 'F'
+                && bytes[3] == ' ') {
+                return "asf";
+            }
         }
     	
         if (bytes.length >= 4
