@@ -1,21 +1,26 @@
-package org.xpen.popcap;
+package org.xpen.alawar;
 
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xpen.popcap.fileformat.X7x7mFile;
+import org.xpen.alawar.format.VstFile;
 import org.xpen.util.UserSetting;
 
-public class PegglePak {
+/**
+ * Magic Encyclopedia 2: Moon Light
+ * 魔法全书2：月光
+ *
+ */
+public class MagicEncyclopedia2Vst {
     
-    private static final Logger LOG = LoggerFactory.getLogger(PegglePak.class);
+    private static final Logger LOG = LoggerFactory.getLogger(MagicEncyclopedia2Vst.class);
 
     public static void main(String[] args) throws Exception {
-        UserSetting.rootInputFolder = "E:/KuaiwanGames/Games/636";
-        UserSetting.rootOutputFolder = "E:/KuaiwanGames/Games/636/myex";
-    	String[] fileNames = {"main.pak"};
+        UserSetting.rootInputFolder = "E:/KuaiwanGames/Games/42624";
+        UserSetting.rootOutputFolder = "E:/KuaiwanGames/Games/42624/myex";
+    	String[] fileNames = {"magic2.vst"};
         
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
@@ -23,9 +28,9 @@ public class PegglePak {
         for (String fileName: fileNames) {
         	LOG.debug("---------Starting {}", fileName);
             
-        	X7x7mFile pakFile = new X7x7mFile(fileName);
-        	pakFile.decode();
-        	pakFile.close();
+        	VstFile vstFile = new VstFile(fileName);
+        	vstFile.decode();
+        	vstFile.close();
         }
         
         stopWatch.stop();

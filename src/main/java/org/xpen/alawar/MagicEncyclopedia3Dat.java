@@ -1,4 +1,4 @@
-package org.xpen.popcap;
+package org.xpen.alawar;
 
 import java.util.concurrent.TimeUnit;
 
@@ -8,14 +8,19 @@ import org.slf4j.LoggerFactory;
 import org.xpen.popcap.fileformat.X7x7mFile;
 import org.xpen.util.UserSetting;
 
-public class PegglePak {
+/**
+ * Magic Encyclopedia 3: Illusions
+ * 魔法全书3：幻象
+ *
+ */
+public class MagicEncyclopedia3Dat {
     
-    private static final Logger LOG = LoggerFactory.getLogger(PegglePak.class);
+    private static final Logger LOG = LoggerFactory.getLogger(MagicEncyclopedia3Dat.class);
 
     public static void main(String[] args) throws Exception {
-        UserSetting.rootInputFolder = "E:/KuaiwanGames/Games/636";
-        UserSetting.rootOutputFolder = "E:/KuaiwanGames/Games/636/myex";
-    	String[] fileNames = {"main.pak"};
+        UserSetting.rootInputFolder = "E:/KuaiwanGames/Games/70803";
+        UserSetting.rootOutputFolder = "E:/KuaiwanGames/Games/70803/myex";
+    	String[] fileNames = {"game.dat"};
         
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();

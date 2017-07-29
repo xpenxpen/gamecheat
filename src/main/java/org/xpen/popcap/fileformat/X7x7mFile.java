@@ -17,12 +17,12 @@ import org.slf4j.LoggerFactory;
 import org.xpen.util.ByteBufferUtil;
 import org.xpen.util.UserSetting;
 
-public class PakFile {
+public class X7x7mFile {
     public static final int MAGIC_7x7M = 0x4D37BD37; //'7.7M'
     public static final byte XOR_KEY = (byte)0xF7; //xor key
     public static final int XOR_KEY_INT = 0xF7F7F7F7;
     
-    private static final Logger LOG = LoggerFactory.getLogger(PakFile.class);
+    private static final Logger LOG = LoggerFactory.getLogger(X7x7mFile.class);
     
     protected RandomAccessFile raf;
     protected FileChannel fileChannel;
@@ -30,13 +30,13 @@ public class PakFile {
     protected List<FatEntry> fatEntries = new ArrayList<FatEntry>();
     protected String fileName;
     
-    public PakFile() {
+    public X7x7mFile() {
     }
     
-    public PakFile(String fileName) throws Exception {
+    public X7x7mFile(String fileName) throws Exception {
     	this.fileName = fileName;
         
-        raf = new RandomAccessFile(new File(UserSetting.rootInputFolder, fileName+".pak"), "r");
+        raf = new RandomAccessFile(new File(UserSetting.rootInputFolder, fileName), "r");
         fileChannel = raf.getChannel();
     }
     
