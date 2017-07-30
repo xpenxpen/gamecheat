@@ -133,7 +133,7 @@ public class LmfFile {
     		detectedType = LmfFileTypeDetector.detect(entry, b);
     	}
     	
-        FileTypeHandler fileTypeHandler = FileTypeDetector.getFileTypeHandler(detectedType);
+        FileTypeHandler fileTypeHandler = TswFileTypeDetector.getFileTypeHandler(detectedType);
         if (fileTypeHandler == null) {
             fileTypeHandler = new SimpleCopyHandler("unknown", true);
         }
