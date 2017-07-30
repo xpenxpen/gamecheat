@@ -1,12 +1,9 @@
 package org.xpen.pal;
 
 import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
@@ -16,9 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.imageio.ImageIO;
-import javax.swing.JPanel;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.junit.Test;
@@ -35,28 +30,17 @@ public class TswTest {
     int height;
     BufferedImage bi;
     private List<FatEntry> fatEntries = new ArrayList<FatEntry>();
-    //String file = "F:/game/pal1new/run/新仙剑奇侠传/myex/All_Map1/13012丁秀蘭";
-    String file = "F:/game/pal1new/run/新仙剑奇侠传/myex/All_Sys/主選單是否圖";
+    String file = "F:/game/pal1new/run/新仙剑奇侠传/myex/All_Char/706魚0";
 
     
     @Test
     public void testTsw() throws Exception {
-        //String paleteFile = "G:/f/VirtualNes/DOS/rom/FDgame/炎龙骑士团合集/GAME/fd2/myex/FDOTHER/000.lll";
-        //InputStream isPalete = new FileInputStream(paleteFile);
-        InputStream isDato = new FileInputStream(file);
         raf = new RandomAccessFile(new File(file), "r");
         fileChannel = raf.getChannel();
         
         getFat();
         getDat();
-        //getPixel();
         close();
-        
-//        JFrame jFrame = new JFrame();
-//        jFrame.setSize(800, 600);
-//        jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        jFrame.add(new PanelImageDisplayer());
-//        jFrame.setVisible(true);
     }
 
     private void getFat() throws Exception {
@@ -106,20 +90,6 @@ public class TswTest {
         }
     }
 
-
-//    private void getPallete(InputStream isPalete) throws Exception {
-//        
-//        colors = new Color[256];
-//        for (int i = 0; i < colors.length; i++) {
-//            int r =  isPalete.read();
-//            int g =  isPalete.read();
-//            int b =  isPalete.read();
-//            int a =  0xFF;
-//            colors[i] = new Color(r,g,b,a).brighter().brighter().brighter().brighter();
-//        }
-//        isPalete.close();
-//    }
-
     /**
      * 00 FFFF
      * 02 50 00 width
@@ -153,50 +123,44 @@ public class TswTest {
         
         int pixelPos = 0;
         while (buffer.hasRemaining()) {
-            int repeatCount = buffer.get() & 0xFF;
-            int alphaValue = buffer.get() & 0xFF;
+            int word = buffer.getShort() & 0xFFFF;
             
-            if (repeatCount == 0 && alphaValue == 0) {
+            //check first 2 bits are '1'?
+            boolean isTransparent = false;
+            if ((word & 0xC000) == 0xC000) {
+                isTransparent = true;
+            }
+            int repeatCount = word & 0x3FFF;
+            
+            if (word == 0) {
                 System.out.println(pixelPos + " pixels finished");
                 buffer.getShort(); //skip 2
                 
-            } else if (alphaValue == 0xC0) {
+            } else if (isTransparent) {
                 System.out.println(repeatCount + " number of transparent color");
                 for (int i = 0; i < repeatCount; i++) {
                     bi.setRGB(pixelPos % width, pixelPos / width, 0); //transparent
                     pixelPos++;
                 }
                 
-            } else if (alphaValue == 0x00) {
+            } else {
                 System.out.println(repeatCount + " number of untransparent color");
                 for (int i = 0; i < repeatCount; i++) {
                     int rgb555 = buffer.getShort() & 0xFFFF;
-//                    int r5 = rgb565 & 0x1f;
-//                    int g6 = (rgb565 >>> 5) & 0x3f;
-//                    int b5 = (rgb565 >>> 11) & 0x1f;
                     int b5 = rgb555 & 0x1f;
                     int g5 = (rgb555 >>> 5) & 0x1f;
                     int r5 = (rgb555 >>> 10) & 0x1f;
                     // Scale components up to 8 bit: 
                     // Shift left and fill empty bits at the end with the highest bits,
                     // so 00000 is extended to 000000000 but 11111 is extended to 11111111
-//                    int r = (b5 << 3) | (b5 >> 2);
-//                    int g = (g6 << 2) | (g6 >> 4);
-//                    int b = (r5 << 3) | (r5 >> 2);
                     int b = (b5 << 3) | (b5 >> 2);
                     int g = (g5 << 3) | (g5 >> 2);
                     int r = (r5 << 3) | (r5 >> 2);
-//                    int b = b5;
-//                    int g = g6;
-//                    int r = r5;
                     Color color = new Color(r, g, b, 255);
                     
                     bi.setRGB(pixelPos % width, pixelPos / width, color.getRGB());
                     pixelPos++;
                 }
-            } else {
-                System.out.println("buffer.position()="+buffer.position() + ", alphaValue="+alphaValue);
-                throw new RuntimeException("RLE format error?");
             }
 
         }
@@ -207,17 +171,6 @@ public class TswTest {
     public void close() throws Exception {
         fileChannel.close();
         raf.close();
-    }
- // Make a subclass of the JPanel
-    public class PanelImageDisplayer extends JPanel
-    {
-       // The paintComponent method of the canvas class is automatically 
-       // called when the window is created or resized
-       public void paintComponent(Graphics g)
-       {
-             g.drawImage(bi, 0, 0, null);
-
-       }
     }
 
     public class FatEntry {
