@@ -26,7 +26,8 @@ public class TswRleHandler implements FileTypeHandler {
     private List<FatEntry> fatEntries = new ArrayList<FatEntry>();
     private String datFileName;
     private String fname;
-    private byte[] bytes;
+    private boolean isColorDepth8;
+    public Color[] colors;
 
     public TswRleHandler() {
     }
@@ -35,7 +36,6 @@ public class TswRleHandler implements FileTypeHandler {
 	public void handle(byte[] b, String datFileName, String newFileName, boolean isUnknown) throws Exception {
         this.datFileName = datFileName;
         this.fname = newFileName;
-        this.bytes = b;
 
         buffer = ByteBuffer.wrap(b);
         buffer.order(ByteOrder.LITTLE_ENDIAN);
@@ -47,6 +47,7 @@ public class TswRleHandler implements FileTypeHandler {
  	}
 
     private void clear() {
+        isColorDepth8 = false;
         fatEntries.clear();
         LOG.debug("STARTING fname={}", fname);
     }
@@ -55,9 +56,14 @@ public class TswRleHandler implements FileTypeHandler {
         
         buffer.position(6);
         int fatCount = buffer.getShort();
-        int unknown1 = buffer.getShort();
-        int unknown2 = buffer.getShort();
-        //System.out.println("fatCount="+fatCount+",unknown1="+unknown1+",unknown2="+unknown2);
+        int colorDepth = buffer.getShort(); //8
+        int unknown2 = buffer.getShort(); //0x0C
+        //System.out.println("fatCount="+fatCount+",colorDepth="+colorDepth+",unknown2="+unknown2);
+        
+        if (colorDepth == 8) {
+            isColorDepth8 = true;
+            decodePallete();
+        }
         
         for (int i = 0; i < fatCount; i++) {
             FatEntry fatEntry = new FatEntry();
@@ -65,6 +71,15 @@ public class TswRleHandler implements FileTypeHandler {
             fatEntry.decode(buffer);
         }
                 
+    }
+
+    private void decodePallete() throws Exception {
+        colors = new Color[256];
+        
+        for (int i = 0; i < colors.length; i++) {
+            int rgb555 = buffer.getShort() & 0xFF;
+            colors[i] = rgb555ToRgb888(rgb555);
+        }
     }
 
     private void decodeDat() throws Exception {
@@ -138,22 +153,20 @@ public class TswRleHandler implements FileTypeHandler {
             } else {
                 //System.out.println(repeatCount + " number of untransparent color");
                 for (int i = 0; i < repeatCount; i++) {
-                    int rgb555 = buffer.getShort() & 0xFFFF;
-                    int b5 = rgb555 & 0x1f;
-                    int g5 = (rgb555 >>> 5) & 0x1f;
-                    int r5 = (rgb555 >>> 10) & 0x1f;
-                    // Scale components up to 8 bit: 
-                    // Shift left and fill empty bits at the end with the highest bits,
-                    // so 00000 is extended to 000000000 but 11111 is extended to 11111111
-                    int b = (b5 << 3) | (b5 >> 2);
-                    int g = (g5 << 3) | (g5 >> 2);
-                    int r = (r5 << 3) | (r5 >> 2);
-                    Color color = new Color(r, g, b, 255);
+                    Color color = null;;
+                    if (isColorDepth8) {
+                        int colorIndex = buffer.get() & 0xFF;
+                        color = colors[colorIndex];
+                    } else {
+                        int rgb555 = buffer.getShort() & 0xFFFF;
+                        color = rgb555ToRgb888(rgb555);
+                    } 
                     
                     bi.setRGB(pixelPos % width, pixelPos / width, color.getRGB());
                     pixelPos++;
                 }
             }
+
         }
         
         File outFile = new File(UserSetting.rootOutputFolder, datFileName + "/" + fname + "_" + index + ".png");
@@ -161,6 +174,20 @@ public class TswRleHandler implements FileTypeHandler {
         parentFile.mkdirs();
         
         ImageIO.write(bi, "PNG", outFile);
+    }
+
+    private Color rgb555ToRgb888(int rgb555) {
+        int b5 = rgb555 & 0x1f;
+        int g5 = (rgb555 >>> 5) & 0x1f;
+        int r5 = (rgb555 >>> 10) & 0x1f;
+        // Scale components up to 8 bit: 
+        // Shift left and fill empty bits at the end with the highest bits,
+        // so 00000 is extended to 000000000 but 11111 is extended to 11111111
+        int b = (b5 << 3) | (b5 >> 2);
+        int g = (g5 << 3) | (g5 >> 2);
+        int r = (r5 << 3) | (r5 >> 2);
+        Color color = new Color(r, g, b, 255);
+        return color;
     }
         
     public class FatEntry {

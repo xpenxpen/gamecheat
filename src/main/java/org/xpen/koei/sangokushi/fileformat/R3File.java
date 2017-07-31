@@ -35,7 +35,7 @@ public class R3File {
     BufferedImage bi;
     
     private List<FatEntry> fatEntries = new ArrayList<FatEntry>();
-    private int[] dicts;
+    private byte[] dicts;
     
     private String fileName;
     
@@ -73,9 +73,9 @@ public class R3File {
            throw new RuntimeException("bad magic");
         }
         
-        dicts = new int[256];
+        dicts = new byte[256];
         for (int i = 0; i < dicts.length; i++) {
-            dicts[i] = raf.readByte() & 0xFF;
+            dicts[i] = raf.readByte();
         }
         
         
@@ -99,8 +99,15 @@ public class R3File {
             FatEntry fatEntry = fatEntries.get(index);
             
             byte[] bytes = new byte[fatEntry.compressedSize];
+            byte[] outBytes = new byte[fatEntry.uncompressedSize];
             raf.seek(fatEntry.offset);
             raf.readFully(bytes);
+            
+            if (fatEntry.compressedSize == fatEntry.uncompressedSize) {
+                outBytes = bytes;
+            } else {
+                decodeLs11(bytes, outBytes, fatEntry);
+            }
             
             File outFile = null;
             String threeDigit = StringUtils.leftPad(String.valueOf(index + 1), 3, '0');
@@ -110,10 +117,17 @@ public class R3File {
             
             OutputStream os = new FileOutputStream(outFile);
             
-            IOUtils.write(bytes, os);
+            IOUtils.write(outBytes, os);
             os.close();
         }
     }
+    
+
+    private void decodeLs11(byte[] inBytes, byte[] outBytes, FatEntry fatEntry) throws Exception {
+        Ls11 ls11 = new Ls11(inBytes, dicts);
+        ls11.decode(outBytes);
+    }
+    
     private void getPallete() throws Exception {
         
         san3Palletes = new Color[8];
