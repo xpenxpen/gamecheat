@@ -5,7 +5,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xpen.koei.sangokushi.fileformat.R3File;
+import org.xpen.koei.fileformat.Ls1112;
 import org.xpen.util.UserSetting;
 
 public class SanYingJieZhuanR3 {
@@ -15,7 +15,7 @@ public class SanYingJieZhuanR3 {
     public static void main(String[] args) throws Exception {
         UserSetting.rootInputFolder = "D:/game/san/三国志英杰传";
         UserSetting.rootOutputFolder = "D:/game/san/三国志英杰传/myex";
-    	String[] fileNames = {"hexbmap"};
+    	String[] fileNames = {"pmap.r3"};
         
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
@@ -23,9 +23,10 @@ public class SanYingJieZhuanR3 {
         for (String fileName: fileNames) {
         	LOG.debug("---------Starting {}", fileName);
             
-        	R3File r3File = new R3File(fileName);
-        	r3File.decode();
-        	r3File.close();
+        	Ls1112 ls1112File = new Ls1112(fileName);
+        	ls1112File.type = 11;
+        	ls1112File.decode();
+        	ls1112File.close();
         }
         
         stopWatch.stop();

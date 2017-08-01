@@ -13,13 +13,11 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
 
-import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.xpen.util.UserSetting;
+import org.xpen.koei.fileformat.Ls1112.Ls11Decoder;
 
 /**
  * 三國志英傑伝
@@ -52,7 +50,7 @@ public class SanYingJieZhuanTest {
         IOUtils.readFully(isDat, inBytes);
         
         decodeDict(isDict);
-        decodeLs11();
+        //decodeLs11();
         //getPallete();
         //getPixel();
         close();
@@ -71,22 +69,6 @@ public class SanYingJieZhuanTest {
         for (int i = 0; i < dicts.length; i++) {
             dicts[i] = (byte)isDict.read();
         }
-    }
-
-    private void decodeLs11() throws Exception {
-        Ls11 ls11 = new Ls11(inBytes, dicts);
-        byte[] outBytes = new byte[2128];
-        ls11.decode(outBytes);
-        
-        File outFile = null;
-        outFile = new File(file + "_decoded");
-        File parentFile = outFile.getParentFile();
-        parentFile.mkdirs();
-        
-        OutputStream os = new FileOutputStream(outFile);
-        
-        IOUtils.write(outBytes, os);
-        os.close();
     }
 
 

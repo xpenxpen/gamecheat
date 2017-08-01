@@ -1,10 +1,8 @@
-package org.xpen.koei.sangokushi.fileformat;
+package org.xpen.koei.fileformat;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -14,18 +12,21 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
-import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.xpen.dunia2.fileformat.dat.FileTypeHandler;
+import org.xpen.dunia2.fileformat.dat.SimpleCopyHandler;
 import org.xpen.util.UserSetting;
 
-public class R3File {
+public class Ls1112 {
     
     public static final int MAGIC_LS11 = 0x3131534C; //LS11
+    public static final int MAGIC_LS12 = 0x3231734C; //Ls12
     
-    private static final Logger LOG = LoggerFactory.getLogger(R3File.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Ls1112.class);
     
     private RandomAccessFile raf;
     private FileChannel fileChannel;
@@ -36,20 +37,23 @@ public class R3File {
     
     private List<FatEntry> fatEntries = new ArrayList<FatEntry>();
     private byte[] dicts;
+    public int type;
     
+    public String format;
     private String fileName;
     
     
-    public R3File(String fileName) throws Exception {
-        this.fileName = fileName;
+    public Ls1112(String fileName) throws Exception {
+        this.format = FilenameUtils.getExtension(fileName);
+        this.fileName = FilenameUtils.getBaseName(fileName);
         
-        raf = new RandomAccessFile(new File(UserSetting.rootInputFolder, fileName + ".r3"), "r");
+        raf = new RandomAccessFile(new File(UserSetting.rootInputFolder, fileName), "r");
         fileChannel = raf.getChannel();
     }
     
     /**
-     * LS11 File format
-     * 0x00--0x10  LS11
+     * LS11/12 File format
+     * 0x00--0x10  LS11/Ls12
      * 0x10--0x110 dict
      * 0x110--  FAT
      *
@@ -69,8 +73,14 @@ public class R3File {
         buffer.flip();
         
         int magic = buffer.getInt();
-        if (magic != MAGIC_LS11) {
-           throw new RuntimeException("bad magic");
+        if (type == 11) {
+            if (magic != MAGIC_LS11) {
+               throw new RuntimeException("bad magic");
+            }
+        } else if (type == 12) {
+            if (magic != MAGIC_LS12) {
+               throw new RuntimeException("bad magic");
+            }
         }
         
         dicts = new byte[256];
@@ -109,22 +119,28 @@ public class R3File {
                 decodeLs11(bytes, outBytes, fatEntry);
             }
             
-            File outFile = null;
             String threeDigit = StringUtils.leftPad(String.valueOf(index + 1), 3, '0');
-            outFile = new File(UserSetting.rootOutputFolder, fileName + "/" + threeDigit);
-            File parentFile = outFile.getParentFile();
-            parentFile.mkdirs();
-            
-            OutputStream os = new FileOutputStream(outFile);
-            
-            IOUtils.write(outBytes, os);
-            os.close();
+            fatEntry.fname = threeDigit;
+            detectAndHandle(fatEntry, outBytes);
+
         }
+    }
+
+    private void detectAndHandle(FatEntry entry, byte[] b) throws Exception {
+        String detectedType = Ls1112FileTypeDetector.detect(entry, b);
+        FileTypeHandler fileTypeHandler = Ls1112FileTypeDetector.getFileTypeHandler(detectedType);
+        if (fileTypeHandler == null) {
+            fileTypeHandler = new SimpleCopyHandler("unknown", false);
+        }
+        
+        boolean isUnknown = true;
+        
+        fileTypeHandler.handle(b, this.fileName, entry.fname, isUnknown);
     }
     
 
     private void decodeLs11(byte[] inBytes, byte[] outBytes, FatEntry fatEntry) throws Exception {
-        Ls11 ls11 = new Ls11(inBytes, dicts);
+        Ls11Decoder ls11 = new Ls11Decoder(inBytes, dicts);
         ls11.decode(outBytes);
     }
     
@@ -222,4 +238,74 @@ public class R3File {
             return ReflectionToStringBuilder.toString(this);
         }
     }
+    
+    public class Ls11Decoder {
+        private byte[] inBytes;
+        private byte[] dicts;
+        private int inPos;
+        private int outPos;
+        private int bitPos;
+
+        public Ls11Decoder(byte[] inBytes, byte[] dicts) {
+            this.inBytes = inBytes;
+            this.dicts = dicts;
+        }
+
+        public void decode(byte[] outBytes) {
+            inPos = 0;
+            outPos = 0;
+            bitPos = 7;
+
+            while (inPos < inBytes.length && outPos < outBytes.length) {
+                int code = getCode();
+
+                if (code < 256) {
+                    outBytes[outPos] = dicts[code];
+                    outPos++;
+                } else {
+                    int off = code - 256;
+                    int len = getCode() + 3;
+                    for (int i = 0; i < len; i++) {
+                        outBytes[outPos] = outBytes[outPos - off];
+                        outPos++;
+                    }
+                }
+            }
+        }
+
+        private int getCode() {
+            // 把若干个数分解后按b1b2顺序依次排列起来就形成一个二进制串，我们可以从头扫描唯一确定一个序列还原这些数。
+            // 具体方法为从开头开始数连续的1的个数（设为a），则第一个分解是a+1位，第一个b1为1...10（a个1），再向后取a+1位是b2，将b1b2相加就得到第一个数，依次做下去就可以还原所有的数。
+            int code = 0;
+            int code2 = 0;
+            int a = 0;
+            int bit;
+
+            do {
+                bit = (inBytes[inPos] >>> bitPos) & 0x01;
+                code = (code << 1) | bit;
+                a++;
+                bitPos--;
+                if (bitPos < 0) {
+                    bitPos = 7;
+                    inPos++;
+                }
+            } while (bit == 1);
+            
+            for (int i = 0; i < a; i++) {
+                bit = (inBytes[inPos] >>> bitPos) & 0x01;
+                code2 = (code2 << 1) | bit;
+                bitPos--;
+                if (bitPos < 0) {
+                    bitPos = 7;
+                    inPos++;
+                }
+            }
+            code += code2;
+
+            return code;
+        }
+
+    }
+
 }
