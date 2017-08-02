@@ -14,27 +14,27 @@ import org.xpen.util.UserSetting;
  *
  */
 public class TheLegendOf3Kingdoms2Pak {
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(TheLegendOf3Kingdoms2Pak.class);
 
     public static void main(String[] args) throws Exception {
         UserSetting.rootInputFolder = "F:/game/Sango2/Sango2";
         UserSetting.rootOutputFolder = "F:/game/Sango2/Sango2/myex";
-        String[] fileNames = {"Sango2"};
-        
+        String[] fileNames = { "Sango2" };
+
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
-        
-        for (String fileName: fileNames) {
-        	LOG.debug("---------Starting {}", fileName);
-            
-        	PakFile pakFile = new PakFile(fileName);
-        	pakFile.decode();
-        	pakFile.close();
+
+        for (String fileName : fileNames) {
+            LOG.debug("---------Starting {}", fileName);
+
+            PakFile pakFile = new PakFile(fileName);
+            pakFile.decode();
+            pakFile.close();
         }
-        
+
         stopWatch.stop();
-        System.out.println("-----ALL OK, cost time = "+stopWatch.getTime(TimeUnit.SECONDS)+ "s");
+        System.out.println("-----ALL OK, cost time = " + stopWatch.getTime(TimeUnit.SECONDS) + "s");
 
     }
 

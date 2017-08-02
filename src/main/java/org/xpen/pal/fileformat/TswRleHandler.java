@@ -14,6 +14,7 @@ import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xpen.dunia2.fileformat.dat.FileTypeHandler;
+import org.xpen.util.ColorUtil;
 import org.xpen.util.UserSetting;
 import org.xpen.util.compress.LzoCompressor;
 
@@ -78,7 +79,7 @@ public class TswRleHandler implements FileTypeHandler {
         
         for (int i = 0; i < colors.length; i++) {
             int rgb555 = buffer.getShort() & 0xFF;
-            colors[i] = rgb555ToRgb888(rgb555);
+            colors[i] = ColorUtil.rgb555ToRgb888(rgb555);
         }
     }
 
@@ -159,7 +160,7 @@ public class TswRleHandler implements FileTypeHandler {
                         color = colors[colorIndex];
                     } else {
                         int rgb555 = buffer.getShort() & 0xFFFF;
-                        color = rgb555ToRgb888(rgb555);
+                        color = ColorUtil.rgb555ToRgb888(rgb555);
                     } 
                     
                     bi.setRGB(pixelPos % width, pixelPos / width, color.getRGB());
@@ -174,20 +175,6 @@ public class TswRleHandler implements FileTypeHandler {
         parentFile.mkdirs();
         
         ImageIO.write(bi, "PNG", outFile);
-    }
-
-    private Color rgb555ToRgb888(int rgb555) {
-        int b5 = rgb555 & 0x1f;
-        int g5 = (rgb555 >>> 5) & 0x1f;
-        int r5 = (rgb555 >>> 10) & 0x1f;
-        // Scale components up to 8 bit: 
-        // Shift left and fill empty bits at the end with the highest bits,
-        // so 00000 is extended to 000000000 but 11111 is extended to 11111111
-        int b = (b5 << 3) | (b5 >> 2);
-        int g = (g5 << 3) | (g5 >> 2);
-        int r = (r5 << 3) | (r5 >> 2);
-        Color color = new Color(r, g, b, 255);
-        return color;
     }
         
     public class FatEntry {
