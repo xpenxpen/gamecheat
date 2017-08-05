@@ -1,7 +1,10 @@
 package org.xpen.koei;
 
+import java.io.File;
+import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,19 +22,25 @@ public class UnchartedWaters4Pk {
     public static void main(String[] args) throws Exception {
         UserSetting.rootInputFolder = "D:/game/DK4PK";
         UserSetting.rootOutputFolder = "D:/game/DK4PK/myex";
-    	String[] fileNames = {"bustup.dk4", "EventBG1.dk4", "EventBG2.dk4", "EventBG3.dk4", "EventBG4.dk4",
-    	        "EventBG5.dk4", "EventBG6.dk4", "EventBG7.dk4", "EventBG8.dk4"};
         
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
         
-        for (String fileName: fileNames) {
-        	LOG.debug("---------Starting {}", fileName);
+        File folder = new File(UserSetting.rootInputFolder);
+        Collection<File> listFiles = FileUtils.listFiles(folder, new String[]{"DK4", "dk4"}, false);
+        
+        for (File file: listFiles) {
+            LOG.debug("---------Starting {}", file.getName());
             
-            Ls1112 ls1112File = new Ls1112(fileName);
+            Ls1112 ls1112File = new Ls1112(file.getName());
             ls1112File.type = 12;
-            ls1112File.decode();
-            ls1112File.close();
+            try {
+                ls1112File.decode();
+            } catch (Exception e) {
+                //ignore
+            } finally {
+                ls1112File.close();
+            }
         }
         
         stopWatch.stop();
