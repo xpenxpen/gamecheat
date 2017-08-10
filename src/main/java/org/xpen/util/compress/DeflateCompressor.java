@@ -6,11 +6,12 @@ public class DeflateCompressor {
 	
 	private static Inflater decompressor;
 	
-	public static void decompress(byte[] inByte, byte[] outByte) throws Exception {
+	public static int decompress(byte[] inByte, byte[] outByte) throws Exception {
 	    decompressor = new Inflater();
 	    decompressor.setInput(inByte, 0, inByte.length);
-        decompressor.inflate(outByte);
+        int actualSize = decompressor.inflate(outByte);
         decompressor.end();
+        return actualSize;
 	}
 
 }

@@ -34,7 +34,8 @@ public class San3Test {
 	}
     
     public San3Test() throws Exception {
-        String file = "G:/f/VirtualNes/DOS/rom/san/San4PowerUp/KAODATA.S4";
+        //String file = "G:/f/VirtualNes/DOS/rom/san/San4PowerUp/KAODATA.S4";
+        String file = "D:/game/信长之野望/信长之野望4/nobu4/MONDATA.DAT";
         InputStream isDato = new FileInputStream(file);
         raf = new RandomAccessFile(new File(file), "r");
         fileChannel = raf.getChannel();

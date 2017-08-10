@@ -9,6 +9,11 @@ import org.xpen.avalanche.studios.fileformat.ArcFile;
 import org.xpen.avalanche.studios.fileformat.TabFile;
 import org.xpen.util.UserSetting;
 
+/**
+ * 变节行动
+ * Please give 2G RAM
+ *
+ */
 public class RenegadeOpsArc {
     
     private static final Logger LOG = LoggerFactory.getLogger(RenegadeOpsArc.class);
@@ -16,7 +21,7 @@ public class RenegadeOpsArc {
     public static void main(String[] args) throws Exception {
         UserSetting.rootInputFolder = "D:/game/RenegadeOps/archives_win32";
         UserSetting.rootOutputFolder = "D:/game/RenegadeOps/archives_win32/myex";
-    	String[] fileNames = {"game0"};
+    	String[] fileNames = {"game0", "game1", "game2"};
         
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();

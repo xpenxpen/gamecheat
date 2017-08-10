@@ -1,21 +1,19 @@
 package org.xpen.avalanche.studios.fileformat;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xpen.avalanche.studios.fileformat.TabFile.FatEntry;
 import org.xpen.dunia2.fileformat.dat.FileTypeHandler;
 import org.xpen.dunia2.fileformat.dat.SimpleCopyHandler;
 import org.xpen.util.UserSetting;
+import org.xpen.util.compress.DeflateCompressor;
 
 public class ArcFile {
     
@@ -51,31 +49,24 @@ public class ArcFile {
         for (int i = 0; i < fatEntries.size(); i++) {
             FatEntry fatEntry = fatEntries.get(i);  
             
-//            if (fatEntry.size == 0) {
-//            	continue;
-//            }
+            if (fatEntry.size == 0) {
+            	continue;
+            }
             
             byte[] bytes;
             boolean hasException = false;
             
             bytes = noCompress(fatEntry);
+            byte[] uncompressedBytes = new byte[fatEntry.size * 2];
+            if (bytes[0] == 0x78 && bytes[1] == 0x01) {
+                //try deflate with double size
+                int actualSize = DeflateCompressor.decompress(bytes, uncompressedBytes);
+                bytes = new byte[actualSize];
+                System.arraycopy(uncompressedBytes, 0, bytes, 0, actualSize);
+            }
             
         	detectAndHandle(fatEntry, bytes);
             
-
-//            File outFile = null;
-//            //String extension = FilenameUtils.getExtension(fatEntry.fname);
-//            outFile = new File(UserSetting.rootOutputFolder + "/" + fileName, String.valueOf(fatEntry.crc));
-//            if (hasException) {
-//                outFile = new File(UserSetting.rootOutputFolder + "/" + fileName + "/exception",  String.valueOf(fatEntry.crc));
-//            }
-//            File parentFile = outFile.getParentFile();
-//            parentFile.mkdirs();
-//            
-//            OutputStream os = new FileOutputStream(outFile);
-//            
-//            IOUtils.write(bytes, os);
-//            os.close();
         }
         
         LOG.info("errorCount={}", errorCount);

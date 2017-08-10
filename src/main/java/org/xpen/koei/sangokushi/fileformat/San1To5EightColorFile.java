@@ -61,7 +61,7 @@ public class San1To5EightColorFile {
     private void getPallete() throws Exception {
         
         palletes = new Color[8];
-        int[][] p = new int[6][];
+        int[][] p = new int[25][];
         //TODO 1 palletes
         p[1] = new int[] {0x000000, 0xff5050, 0x5050ff, 0xff50ff, 0x50f850, 0xfff850, 0x50f8ff, 0xfff8ff};
         p[2] = new int[] {0x000000, 0xff5050, 0x5050ff, 0xff50ff, 0x50f850, 0xfff850, 0x50f8ff, 0xfff8ff};
@@ -69,6 +69,8 @@ public class San1To5EightColorFile {
         p[4] = new int[] {0x001f2f, 0x7f3f1f, 0x1f3faf, 0x4f7fbf, 0x1f6f3f, 0x8f7f3f, 0x7fafcf, 0xafcfcf};
         //TODO 5 palletes
         p[5] = new int[] {0x001f2f, 0x7f3f1f, 0x1f3faf, 0x4f7fbf, 0x1f6f3f, 0x8f7f3f, 0x7fafcf, 0xafcfcf};
+        
+        p[24] = new int[] {0x000000, 0xef3f00, 0x004fef, 0xcf4fef, 0x4faf0f, 0xefbf00, 0x00dfef, 0xefefef};
         
         int[] selectedPalletes = p[type];
         for (int i = 0; i < palletes.length; i++) {
@@ -128,7 +130,15 @@ public class San1To5EightColorFile {
 	            width = 64;
 	            height = 80;
 	        }
-    	}
+    	} else if (type == 24) {
+            if (this.fileName.equals("KAODATA.DAT")) {
+                width = 64;
+                height = 80;
+            } else if (this.fileName.equals("MONDATA.DAT")) {
+                width = 64;
+                height = 40;
+            }
+        }
         
     }
 

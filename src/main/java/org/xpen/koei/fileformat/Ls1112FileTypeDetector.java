@@ -9,6 +9,7 @@ import org.xpen.dunia2.fileformat.dat.FileTypeHandler;
 import org.xpen.dunia2.fileformat.dat.SimpleCopyHandler;
 import org.xpen.koei.fileformat.Ls1112.FatEntry;
 import org.xpen.koei.sangokushi.fileformat.E5Handler;
+import org.xpen.koei.sangokushi.fileformat.R3Handler;
 
 public class Ls1112FileTypeDetector {
     
@@ -18,11 +19,15 @@ public class Ls1112FileTypeDetector {
         fileHandlersMap.put("unknown", new SimpleCopyHandler("unknown", false));
         fileHandlersMap.put("bmp", new SimpleCopyHandler("bmp", false));
         fileHandlersMap.put("wav", new SimpleCopyHandler("wav", false));
+        //fileHandlersMap.put("r3", new R3Handler());
         fileHandlersMap.put("e5", new E5Handler());
     }
     
     public static String detect(FatEntry entry, byte[] bytes) {
         
+        if (entry.gameName.equals(Ls1112.GAME_NAME_YJZ)) {
+            return "r3";
+        }
         if (entry.gameName.equals(Ls1112.GAME_NAME_CCZ)) {
             return "e5";
         }

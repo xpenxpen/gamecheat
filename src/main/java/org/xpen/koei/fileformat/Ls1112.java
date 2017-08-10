@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import org.xpen.dunia2.fileformat.dat.FileTypeHandler;
 import org.xpen.dunia2.fileformat.dat.SimpleCopyHandler;
 import org.xpen.koei.sangokushi.fileformat.E5Handler;
+import org.xpen.koei.sangokushi.fileformat.R3Handler;
 import org.xpen.util.UserSetting;
 
 public class Ls1112 {
@@ -26,6 +27,7 @@ public class Ls1112 {
     public static final int MAGIC_LS11 = 0x3131534C; //LS11
     public static final int MAGIC_LS12 = 0x3231734C; //Ls12
     
+    public static final String GAME_NAME_YJZ = "yjz"; //ying jie zhuan
     public static final String GAME_NAME_CCZ = "ccz"; //cao cao zhuan
     
     private static final Logger LOG = LoggerFactory.getLogger(Ls1112.class);
@@ -40,7 +42,7 @@ public class Ls1112 {
     private List<FatEntry> fatEntries = new ArrayList<FatEntry>();
     private byte[] dicts;
     public int type;
-    public String gameName;
+    public String gameName = "";
     
     public String format;
     private String fileName;
@@ -62,7 +64,7 @@ public class Ls1112 {
      *
      */
     public void decode() throws Exception {
-        if (gameName.equals(Ls1112.GAME_NAME_CCZ)) {
+        if (gameName.equals(Ls1112.GAME_NAME_YJZ) || gameName.equals(Ls1112.GAME_NAME_CCZ)) {
             getPallete();
         }
         decodeFat();
@@ -151,13 +153,16 @@ public class Ls1112 {
     
     private void getPallete() throws Exception {
         InputStream is;
-        if (gameName.equals(Ls1112.GAME_NAME_CCZ)) {
+        if (gameName.equals(Ls1112.GAME_NAME_YJZ)) {
+            is = Ls1112.class.getClassLoader().getResourceAsStream("koei/sanyingjie/palette.dat");
+            palletes = new Color[16];
+        } else if (gameName.equals(Ls1112.GAME_NAME_CCZ)) {
             is = Ls1112.class.getClassLoader().getResourceAsStream("koei/sancaocao/palette.dat");
+            palletes = new Color[256];
         } else {
             throw new IllegalArgumentException("No palette for " + gameName);
         }
         
-        palletes = new Color[256];
         for (int i = 0; i < palletes.length; i++) {
             int b =  is.read();
             int g =  is.read();
@@ -167,7 +172,12 @@ public class Ls1112 {
             palletes[i] = new Color(r,g,b,a);
         }
         
-        E5Handler.palletes = this.palletes;
+        if (gameName.equals(Ls1112.GAME_NAME_YJZ)) {
+            R3Handler.palletes = this.palletes;
+        } else if (gameName.equals(Ls1112.GAME_NAME_CCZ)) {
+            E5Handler.palletes = this.palletes;
+        }
+        
         
     }
 

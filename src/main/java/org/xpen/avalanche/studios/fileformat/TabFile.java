@@ -48,7 +48,7 @@ public class TabFile {
         fileChannel.read(buffer);
         buffer.flip();
         
-        int fileCount = buffer.getInt();
+        int fileCount = (int)(fileChannel.size() - 4) / 12;
         
         buffer = ByteBuffer.allocate(fileCount * 12);
         buffer.order(ByteOrder.LITTLE_ENDIAN);
@@ -75,12 +75,12 @@ public class TabFile {
 
     public class FatEntry {
         public String fname;
-        public int crc;
+        public long crc;
         public int offset;
         public int size;
 
 		public void decode(ByteBuffer buffer) throws Exception {
-			crc = buffer.getInt();
+			crc = buffer.getInt() & 0xFFFFFFFFL;
 			offset = buffer.getInt();
 			size = buffer.getInt();
 			LOG.debug(toString());

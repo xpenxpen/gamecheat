@@ -15,7 +15,7 @@ public class SanYingJieZhuanR3 {
     public static void main(String[] args) throws Exception {
         UserSetting.rootInputFolder = "D:/game/san/三国志英杰传";
         UserSetting.rootOutputFolder = "D:/game/san/三国志英杰传/myex";
-    	String[] fileNames = {"pmap.r3"};
+    	String[] fileNames = {"hexbchp.r3", "hexbchr.r3", "hexzchp.r3"};
         
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
@@ -25,6 +25,7 @@ public class SanYingJieZhuanR3 {
             
         	Ls1112 ls1112File = new Ls1112(fileName);
         	ls1112File.type = 11;
+        	ls1112File.gameName = Ls1112.GAME_NAME_YJZ;
         	ls1112File.decode();
         	ls1112File.close();
         }
