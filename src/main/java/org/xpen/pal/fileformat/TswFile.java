@@ -46,6 +46,23 @@ public class TswFile {
         fileChannel = raf.getChannel();
     }
 
+    /**
+     * TSW File format
+     * 0x18 all zero
+     * ----4 entry count (some strange file has wrong count)
+     * |
+     * | 44 LOOP entry
+     * |    |----
+     * |    | 20 file name (Big5) 
+     * |    | 4  size
+     * |    | 4  offset
+     * |    | 4  index
+     * |    | 12 unknown (all zero)
+     * |    |----
+     * ----
+     * 
+     *
+     */
     public void decode() throws Exception {
         decodeFat();
         decodeDat();
@@ -60,20 +77,17 @@ public class TswFile {
         buffer.flip();
         
         int fatCount = buffer.getInt();
-        //int minDatOffset = Integer.MAX_VALUE;
-        //fix for some fat count is wrong
+        //fix for strange file
         if (fatCount == 3437 && (fileName.equals("All_Char"))) {
+            //pal1 new
             fatCount = 1713;
+        } else if (fatCount == 66091 && (fileName.equals("all_magic"))) {
+            //pal2
+            fatCount = 247;
         }
         
         for (int i = 0; i < fatCount; i++) {
-            //fix for some fat count is wrong
-//            LOG.debug("minDatOffset={}", minDatOffset);
-//            if (fileChannel.position() >= minDatOffset) {
-//                break;
-//            }
             FatEntry fatEntry = new FatEntry();
-            fatEntries.add(fatEntry);
                 
             buffer = ByteBuffer.allocate(44);
             buffer.order(ByteOrder.LITTLE_ENDIAN);
@@ -82,10 +96,9 @@ public class TswFile {
             buffer.flip();
             
             fatEntry.decode(buffer);
-            
-//            if ((fatEntry.offset != 0) && (fatEntry.offset < minDatOffset)) {
-//                minDatOffset = fatEntry.offset;
-//            }
+            if (fatEntry.index != 0) {
+                fatEntries.add(fatEntry);
+            }
         }
     }
 
@@ -138,13 +151,26 @@ public class TswFile {
         
         boolean isUnknown = false;
         
-        try {
-            fileTypeHandler.handle(b, this.fileName, String.valueOf(entry.fname), isUnknown);
-        } catch (Exception e) {
-            LOG.error("fileTypeHandler.handle", e);
-            errorCount++;
-            fileTypeHandler = new SimpleCopyHandler("unknown", true);
-            fileTypeHandler.handle(b, this.fileName, String.valueOf(entry.fname), isUnknown);
+        boolean isDone = false;
+        
+        while (!isDone) {
+            try {
+                fileTypeHandler.handle(b, this.fileName, String.valueOf(entry.fname), isUnknown);
+                isDone = true;
+                
+            } catch (BufferNotEnoughException e) {
+                LOG.warn("fileTypeHandler.handle", e);
+                
+                //try fixed size
+                entry.size = e.bufferSize;
+                b = noCompress(entry);
+                
+            } catch (Exception e) {
+                LOG.error("fileTypeHandler.handle", e);
+                errorCount++;
+                fileTypeHandler = new SimpleCopyHandler("unknown", true);
+                fileTypeHandler.handle(b, this.fileName, String.valueOf(entry.fname), isUnknown);
+            }
         }
     }
 
@@ -167,7 +193,26 @@ public class TswFile {
                 fname = "6045_16_萬蟻蝕象殘影";
             } else if (fname.startsWith("6060_14_蛇女靈兒甩尾")) {
                 fname = "6060_14_蛇女靈兒甩尾";
+            } else if (fname.startsWith("_2325_猴神君_新影")) {
+                fname = "_2325_猴神君_新影";
+            } else if (fname.startsWith("7002_土象法術二_石頭B")) {
+                fname = "7002_土象法術二_石頭B";
+            } else if (fname.startsWith("_15007_月涼山&紫竹林")) {
+                fname = "_15007_月涼山_紫竹林";
             }
+
+            
+            //fix strange file size
+            if (fname.equals("_1000李逍遙升級_影子") && size == 3072) {
+                size = 3271;
+            } else if (fname.equals("_1000李逍遙影(劍)all") && size == 8192) {
+                size = 8257;
+            } else if (fname.equals("_1001靈兒影(雙刃)all") && size == 7680) {
+                size = 7905;
+            } else if (fname.equals("_1002林月如影(劍)all") && size == 7424) {
+                size = 7547;
+            }
+            
             buffer.position(20);
             size = buffer.getInt();
             offset = buffer.getInt();

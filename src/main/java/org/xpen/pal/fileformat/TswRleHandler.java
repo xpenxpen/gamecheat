@@ -27,6 +27,7 @@ public class TswRleHandler implements FileTypeHandler {
     private List<FatEntry> fatEntries = new ArrayList<FatEntry>();
     private String datFileName;
     private String fname;
+    private byte[] bytes;
     private boolean isColorDepth8;
     public Color[] colors;
 
@@ -37,6 +38,7 @@ public class TswRleHandler implements FileTypeHandler {
 	public void handle(byte[] b, String datFileName, String newFileName, boolean isUnknown) throws Exception {
         this.datFileName = datFileName;
         this.fname = newFileName;
+        this.bytes = b;
 
         buffer = ByteBuffer.wrap(b);
         buffer.order(ByteOrder.LITTLE_ENDIAN);
@@ -44,8 +46,20 @@ public class TswRleHandler implements FileTypeHandler {
         
         clear();
         decodeFat();
+        checkBufferSize();
         decodeDat();
  	}
+
+    private void checkBufferSize() {
+        //some buffer size not enough
+        FatEntry finalFatEntry = fatEntries.get(fatEntries.size() - 1);
+        int bufferSize = finalFatEntry.offset + finalFatEntry.compressedSize;
+        if (bytes.length < bufferSize) {
+            throw new BufferNotEnoughException(bufferSize);
+            
+        }
+        
+    }
 
     private void clear() {
         isColorDepth8 = false;
@@ -184,16 +198,14 @@ public class TswRleHandler implements FileTypeHandler {
         public int uncompressedSize;
         public int width;
         public int height;
-        public int compressedSize2;
-        public int uncompressedSize2;
 
         public void decode(ByteBuffer buffer) throws Exception {
             //total 0x24 bytes
             offset = buffer.getInt();
             compressedSize = buffer.getInt();
             uncompressedSize = buffer.getInt();
-            compressedSize2 = buffer.getInt();
-            uncompressedSize2 = buffer.getInt();
+            buffer.getInt();
+            buffer.getInt();
             buffer.getInt();
             buffer.getInt();
             buffer.getInt();
