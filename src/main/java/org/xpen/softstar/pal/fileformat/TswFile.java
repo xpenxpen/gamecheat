@@ -1,4 +1,4 @@
-package org.xpen.pal.fileformat;
+package org.xpen.softstar.pal.fileformat;
 
 import java.io.File;
 import java.io.IOException;

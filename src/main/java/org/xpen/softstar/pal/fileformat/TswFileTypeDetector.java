@@ -1,11 +1,11 @@
-package org.xpen.pal.fileformat;
+package org.xpen.softstar.pal.fileformat;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.xpen.dunia2.fileformat.dat.FileTypeHandler;
 import org.xpen.dunia2.fileformat.dat.SimpleCopyHandler;
-import org.xpen.pal.fileformat.TswFile.FatEntry;
+import org.xpen.softstar.pal.fileformat.TswFile.FatEntry;
 
 public class TswFileTypeDetector {
     

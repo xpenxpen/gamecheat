@@ -1,52 +1,77 @@
-package org.xpen.pal.fileformat;
+package org.xpen.softstar.pal.fileformat;
 
+import java.awt.Color;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.channels.FileChannel;
-import java.util.ArrayList;
 import java.util.BitSet;
-import java.util.List;
+
+import javax.imageio.ImageIO;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.xpen.dunia2.fileformat.dat.FileTypeHandler;
+import org.xpen.util.UserSetting;
 
-public class Yj1File {
+public class Yj1Handler implements FileTypeHandler {
     
-    private static final Logger LOG = LoggerFactory.getLogger(Yj1File.class);
     
-    private RandomAccessFile raf;
-    private FileChannel fileChannel;
+    private static final Logger LOG = LoggerFactory.getLogger(Yj1Handler.class);
     
+    private String datFileName;
+    private String fname;
+    private byte[] bytes;
+    ByteBuffer buffer;
+    
+    public static Color[][] palettes;
     private Header header;
     
-    private List<HuffmanTreeEntry> huffmanTreeEntries = new ArrayList<HuffmanTreeEntry>();
     private TreeNode[] treeNodes;
     private TreeNode root;
     private String fileName;
     
+    private int headerSize; //include huffman tree
+    
     private int bitPos;
-    private long tempByte;
+    private int tempByte;
     
-    public static void main(String[] args) throws Exception {
-        
-        File file = null;
-        
-        file = new File("G:/f/VirtualNes/pal/Pal/myex/FBP/unknown/unknown/027.unknown");
-        
-        Yj1File yj1File = new Yj1File(file);
-        yj1File.decode();
+    int width;
+    int height;
+    BufferedImage bi;
 
-
+    public Yj1Handler() {
     }
-    
-    public Yj1File(File file) throws Exception {
+
+    @Override
+    public void handle(byte[] b, String datFileName, String newFileName, boolean isUnknown) throws Exception {
+        this.datFileName = datFileName;
+        this.fname = newFileName;
+        this.bytes = b;
+        //LOG.debug("STARTING fname={}", fname);
         
-        raf = new RandomAccessFile(file, "r");
-        fileChannel = raf.getChannel();
+        buffer = ByteBuffer.wrap(bytes);
+        buffer.order(ByteOrder.LITTLE_ENDIAN);
+        
+        getWidthHeight();
+        decodeHeader();
+        decodeHuffmanTree();
+        decodeBlock();
+        writeFile();
+    }
+
+
+    private void getWidthHeight() {
+        if (this.datFileName.equals("FBP")) {
+            width = 320;
+            height = 200;
+        } else if (this.datFileName.equals("BALL")) {
+            width = 48;
+            height = 47;
+        }
+        
     }
     
     /**
@@ -56,27 +81,11 @@ public class Yj1File {
      * See rest of code
      *
      */
-    public void decode() throws Exception {
-        
-        decodeHeader();
-        decodeHuffmanTree();
-        decodeBlock();
-        
-    }
-
-
     private void decodeHeader() throws Exception {
-        ByteBuffer buffer = ByteBuffer.allocate(16);
-        buffer.order(ByteOrder.LITTLE_ENDIAN);
-        
-        fileChannel.read(buffer);
-        buffer.flip();
-        
         header = new Header();
         header.decode(buffer);
         
         LOG.debug("header={}", header);
-        
     }
 
     private void decodeHuffmanTree() throws Exception {
@@ -85,11 +94,8 @@ public class Yj1File {
         if (twice % 16 != 0) {
             flagByteCount++;
         }
-        ByteBuffer buffer = ByteBuffer.allocate(twice + flagByteCount * 2);
-        buffer.order(ByteOrder.LITTLE_ENDIAN);
         
-        fileChannel.read(buffer);
-        buffer.flip();
+        headerSize = 16 + twice + flagByteCount * 2;
         
         treeNodes = new TreeNode[twice];
         for (int i = 0; i < twice; i++) {
@@ -125,13 +131,12 @@ public class Yj1File {
     }
 
     private void decodeBlock() throws Exception {
+        int pixelPos = 0;
+        bi = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        buffer.position(headerSize);
+
         for (int i = 0; i < header.blockCount; i++) {
-            LOG.debug("fileChannel.position()={}", fileChannel.position());
-            ByteBuffer buffer = ByteBuffer.allocate(24);
-            buffer.order(ByteOrder.LITTLE_ENDIAN);
-            
-            fileChannel.read(buffer);
-            buffer.flip();
+            LOG.debug("buffer.position()={}", buffer.position());
             
             BlockHeader blockHeader = new BlockHeader();
             blockHeader.decode(buffer);
@@ -142,7 +147,7 @@ public class Yj1File {
             //交替组成，如下所示：
             //[HUFFMAN编码块][LZSS编码块][HUFFMAN编码块][LZSS编码块]...
             
-            int memPos = (int)fileChannel.position();
+            int memPos = buffer.position();
             LOG.debug("memPos={}", memPos);
             
             
@@ -191,13 +196,12 @@ public class Yj1File {
                 }
             }
             
-            File f=new File("G:/f/VirtualNes/pal/Pal/myex/FBP/unknown/unknown/unpacked" + i);
-            FileOutputStream file=new FileOutputStream(f);
-            file.write(destB);
-            file.close();
+            for (int k = 0; k < destB.length; k++) {
+                bi.setRGB(pixelPos % width, pixelPos / width, palettes[0][destB[k] & 0xFF].getRGB());
+                pixelPos++;
+            }
             
-            
-            fileChannel.position(memPos + blockHeader.compressedLength-24);
+            buffer.position(memPos + blockHeader.compressedLength-24);
         }
     }
 
@@ -272,19 +276,24 @@ public class Yj1File {
     private int getBit() throws Exception {
         if (bitPos == 16) {
             bitPos = 0;
-            tempByte = raf.read() | (raf.read() << 8);
+            tempByte = buffer.getShort() & 0xFFFF;
             LOG.debug("tempByte={}", tempByte);
         }
-        int bit = (int)(tempByte >>> (15 - bitPos)) & 0x01;
+        int bit = (tempByte >>> (15 - bitPos)) & 0x01;
         bitPos++;
         
         return bit;
         
     }
 
-    public void close() throws Exception {
-        fileChannel.close();
-        raf.close();
+    private void writeFile() throws Exception {
+        File outFile = null;
+        outFile = new File(UserSetting.rootOutputFolder, datFileName + "/" + fname + ".png");
+        
+        File parentFile = outFile.getParentFile();
+        parentFile.mkdirs();
+        
+        ImageIO.write(bi, "PNG", outFile);
     }
 
     public class Header {
@@ -303,16 +312,6 @@ public class Yj1File {
             this.unknown = buffer.get();
             this.huffmanTreeLength = buffer.get() & 0xFF;
         }
-        
-        @Override
-        public String toString() {
-            return ReflectionToStringBuilder.toString(this);
-        }
-    }
-
-    public class HuffmanTreeEntry {
-        public boolean flag;
-        public byte value;
         
         @Override
         public String toString() {
@@ -352,4 +351,5 @@ public class Yj1File {
         TreeNode left;
         TreeNode right;
     }
+
 }

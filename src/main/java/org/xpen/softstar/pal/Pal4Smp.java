@@ -1,4 +1,4 @@
-package org.xpen.pal;
+package org.xpen.softstar.pal;
 
 import java.io.File;
 import java.util.Collection;
@@ -8,7 +8,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xpen.pal.fileformat.SmpFile;
+import org.xpen.softstar.pal.fileformat.SmpFile;
 import org.xpen.util.UserSetting;
 
 public class Pal4Smp {

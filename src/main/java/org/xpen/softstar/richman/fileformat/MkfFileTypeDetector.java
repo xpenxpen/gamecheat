@@ -1,26 +1,23 @@
-package org.xpen.pal.fileformat;
+package org.xpen.softstar.richman.fileformat;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.xpen.dunia2.fileformat.dat.FileTypeHandler;
 import org.xpen.dunia2.fileformat.dat.SimpleCopyHandler;
-import org.xpen.pal.fileformat.LmfFile.FatEntry;
+import org.xpen.softstar.richman.fileformat.MkfFile.FatEntry;
 
-public class LmfFileTypeDetector {
+public class MkfFileTypeDetector {
     
     private static Map<String, FileTypeHandler> fileHandlersMap = new HashMap<String, FileTypeHandler>();
     
     static {
-        fileHandlersMap.put("unknown", new SimpleCopyHandler("unknown", true));
-        //fileHandlersMap.put("wav", new WavHandler("snd", "wav", false));
-        //fileHandlersMap.put("tpl", new TplHandler("tpl", false));
-        //fileHandlersMap.put("dds", new SimpleCopyHandler("dds", false));
+        fileHandlersMap.put("unknown", new SimpleCopyHandler("unknown", false));
+        fileHandlersMap.put("wav", new SimpleCopyHandler("wav", false));
     }
     
     public static String detect(FatEntry entry, byte[] bytes) {
+    	
         if (bytes.length >= 12
                 && bytes[0] == 'R'
                 && bytes[1] == 'I'
@@ -32,17 +29,6 @@ public class LmfFileTypeDetector {
                 && bytes[11] == 'E'
         ) {
             return "wav";
-        }
-        if (bytes.length >= 4) {
-            ByteBuffer buffer = ByteBuffer.allocate(4);
-            buffer.order(ByteOrder.LITTLE_ENDIAN);
-            buffer.put(bytes, 0, 4);
-            buffer.flip();
-            int magic = buffer.getInt();
-            
-            if (magic == 0x20534444) { //DDS
-                return "dds";
-            }
         }
         return "unknown";
     }

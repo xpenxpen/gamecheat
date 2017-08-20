@@ -1,11 +1,11 @@
-package org.xpen.pal;
+package org.xpen.softstar.pal;
 
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xpen.pal.fileformat.CpkFile;
+import org.xpen.softstar.pal.fileformat.CpkFile;
 import org.xpen.util.UserSetting;
 
 public class Pal3Cpk {

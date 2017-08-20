@@ -1,4 +1,4 @@
-package org.xpen.pal.fileformat;
+package org.xpen.softstar.pal.fileformat;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;

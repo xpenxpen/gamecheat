@@ -32,7 +32,8 @@ public class TswTest {
     BufferedImage bi;
     private List<FatEntry> fatEntries = new ArrayList<FatEntry>();
     private boolean isColorDepth8;
-    String file = "F:/game/pal1new/run/新仙剑奇侠传/myex/All_Char/706魚0";
+    //String file = "F:/game/pal1new/run/新仙剑奇侠传/myex/All_Char/_1000李逍遙升級_影子";
+    String file = "F:/game/pal1new/run/新仙剑奇侠传/myex/All_Map1/13077天鬼皇";
 
     
     @Test

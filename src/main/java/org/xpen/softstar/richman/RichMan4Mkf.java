@@ -1,26 +1,27 @@
-package org.xpen.pal;
+package org.xpen.softstar.richman;
 
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xpen.pal.fileformat.LmfFile;
+import org.xpen.softstar.richman.fileformat.MkfFile;
 import org.xpen.util.UserSetting;
 
 /**
- * Pal 1 New
- * 新仙剑奇侠传
+ * Richman 4
+ * 大富翁4
  *
  */
-public class Pal1NewLmf {
+public class RichMan4Mkf {
     
-    private static final Logger LOG = LoggerFactory.getLogger(Pal1NewLmf.class);
+    private static final Logger LOG = LoggerFactory.getLogger(RichMan4Mkf.class);
 
     public static void main(String[] args) throws Exception {
-        UserSetting.rootInputFolder = "F:/game/pal1new/run/新仙剑奇侠传";
-        UserSetting.rootOutputFolder = "F:/game/pal1new/run/新仙剑奇侠传/myex";
-        String[] fileNames = {"huge2.lmf"};
+        UserSetting.rootInputFolder = "E:/QQGameDownload/PCGames/QGRichman4";
+        UserSetting.rootOutputFolder = "E:/QQGameDownload/PCGames/QGRichman4/myex";
+        String[] fileNames = {"Speaking"};
+        //String[] fileNames = {"jump"};
         
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
@@ -28,9 +29,9 @@ public class Pal1NewLmf {
         for (String fileName: fileNames) {
         	LOG.debug("---------Starting {}", fileName);
             
-        	LmfFile lmfFile = new LmfFile(fileName);
-        	lmfFile.decode();
-        	lmfFile.close();
+        	MkfFile mkfFile = new MkfFile(fileName);
+        	mkfFile.decode();
+        	mkfFile.close();
         }
         
         stopWatch.stop();

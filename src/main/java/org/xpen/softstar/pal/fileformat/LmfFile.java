@@ -1,4 +1,4 @@
-package org.xpen.pal.fileformat;
+package org.xpen.softstar.pal.fileformat;
 
 import java.io.File;
 import java.io.IOException;
@@ -127,11 +127,11 @@ public class LmfFile {
 	
     private void detectAndHandle(FatEntry entry, byte[] b) throws Exception {
     	String detectedType;
-    	if (this.format.equals("snd")) {
-    		detectedType = "wav";
-    	} else {
+    	//if (this.format.equals("lmf")) {
+    	//	detectedType = "tsw";
+    	//} else {
     		detectedType = LmfFileTypeDetector.detect(entry, b);
-    	}
+    	//}
     	
         FileTypeHandler fileTypeHandler = TswFileTypeDetector.getFileTypeHandler(detectedType);
         if (fileTypeHandler == null) {

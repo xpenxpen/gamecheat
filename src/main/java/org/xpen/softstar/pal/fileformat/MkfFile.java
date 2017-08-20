@@ -1,4 +1,4 @@
-package org.xpen.pal.fileformat;
+package org.xpen.softstar.pal.fileformat;
 
 import java.awt.Color;
 import java.io.File;
@@ -7,7 +7,6 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
