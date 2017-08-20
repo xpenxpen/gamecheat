@@ -1,6 +1,5 @@
 package org.xpen.softstar.richman.fileformat;
 
-import java.awt.Color;
 import java.io.File;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
