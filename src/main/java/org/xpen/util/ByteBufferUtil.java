@@ -27,8 +27,25 @@ public class ByteBufferUtil {
         return sb.toString();
     }
     
+    public static String getNullTerminatedString2Bytes(ByteBuffer buffer, String charset) {
+        byte[] b = new byte[2];
+        buffer.get(b);
+        StringBuilder sb = new StringBuilder();
+        
+        while (b[0]!=0 || b[1]!=0) {
+            sb.append(new String(b, 0, 1, Charset.forName(charset)));
+            buffer.get(b);
+        }
+        
+        return sb.toString();
+    }
+    
     public static String getNullTerminatedString(ByteBuffer buffer) {
         return getNullTerminatedString(buffer, "ISO-8859-1");
+    }
+    
+    public static String getNullTerminatedString2Bytes(ByteBuffer buffer) {
+        return getNullTerminatedString2Bytes(buffer, "ISO-8859-1");
     }
     
     public static String getNullTerminatedString(RandomAccessFile raf) throws Exception {
