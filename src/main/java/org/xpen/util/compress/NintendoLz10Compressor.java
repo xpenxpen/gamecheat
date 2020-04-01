@@ -3,8 +3,6 @@ package org.xpen.util.compress;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-
-
 /**
  * Nintendo LZ-0x10
  * Data header (32bit)
@@ -22,7 +20,7 @@ import java.nio.ByteOrder;
  *   Bit 8-15  Disp LSBs
  *
  */
-public class Lz10Compressor {
+public class NintendoLz10Compressor {
     
     public static byte[] decompress(byte[] inByte) {
         ByteBuffer buffer = ByteBuffer.wrap(inByte);

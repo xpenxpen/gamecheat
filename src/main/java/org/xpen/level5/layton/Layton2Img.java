@@ -12,19 +12,19 @@ import org.xpen.level5.layton.fileformat.ArcFile;
 import org.xpen.util.UserSetting;
 
 /**
- * Professor Layton 1: Curious Village
- * 雷顿教授1：不可思议的小镇
+ * Professor Layton 2: Diabolical Box
+ * 雷顿教授2：恶魔之箱
  *
  */
-public class Layton1Img {
+public class Layton2Img {
     
-    private static final Logger LOG = LoggerFactory.getLogger(Layton1Img.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Layton2Img.class);
     private static final String FILE_SUFFIX_ARC = "arc";
 
     public static void main(String[] args) throws Exception {
-        UserSetting.rootInputFolder = "D:/soft/game/nds/8100435/root/data";
-        UserSetting.rootOutputFolder = "D:/soft/game/nds/8100435/root/myex";
-    	String[] folderNames = {"ani"};
+        UserSetting.rootInputFolder = "D:/soft/game/nds/8100436/root/data_lt2";
+        UserSetting.rootOutputFolder = "D:/soft/game/nds/8100436/root/data_lt2/myex";
+    	String[] folderNames = {"ani/bgani", "ani/sub", "ani/title"};
         
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();

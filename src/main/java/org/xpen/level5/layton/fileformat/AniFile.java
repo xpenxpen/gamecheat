@@ -198,6 +198,7 @@ public class AniFile {
             File parent = new File(UserSetting.rootOutputFolder, subFolderName);
             //replace invalid file name char
             name = name.replace('*', '_');
+            name = name.replace('?', '_');
             outFile = new File(parent, oldFileNameWithoutExt + "_" + name + ".png");
             
             File parentFile = outFile.getParentFile();
