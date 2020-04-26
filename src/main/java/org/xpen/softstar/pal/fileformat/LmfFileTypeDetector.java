@@ -5,9 +5,9 @@ import java.nio.ByteOrder;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.xpen.dunia2.fileformat.dat.FileTypeHandler;
-import org.xpen.dunia2.fileformat.dat.SimpleCopyHandler;
 import org.xpen.softstar.pal.fileformat.LmfFile.FatEntry;
+import org.xpen.ubisoft.dunia2.fileformat.dat.FileTypeHandler;
+import org.xpen.ubisoft.dunia2.fileformat.dat.SimpleCopyHandler;
 
 public class LmfFileTypeDetector {
     

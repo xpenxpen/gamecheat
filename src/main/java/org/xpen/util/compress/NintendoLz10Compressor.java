@@ -40,11 +40,14 @@ public class NintendoLz10Compressor {
                 if (!buffer.hasRemaining()) {
                     break;
                 }
+                if (outFileCurrentPosition >= decompressSize) {
+                    break;
+                }
                 if ((symbol & bitWise) != 0) {
                     byte b1 = buffer.get();
                     byte b2 = buffer.get();
                     //System.out.println("pos:"+buffer.position());
-                    //if (buffer.position()>=5808){
+                    //if (buffer.position()>=6818){
                     //    return outByte;
                     //}
                     int bytesToCopy = ((b1 & 0xFF) >> 4) + 3;

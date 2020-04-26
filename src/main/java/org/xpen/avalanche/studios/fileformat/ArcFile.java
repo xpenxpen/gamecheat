@@ -10,8 +10,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xpen.avalanche.studios.fileformat.TabFile.FatEntry;
-import org.xpen.dunia2.fileformat.dat.FileTypeHandler;
-import org.xpen.dunia2.fileformat.dat.SimpleCopyHandler;
+import org.xpen.ubisoft.dunia2.fileformat.dat.FileTypeHandler;
+import org.xpen.ubisoft.dunia2.fileformat.dat.SimpleCopyHandler;
 import org.xpen.util.UserSetting;
 import org.xpen.util.compress.DeflateCompressor;
 

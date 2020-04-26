@@ -3,9 +3,9 @@ package org.xpen.hantang.fd.fileformat;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.xpen.dunia2.fileformat.dat.FileTypeHandler;
-import org.xpen.dunia2.fileformat.dat.SimpleCopyHandler;
 import org.xpen.hantang.fd.fileformat.DatfFile.FatEntry;
+import org.xpen.ubisoft.dunia2.fileformat.dat.FileTypeHandler;
+import org.xpen.ubisoft.dunia2.fileformat.dat.SimpleCopyHandler;
 
 public class DatfFileTypeDetector {
     
@@ -18,9 +18,9 @@ public class DatfFileTypeDetector {
     
     public static String detect(FatEntry entry, byte[] bytes) {
     	
-        if (entry.datFileName.equals("DATO")) {
-            return "dato";
-        }
+//        if (entry.datFileName.equals("DATO")) {
+//            return "dato";
+//        }
         return "unknown";
     }
     

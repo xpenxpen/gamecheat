@@ -11,7 +11,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
 
-import javax.imageio.ImageIO;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import org.junit.Test;
@@ -25,15 +25,21 @@ public class DatoTest {
     int width;
     int height;
     BufferedImage bi;
+    
+    public static void main(String[] args) throws Exception {
+        new DatoTest().testDato();
+    }
 
     
     @Test
     public void testDato() throws Exception {
     	Color c = new Color(40, 68,137);
     	System.out.println(c.getRGB());
-        String paleteFile = "G:/f/VirtualNes/DOS/rom/FDgame/炎龙骑士团合集/GAME/fd2/myex/FDOTHER/000.lll";
+        //String paleteFile = "G:/f/VirtualNes/DOS/rom/FDgame/炎龙骑士团合集/GAME/fd2/myex/FDOTHER/000.lll";
+        String paleteFile = "D:/git/opensource/gamecheat/src/main/resources/hantang/fd2/datoPalette.dat";
         InputStream isPalete = new FileInputStream(paleteFile);
-        String file = "G:/f/VirtualNes/DOS/rom/FDgame/炎龙骑士团合集/GAME/fd2/myex/DATO/000.lll";
+        //String file = "G:/f/VirtualNes/DOS/rom/FDgame/炎龙骑士团合集/GAME/fd2/myex/DATO/000.lll";
+        String file = "D:/git/opensource/dunia2/dos/games-master/dos/炎龙骑士团2.boxer/C.harddisk/fd2/myex/BG/unknown/unknown/007.unknown";
         InputStream isDato = new FileInputStream(file);
         raf = new RandomAccessFile(new File(file), "r");
         fileChannel = raf.getChannel();
@@ -43,11 +49,11 @@ public class DatoTest {
         getPixel();
         close();
         
-//        JFrame jFrame = new JFrame();
-//        jFrame.setSize(800, 600);
-//        jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        jFrame.add(new PanelImageDisplayer());
-//        jFrame.setVisible(true);
+        JFrame jFrame = new JFrame();
+        jFrame.setSize(800, 600);
+        jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        jFrame.add(new PanelImageDisplayer());
+        jFrame.setVisible(true);
     }
 
 	private void test8080(InputStream isDato) throws Exception {
@@ -93,17 +99,18 @@ public class DatoTest {
 	}
 
 	private void getPixel() throws Exception {
-        ByteBuffer buffer = ByteBuffer.allocate(20);
+
+        ByteBuffer buffer = ByteBuffer.allocate((int)fileChannel.size());
         buffer.order(ByteOrder.LITTLE_ENDIAN);
-        buffer.limit(20);
+        buffer.limit((int)fileChannel.size());
         fileChannel.read(buffer);
         buffer.flip();
        
-		int[] offsets = new int[4];
-        for (int i = 0; i < 4; i++) {
-        	offsets[i] = buffer.getInt();
-            //System.out.println("offsets[i]="+offsets[i]);
-        }
+		int[] offsets = new int[1];
+//        for (int i = 0; i < 4; i++) {
+//        	offsets[i] = buffer.getInt();
+//            //System.out.println("offsets[i]="+offsets[i]);
+//        }
         
         width = buffer.getShort();
         height = buffer.getShort();
@@ -112,20 +119,33 @@ public class DatoTest {
 	    int i = 0;
 	    int j = 0;
 	    bi = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-	    while (raf.getFilePointer() < offsets[1]) {
-	        int aNum = raf.readUnsignedByte();
-	        if ((aNum & 0xC0) == 0xC0) {
-	            aNum = aNum & 0x3F;
-	            total += aNum;
-	            int colorIndex = raf.readUnsignedByte();
-	            for (int k = 0; k < aNum; k++) {
-	            	bi.setRGB(i, j, colors[colorIndex].getRGB());
-	            	i++;
-	            	if (i>=width) {
-	            		i=0;
-	            		j++;
-	            	}
-	            }
+        offsets[0] = buffer.capacity();
+	    while (buffer.position() < offsets[0]) {
+            int aNum = buffer.get() & 0xFF;
+            if (aNum <= 0x3F) {
+                //aNum = aNum & 0x3F;
+                total += aNum;
+                int colorIndex = buffer.get() & 0xFF;
+                for (int k = 0; k < aNum; k++) {
+                    bi.setRGB(i, j, colors[colorIndex].getRGB());
+                    i++;
+                    if (i>=width) {
+                        i=0;
+                        j++;
+                    }
+                }
+//            } else if ((aNum & 0xC0) == 0xC0) {
+//	            aNum = aNum & 0x3F;
+//	            total += aNum;
+//                int colorIndex = buffer.get() & 0xFF;
+//	            for (int k = 0; k < aNum; k++) {
+//	            	bi.setRGB(i, j, colors[colorIndex].getRGB());
+//	            	i++;
+//	            	if (i>=width) {
+//	            		i=0;
+//	            		j++;
+//	            	}
+//	            }
 	        } else {
 	            total += 1;
             	bi.setRGB(i, j, colors[aNum].getRGB());
@@ -135,10 +155,10 @@ public class DatoTest {
             		j++;
             	}
 	        }
-	        System.out.println(",aNum="+aNum+",total="+total);
+	        System.out.println(",aNum="+aNum+",total="+total+",i="+i+",j="+j);
 	    }
         
-        ImageIO.write(bi, "PNG", new File("G:/f/VirtualNes/DOS/rom/FDgame/炎龙骑士团合集/GAME/fd2/myex/DATO/abc.png"));
+        //ImageIO.write(bi, "PNG", new File("G:/f/VirtualNes/DOS/rom/FDgame/炎龙骑士团合集/GAME/fd2/myex/DATO/abc.png"));
 	}
 	
     public void close() throws Exception {

@@ -3,9 +3,9 @@ package org.xpen.kingsoft.fileformat;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.xpen.dunia2.fileformat.dat.FileTypeHandler;
-import org.xpen.dunia2.fileformat.dat.SimpleCopyHandler;
 import org.xpen.kingsoft.fileformat.PakFile.FatEntry;
+import org.xpen.ubisoft.dunia2.fileformat.dat.FileTypeHandler;
+import org.xpen.ubisoft.dunia2.fileformat.dat.SimpleCopyHandler;
 
 public class PakFileTypeDetector {
     

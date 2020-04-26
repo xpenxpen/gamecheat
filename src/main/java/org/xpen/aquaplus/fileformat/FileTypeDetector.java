@@ -6,8 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.xpen.aquaplus.fileformat.DarFile.FatEntry;
-import org.xpen.dunia2.fileformat.dat.FileTypeHandler;
-import org.xpen.dunia2.fileformat.dat.SimpleCopyHandler;
+import org.xpen.ubisoft.dunia2.fileformat.dat.FileTypeHandler;
+import org.xpen.ubisoft.dunia2.fileformat.dat.SimpleCopyHandler;
 
 public class FileTypeDetector {
     

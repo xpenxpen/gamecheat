@@ -13,7 +13,7 @@ import javax.imageio.ImageIO;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xpen.dunia2.fileformat.dat.FileTypeHandler;
+import org.xpen.ubisoft.dunia2.fileformat.dat.FileTypeHandler;
 import org.xpen.util.ColorUtil;
 import org.xpen.util.UserSetting;
 import org.xpen.util.compress.LzoCompressor;

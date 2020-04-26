@@ -9,7 +9,7 @@ import java.nio.ByteOrder;
 import javax.imageio.ImageIO;
 
 import org.apache.commons.io.FilenameUtils;
-import org.xpen.dunia2.fileformat.dat.FileTypeHandler;
+import org.xpen.ubisoft.dunia2.fileformat.dat.FileTypeHandler;
 import org.xpen.util.ColorUtil;
 import org.xpen.util.UserSetting;
 

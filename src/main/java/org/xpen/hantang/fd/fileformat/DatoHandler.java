@@ -9,7 +9,7 @@ import java.nio.ByteOrder;
 
 import javax.imageio.ImageIO;
 
-import org.xpen.dunia2.fileformat.dat.FileTypeHandler;
+import org.xpen.ubisoft.dunia2.fileformat.dat.FileTypeHandler;
 import org.xpen.util.UserSetting;
 
 public class DatoHandler implements FileTypeHandler {
@@ -70,6 +70,7 @@ public class DatoHandler implements FileTypeHandler {
             while (buffer.position() < offsets[offsetIndex + 1]) {
                 int aNum = buffer.get() & 0xFF;
                 if ((aNum & 0xC0) == 0xC0) {
+                    //RLE
                     aNum = aNum & 0x3F;
                     total += aNum;
                     int colorIndex = buffer.get() & 0xFF;

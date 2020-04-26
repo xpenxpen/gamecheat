@@ -13,8 +13,10 @@ public class Fd2Datf {
     private static final Logger LOG = LoggerFactory.getLogger(Fd2Datf.class);
 
     public static void main(String[] args) throws Exception {
-        UserSetting.rootInputFolder = "G:/f/VirtualNes/DOS/rom/FDgame/炎龙骑士团合集/GAME/fd2";
-        UserSetting.rootOutputFolder = "G:/f/VirtualNes/DOS/rom/FDgame/炎龙骑士团合集/GAME/fd2/myex";
+        //UserSetting.rootInputFolder = "G:/f/VirtualNes/DOS/rom/FDgame/炎龙骑士团合集/GAME/fd2";
+        //UserSetting.rootOutputFolder = "G:/f/VirtualNes/DOS/rom/FDgame/炎龙骑士团合集/GAME/fd2/myex";
+        UserSetting.rootInputFolder = "D:/git/opensource/dunia2/dos/games-master/dos/炎龙骑士团2.boxer/C.harddisk/fd2";
+        UserSetting.rootOutputFolder = "D:/git/opensource/dunia2/dos/games-master/dos/炎龙骑士团2.boxer/C.harddisk/fd2/myex";
     	String[] fileNames = {"ANI", "BG", "DATO", "FDFIELD", "FDMUS", "FDOTHER", "FDSHAP", "FDTXT", "FIGANI",
     	        "TAI", "TITLE"};
         

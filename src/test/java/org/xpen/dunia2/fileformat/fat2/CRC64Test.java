@@ -5,6 +5,7 @@ import java.util.zip.CRC32;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.xpen.ubisoft.dunia2.fileformat.fat2.CRC64;
 
 public class CRC64Test {
 

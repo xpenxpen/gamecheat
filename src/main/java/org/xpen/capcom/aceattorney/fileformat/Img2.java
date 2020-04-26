@@ -1,0 +1,121 @@
+package org.xpen.capcom.aceattorney.fileformat;
+
+import java.awt.Color;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.imageio.ImageIO;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.xpen.util.ColorUtil;
+import org.xpen.util.UserSetting;
+import org.xpen.util.compress.NintendoLz11Compressor;
+
+public class Img2 {
+    
+    protected String fileName;
+    protected Map<Integer, Color[]> paletteMap = new HashMap<>();
+    private int[][] tiles;
+    private int tileCount;
+    
+    /**
+     * Palette: use 4 bit color(16 colors)
+     * Tile: each byte represents 2 pixels
+     */
+    public void handle(Path path, int paletteFile, int width, boolean compress) throws Exception {
+        fileName = path.toFile().getName();
+        byte[] inBytes = Files.readAllBytes(path);
+        
+        Color[] palette = getPalette(paletteFile);
+        
+        byte[] outBytes;
+        //Lz11
+        if (compress) {
+            inBytes = Arrays.copyOfRange(inBytes, 4, inBytes.length);
+            outBytes = NintendoLz11Compressor.decompress(inBytes);
+        } else {
+            outBytes = inBytes;
+        }
+        
+        tileCount = outBytes.length / 64;
+        ByteBuffer buffer = ByteBuffer.wrap(outBytes);
+        buffer.order(ByteOrder.LITTLE_ENDIAN);
+        getTile(buffer);
+        
+        int height = outBytes.length / width;
+
+        BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+
+        int xTileCount = width / 8;
+        int yTileCount = height / 8;
+        int tileIndex = 0;
+        
+        for (int y = 0; y < yTileCount; y++) {
+            for (int x = 0; x < xTileCount; x++) {
+                for (int k = 0; k < 64; k++) {
+                    bi.setRGB(x * 8 + k % 8, y * 8 + k / 8, palette[tiles[tileIndex][k]].getRGB());
+                }
+                tileIndex++;
+            }
+        }
+        
+        writeFile(bi);
+        
+    }
+
+    private Color[] getPalette(int paletteFile) throws Exception {
+        if (!paletteMap.containsKey(paletteFile)) {
+            Color[] palette = getPaletteFromFile(paletteFile);
+            paletteMap.put(paletteFile, palette);
+        }
+        
+        return paletteMap.get(paletteFile);
+    }
+    
+    private Color[] getPaletteFromFile(int paletteFile) throws Exception {
+        String fourDigit = StringUtils.leftPad(String.valueOf(paletteFile), 4, '0');
+        Path path = Paths.get(UserSetting.rootInputFolder, "romfile/" + fourDigit);
+        byte[] inBytes = Files.readAllBytes(path);
+        
+        ByteBuffer buffer = ByteBuffer.wrap(inBytes);
+        buffer.order(ByteOrder.LITTLE_ENDIAN);
+        buffer.position(4);
+        //BGR555
+        Color[] colors = new Color[(inBytes.length - 4) / 2];
+        for (int i = 0; i < colors.length; i++) {
+            short colorBits = buffer.getShort();
+            Color c = ColorUtil.bgr555ToRgb888(colorBits);
+            colors[i] = c;
+        }
+        return colors;
+    }
+    
+    private void getTile(ByteBuffer buffer) throws Exception {
+        tiles = new int[tileCount][];
+        for (int i = 0; i < tileCount; i++) {
+            //A tile is a block of 8x8 pixels
+            tiles[i] = new int[64];
+            for (int j = 0; j < 64; j++) {
+                tiles[i][j] = buffer.get() & 0xFF;
+            }
+        }
+    }
+
+    private void writeFile(BufferedImage bi) throws Exception {
+        File outFile = new File(UserSetting.rootOutputFolder, "romfile/" + fileName + ".png");
+        
+        File parentFile = outFile.getParentFile();
+        parentFile.mkdirs();
+        
+        ImageIO.write(bi, "PNG", outFile);
+    }
+}

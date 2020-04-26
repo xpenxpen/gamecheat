@@ -64,4 +64,77 @@ DAE  https://en.wikipedia.org/wiki/COLLADA
 1969240 0   1969240     67
 1969304 469 1969773     64
 
-
+Supported Game(56)
+alawar
+    魔法全书2  vst FAT
+    魔法全书3  X7x7m
+aquaplus
+  ToHeart 2 PSP dar deflate tpl Pallete
+artifex mundi
+    乌鸦森林之谜1:枫叶溪幽灵 cub xor
+    黄昏1:斯拉夫寓言
+avalanche studios
+    变节行动
+bethesda
+    上古卷轴5
+big fish
+    阿扎达1,2
+    谜画之塔1,2,3
+capcom
+    逆转检事1
+Castle Pixel 
+    花之季节
+ChunSoft
+  Zero Escape 3
+eidos
+    盟军敢死队:使命召唤
+falcom
+    伊苏1
+???
+    自然之力
+烛龙
+   古剑奇谭1
+汉唐   
+   炎龙骑士团 2
+金山
+    抗日地雷战
+    新剑侠情缘
+    决战朝鲜
+kid
+  Memories Off 6
+koei
+    大航海时代4威力加强版
+    信长之野望4
+    三国志1~5
+    三国志曹操传
+    三国志英杰传
+level5
+    雷顿教授1,2 arc ani lz10, rle, NTFS, Pallete
+    雷顿教授3 LIMG, Pallete
+namco
+  AKB149
+  AKB48
+  AKB48关岛
+    名侦探柯南&金田一少年之事件簿 两大名侦探的相逢
+odin soft
+    三国群英传2
+popcap
+  bejeweled 3
+    吞食鱼2
+  Peggle
+   植物大战僵尸
+snowstep   
+  海龟岛
+softstar
+  仙剑奇侠传1,2,3,4
+  新仙剑奇侠传
+  大富翁4
+  轩辕剑3
+softworld
+  新蜀山剑侠传
+tgl
+  战国美少女2:春风之章
+ubisoft
+  far cry 1,3,4
+westwood
+  命令与征服1:泰伯利亚黎明
