@@ -1,4 +1,4 @@
-package org.xpen.namco.fileformat;
+package org.xpen.namco.conankindaichi;
 
 import java.io.File;
 import java.io.RandomAccessFile;
@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xpen.ubisoft.dunia2.fileformat.dat.FileTypeHandler;
 import org.xpen.ubisoft.dunia2.fileformat.dat.SimpleCopyHandler;
+import org.xpen.util.HandleCount;
 import org.xpen.util.compress.NintendoLz10Compressor;
 
 public class PakFile {
@@ -34,15 +35,16 @@ public class PakFile {
      * |--FAT
      * |   |--4 Offset
      * ----
+     * @param countPair 
      *
      */
-    public void decode(String folderName, String fileName, File f) throws Exception {
+    public void decode(String folderName, String fileName, File f, HandleCount countPair) throws Exception {
         this.folderName = folderName;
         this.fileName = fileName;
         raf = new RandomAccessFile(f, "r");
         fileChannel = raf.getChannel();
         decodeFat();
-        decodeDat();
+        decodeDat(countPair);
     }
 
     private void decodeFat() throws Exception {
@@ -75,7 +77,7 @@ public class PakFile {
         
     }
 
-    private void decodeDat() throws Exception {
+    private void decodeDat(HandleCount countPair) throws Exception {
         for (int i = 0; i < fatEntries.size() - 1; i++) {
             FatEntry fatEntry = fatEntries.get(i);
             
@@ -93,13 +95,13 @@ public class PakFile {
                 fatEntry.fname = "_notcompress" + threeDigit;
             }
             
-            detectAndHandle(fatEntry, bytes);
+            detectAndHandle(fatEntry, bytes, countPair);
         }
         
     }
 
-    private void detectAndHandle(FatEntry entry, byte[] b) throws Exception {
-        String detectedType = FileTypeDetector.detect(this.fileName);
+    private void detectAndHandle(FatEntry entry, byte[] b, HandleCount countPair) throws Exception {
+        String detectedType = FileTypeDetector.detect(this.fileName, entry.fname);
         FileTypeHandler fileTypeHandler = FileTypeDetector.getFileTypeHandler(detectedType);
         if (fileTypeHandler == null) {
             fileTypeHandler = new SimpleCopyHandler("unknown", true);
@@ -107,7 +109,17 @@ public class PakFile {
         
         boolean isUnknown = false;
         
-        fileTypeHandler.handle(b, this.fileName, entry.fname, isUnknown);
+        if (!(fileTypeHandler instanceof SimpleCopyHandler)) {
+            countPair.totalCount++;
+        }
+        try {
+            fileTypeHandler.handle(b, this.fileName, entry.fname, isUnknown);
+            if (!(fileTypeHandler instanceof SimpleCopyHandler)) {
+                countPair.handleCount++;
+            }
+        } catch (Exception e) {
+            LOG.error("Error: "  + this.fileName + "_" + entry.fname, e);
+        }
     }
 
     public void close() throws Exception {

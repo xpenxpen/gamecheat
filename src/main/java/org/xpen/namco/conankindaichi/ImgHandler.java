@@ -1,4 +1,4 @@
-package org.xpen.namco.fileformat;
+package org.xpen.namco.conankindaichi;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
@@ -18,17 +18,20 @@ public class ImgHandler implements FileTypeHandler {
 	
     private static final Logger LOG = LoggerFactory.getLogger(ImgHandler.class);
 	
-	private String datFileName;
-	private String fname;
+	protected String datFileName;
+	protected String fname;
 	private String extension;
     private boolean keepOldFileName;
-	private byte[] bytes;
-	private Color[] palette;
-	private int colorCount;
-    private ByteBuffer buffer;
-    private int width;
-    private int height;
-    private BufferedImage bi;
+    protected byte[] bytes;
+    protected Color[] palette;
+    protected int colorCount;
+    protected ByteBuffer buffer;
+    protected int width;
+    protected int height;
+    protected BufferedImage bi;
+
+    public ImgHandler() {
+    }
 
 	public ImgHandler(int colorCount, int width) {
         this.width = width;
@@ -41,15 +44,16 @@ public class ImgHandler implements FileTypeHandler {
 		this.datFileName = datFileName;
 		this.fname = newFileName;
 		this.bytes = b;
+        buffer = ByteBuffer.wrap(bytes);
+        buffer.order(ByteOrder.LITTLE_ENDIAN);
     	//LOG.debug("newFileName={}", newFileName);
 		getPallete();
+        getHeight();
         getPixel();
         writeFile();
 	}
 
-	private void getPallete() throws Exception {
-        buffer = ByteBuffer.wrap(bytes);
-        buffer.order(ByteOrder.LITTLE_ENDIAN);
+    protected void getPallete() throws Exception {
         //BGR555
         for (int i = 0; i < palette.length; i++) {
             short colorBits = buffer.getShort();
@@ -58,23 +62,36 @@ public class ImgHandler implements FileTypeHandler {
         }
 	}
 
-	private void getPixel() throws Exception {
-        int height = (bytes.length - colorCount * 2) / width;
+    protected void getPixel() throws Exception {
 
         bi = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 int bits = buffer.get() & 0xFF;
-                if (bits >= colorCount) {
-                    bits = 0;
+                
+                if (colorCount == 16) {
+                    int bit1 = bits & 0xF;
+                    int bit2 = (bits & 0xF0) >> 4;
+                    bi.setRGB(x, y, palette[bit1].getRGB());
+                    bi.setRGB(x + 1, y, palette[bit2].getRGB());
+                    x += 1;
+                } else {
+                    if (bits >= colorCount) {
+                        bits = 0;
+                    }
+                    
+                    bi.setRGB(x, y, palette[bits].getRGB());
                 }
-                bi.setRGB(x, y, palette[bits].getRGB());
             }
         }
 	}
 
-	private void writeFile() throws Exception {
+    protected void getHeight() {
+        height = (bytes.length - colorCount * 2) / width;
+    }
+
+    protected void writeFile() throws Exception {
         File outFile = null;
         String oldFileNameWithoutExt = fname;
         outFile = new File(UserSetting.rootOutputFolder, datFileName + "/" + oldFileNameWithoutExt + ".png");

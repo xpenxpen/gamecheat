@@ -1,4 +1,4 @@
-package org.xpen.falcom.ys;
+package org.xpen.cookingmama;
 
 import java.util.concurrent.TimeUnit;
 
@@ -9,24 +9,32 @@ import org.xpen.util.HandleCount;
 import org.xpen.util.UserSetting;
 
 /**
- * Ys1
- * 伊苏1
- * イース1
- * 29/29
+ * Cooking Mama 2
+ * 料理妈妈2
+ * クッキングママ2
+ * 1502/1634
  *
  */
-public class Ys1Ds {
+public class CookingMama2 {
     
     public static void main(String[] args) throws Exception {
-        UserSetting.rootInputFolder = "D:/soft/ga/nds/8100050/root";
-        UserSetting.rootOutputFolder = "D:/soft/ga/nds/8100050/myex";
-        String[] folderNames = {"event", "shop"};
+        UserSetting.rootInputFolder = "D:/soft/ga/nds/8001664/root/data";
+        UserSetting.rootOutputFolder = "D:/soft/ga/nds/8001664/root/myex";
+        String[] folderNames = {"ao", "color", "com", "font", "is", "Ishida", "tonaki", "US", "yama"};
         
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
         HandleCount countPair = new HandleCount();
         
-        NclrNcgrNscr.extractNclrNcgrNscr(folderNames, countPair, null);
+        NclrNcgrNscr.extractNclrNcgrNscr(folderNames, countPair,
+        (t)-> {
+            if (t.startsWith("cook_U_BG")) {
+                return "cook_U_BG00";
+            }
+            return t;
+        });
+        
+        NclrNcbrNcer.extractNclrNcbrNcer(folderNames, countPair, null);
         
         stopWatch.stop();
         System.out.println("-----ALL OK, cost time = "+stopWatch.getTime(TimeUnit.SECONDS)+ "s");

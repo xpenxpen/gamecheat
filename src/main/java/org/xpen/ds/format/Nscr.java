@@ -1,6 +1,5 @@
 package org.xpen.ds.format;
 
-import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.nio.ByteBuffer;
@@ -18,7 +17,6 @@ import org.xpen.util.UserSetting;
 public class Nscr implements FileTypeHandler {
     
     private static final Logger LOG = LoggerFactory.getLogger(Nscr.class);
-    public static final String FILE_SUFFIX_NSCR = "NSCR";
     
     protected String subFolderName;
     protected String fileName;

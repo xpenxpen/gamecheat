@@ -38,6 +38,9 @@ public class Ntfs {
                 //if (tileIndex > 142) {
                 //    tileIndex = 0;
                 //}
+                if (tileIndex >= tiles.length) {
+                    tileIndex = tileIndex % tiles.length;
+                }
                 int[] tile = tiles[tileIndex];
                 Color[] pickPalette = colors[paletteIndex];
                 for (int k = 0; k < 64; k++) {

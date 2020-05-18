@@ -63,6 +63,9 @@ public class NintendoLz11Compressor {
                 if (!buffer.hasRemaining()) {
                     break;
                 }
+                if (outFileCurrentPosition >= decompressSize) {
+                    break;
+                }
                 if ((symbol & bitWise) != 0) {
                     byte b1 = buffer.get();
                     byte b2 = buffer.get();

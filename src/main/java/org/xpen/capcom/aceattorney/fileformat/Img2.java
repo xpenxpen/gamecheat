@@ -26,6 +26,7 @@ public class Img2 {
     protected Map<Integer, Color[]> paletteMap = new HashMap<>();
     private int[][] tiles;
     private int tileCount;
+    private Color[] palette;
     
     /**
      * Palette: use 4 bit color(16 colors)
@@ -35,23 +36,30 @@ public class Img2 {
         fileName = path.toFile().getName();
         byte[] inBytes = Files.readAllBytes(path);
         
-        Color[] palette = getPalette(paletteFile);
+        palette = getPalette(paletteFile);
         
         byte[] outBytes;
+        inBytes = Arrays.copyOfRange(inBytes, 4, inBytes.length);
         //Lz11
         if (compress) {
-            inBytes = Arrays.copyOfRange(inBytes, 4, inBytes.length);
             outBytes = NintendoLz11Compressor.decompress(inBytes);
         } else {
             outBytes = inBytes;
         }
         
-        tileCount = outBytes.length / 64;
+        int height;
+        
+        if (palette.length == 16) {
+            tileCount = outBytes.length / 32;
+            height = outBytes.length * 2 / width;
+        } else {
+            tileCount = outBytes.length / 64;
+            height = outBytes.length / width;
+        }
         ByteBuffer buffer = ByteBuffer.wrap(outBytes);
         buffer.order(ByteOrder.LITTLE_ENDIAN);
         getTile(buffer);
         
-        int height = outBytes.length / width;
 
         BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 
@@ -105,7 +113,16 @@ public class Img2 {
             //A tile is a block of 8x8 pixels
             tiles[i] = new int[64];
             for (int j = 0; j < 64; j++) {
-                tiles[i][j] = buffer.get() & 0xFF;
+                if (palette.length == 16) {
+                    int bits = buffer.get() & 0xFF;
+                    int pixel1 = bits & 0xF;
+                    int pixel2 = (bits & 0xF0) >> 4;
+                    tiles[i][j] = pixel1;
+                    j++;
+                    tiles[i][j] = pixel2;
+                } else {
+                    tiles[i][j] = buffer.get() & 0xFF;
+                }
             }
         }
     }

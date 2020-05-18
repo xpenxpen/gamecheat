@@ -13,7 +13,6 @@ import org.xpen.util.ColorUtil;
 public class Nclr {
     
     private static final Logger LOG = LoggerFactory.getLogger(Nclr.class);
-    public static final String FILE_SUFFIX_NCLR = "NCLR";
     
     private byte[] bytes;
     public NclrEntry nclrEntry;
@@ -74,11 +73,20 @@ public class Nclr {
             buffer.getInt();
             paletteLength = buffer.getInt();
             colorCountPerPalette = buffer.getInt();
+            
+            int paletteCount = paletteLength / 2 / colorCountPerPalette;
+            if (depth == 4) {
+                paletteCount = 1;
+            }
+            colors = new Color[paletteCount][];
             //BGR555
-            colors = new Color[paletteLength / 2 / colorCountPerPalette][];
             for (int i = 0; i < colors.length; i++) {
-                colors[i] = new Color[16];
-                for (int j = 0; j < 16; j++) {
+                if (depth == 4) {
+                    colors[i] = new Color[256];
+                } else if (depth == 3) {
+                    colors[i] = new Color[16];
+                }
+                for (int j = 0; j < colors[i].length; j++) {
                     short colorBits = buffer.getShort();
                     Color c = ColorUtil.bgr555ToRgb888(colorBits);
                     colors[i][j] = c;
