@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.Arrays;
 
 import javax.imageio.ImageIO;
 
@@ -13,9 +14,9 @@ import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xpen.ds.format.Ncgr.NcgrEntry;
-import org.xpen.ubisoft.dunia2.fileformat.dat.FileTypeHandler;
 import org.xpen.util.ByteBufferUtil;
 import org.xpen.util.UserSetting;
+import org.xpen.util.handler.FileTypeHandler;
 
 public class Ncer implements FileTypeHandler {
     
@@ -89,8 +90,19 @@ public class Ncer implements FileTypeHandler {
 
     //由多个oam拼图而成
     private BufferedImage drawImage(BankEntry bank, Color[][] colors, NcgrEntry ncgrEntry) {
+        //recalculate width, height
+        int minX = Arrays.asList(bank.oams).stream().min((t1, t2) -> t1.xOffset - t2.xOffset).get().xOffset;
+        int minY = Arrays.asList(bank.oams).stream().min((t1, t2) -> t1.yOffset - t2.yOffset).get().yOffset;
+        OamEntry maxEntryX = Arrays.asList(bank.oams).stream().max((t1, t2) -> t1.xOffset + t1.width - t2.xOffset - t2.width).get();
+        OamEntry maxEntryY = Arrays.asList(bank.oams).stream().max((t1, t2) -> t1.yOffset + t1.height - t2.yOffset - t2.height).get();
+        bank.xMin = minX;
+        bank.yMin = minY;
+        bank.xMax = maxEntryX.xOffset + maxEntryX.width;
+        bank.yMax = maxEntryY.yOffset + maxEntryY.height;
+        
         int width = bank.xMax - bank.xMin + 1;
         int height = bank.yMax - bank.yMin + 1;
+        
         BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         for (OamEntry oam: bank.oams) {
             int startX = oam.xOffset - bank.xMin;

@@ -6,6 +6,9 @@ import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.xpen.util.handler.FileTypeHandler;
+import org.xpen.util.handler.SimpleCopyHandler;
+
 public class FileTypeDetector {
     
     private static Map<String, FileTypeHandler> fileHandlersMap = new HashMap<String, FileTypeHandler>();

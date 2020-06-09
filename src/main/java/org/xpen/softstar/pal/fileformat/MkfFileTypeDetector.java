@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.xpen.softstar.pal.fileformat.MkfFile.FatEntry;
-import org.xpen.ubisoft.dunia2.fileformat.dat.FileTypeHandler;
-import org.xpen.ubisoft.dunia2.fileformat.dat.SimpleCopyHandler;
+import org.xpen.util.handler.FileTypeHandler;
+import org.xpen.util.handler.SimpleCopyHandler;
 
 public class MkfFileTypeDetector {
     

@@ -1,4 +1,4 @@
-package org.xpen.capcom.aceattorney;
+package org.xpen.capcom.aceattorney.gsj;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -8,27 +8,23 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xpen.capcom.aceattorney.fileformat.BinFile;
+import org.xpen.capcom.aceattorney.gsj.fileformat.BinFile;
 import org.xpen.util.UserSetting;
 
 /**
- * Ace Attorney Investigations: Miles Edgeworth
- * 逆转检事1
- * 逆転検事1
+ * 逆转裁判事典
  * 
  *
  */
-public class GyakutenKenji1Unpack {
+public class GyakutenSaibanJitenUnpack {
     
-    private static final Logger LOG = LoggerFactory.getLogger(GyakutenKenji1Unpack.class);
+    private static final Logger LOG = LoggerFactory.getLogger(GyakutenSaibanJitenUnpack.class);
     private static final String FILE_SUFFIX_BIN = "bin";
     
     public static void main(String[] args) throws Exception {
-        //UserSetting.rootInputFolder = "D:/soft/ga/nds/8100412/root/files";
-        //UserSetting.rootOutputFolder = "D:/soft/ga/nds/8100412/root/files/myex";
-        UserSetting.rootInputFolder = "D:/soft/ga/nds/8003809/root/files";
-        UserSetting.rootOutputFolder = "D:/soft/ga/nds/8003809/root/files/myex";
-        String fileName = "romfile.bin";
+        UserSetting.rootInputFolder = "D:/soft/ga/nds/8110105/root";
+        UserSetting.rootOutputFolder = "D:/soft/ga/nds/8110105/root/myex";
+        String fileName = "data.bin";
         
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();

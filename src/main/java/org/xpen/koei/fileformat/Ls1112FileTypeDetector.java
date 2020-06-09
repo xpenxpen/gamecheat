@@ -8,8 +8,8 @@ import java.util.Map;
 import org.xpen.koei.fileformat.Ls1112.FatEntry;
 import org.xpen.koei.sangokushi.fileformat.E5Handler;
 import org.xpen.koei.sangokushi.fileformat.R3Handler;
-import org.xpen.ubisoft.dunia2.fileformat.dat.FileTypeHandler;
-import org.xpen.ubisoft.dunia2.fileformat.dat.SimpleCopyHandler;
+import org.xpen.util.handler.FileTypeHandler;
+import org.xpen.util.handler.SimpleCopyHandler;
 
 public class Ls1112FileTypeDetector {
     

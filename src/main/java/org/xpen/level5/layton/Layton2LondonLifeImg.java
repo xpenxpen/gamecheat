@@ -13,8 +13,8 @@ import org.slf4j.LoggerFactory;
 import org.xpen.level5.layton.fileformat.AniHandler;
 import org.xpen.level5.layton.fileformat.ArcFile;
 import org.xpen.level5.layton.fileformat.BgHandler;
-import org.xpen.ubisoft.dunia2.fileformat.dat.FileTypeHandler;
 import org.xpen.util.UserSetting;
+import org.xpen.util.handler.FileTypeHandler;
 
 /**
  * Professor Layton and the Holiday of London

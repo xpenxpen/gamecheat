@@ -2,13 +2,14 @@ package org.xpen.ds.format;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.file.Path;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xpen.ubisoft.dunia2.fileformat.dat.FileTypeHandler;
-import org.xpen.ubisoft.dunia2.fileformat.dat.SimpleCopyHandler;
 import org.xpen.util.ByteBufferUtil;
+import org.xpen.util.handler.FileTypeHandler;
+import org.xpen.util.handler.SimpleCopyHandler;
 
 public class Narc {
     
@@ -16,11 +17,19 @@ public class Narc {
 
     public String fileName;
     private byte[] bytes;
+    private Path folderPath;
     public NarcEntry narcEntry;
     
     public void handle(byte[] b, String fileName) throws Exception {
         this.fileName = fileName;
         this.bytes = b;
+        decodeDat();
+    }
+    
+    public void handle(byte[] b, Path folderPath, String fileName) throws Exception {
+        this.fileName = fileName;
+        this.bytes = b;
+        this.folderPath = folderPath;
         decodeDat();
     }
         
@@ -164,7 +173,12 @@ public class Narc {
                 buffer.position(offset);
                 buffer.get(bytes);
                 FileTypeHandler fileTypeHandler = new SimpleCopyHandler("unknown", false);
-                fileTypeHandler.handle(bytes, narcEntry.narc.fileName, narcEntry.btnf.fileNames[i], false);
+                if (folderPath != null) {
+                    String folderName = folderPath.toString();
+                    fileTypeHandler.handle(bytes, folderName, narcEntry.btnf.fileNames[i], false);
+                } else {
+                    fileTypeHandler.handle(bytes, narcEntry.narc.fileName, narcEntry.btnf.fileNames[i], false);
+                }
             }
         }
         

@@ -1,4 +1,4 @@
-package org.xpen.capcom.aceattorney.fileformat;
+package org.xpen.capcom.aceattorney.gk1.fileformat;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;

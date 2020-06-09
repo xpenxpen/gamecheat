@@ -1,6 +1,5 @@
-package org.xpen.ubisoft.dunia2.fileformat.dat;
+package org.xpen.util.handler;
 
-import java.io.File;
 
 public interface FileTypeHandler {
 

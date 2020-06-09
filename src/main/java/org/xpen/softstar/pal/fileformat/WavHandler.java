@@ -6,8 +6,8 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
 
-import org.xpen.ubisoft.dunia2.fileformat.dat.FileTypeHandler;
 import org.xpen.util.UserSetting;
+import org.xpen.util.handler.FileTypeHandler;
 
 public class WavHandler implements FileTypeHandler {
 	

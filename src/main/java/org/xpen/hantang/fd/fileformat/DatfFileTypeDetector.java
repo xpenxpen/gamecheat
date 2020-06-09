@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.xpen.hantang.fd.fileformat.DatfFile.FatEntry;
-import org.xpen.ubisoft.dunia2.fileformat.dat.FileTypeHandler;
-import org.xpen.ubisoft.dunia2.fileformat.dat.SimpleCopyHandler;
+import org.xpen.util.handler.FileTypeHandler;
+import org.xpen.util.handler.SimpleCopyHandler;
 
 public class DatfFileTypeDetector {
     

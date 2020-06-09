@@ -1,4 +1,4 @@
-package org.xpen.capcom.aceattorney;
+package org.xpen.capcom.aceattorney.gk1;
 
 import java.io.File;
 import java.io.FileInputStream;

@@ -9,9 +9,9 @@ import java.nio.ByteOrder;
 import javax.imageio.ImageIO;
 
 import org.apache.commons.io.FilenameUtils;
-import org.xpen.ubisoft.dunia2.fileformat.dat.FileTypeHandler;
 import org.xpen.util.ColorUtil;
 import org.xpen.util.UserSetting;
+import org.xpen.util.handler.FileTypeHandler;
 
 public class ShpHandler implements FileTypeHandler {
     public static final int MAGIC_TLHS = 0x53484C54; //TLHS

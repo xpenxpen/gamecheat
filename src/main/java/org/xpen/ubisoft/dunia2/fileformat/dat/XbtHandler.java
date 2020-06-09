@@ -7,6 +7,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 import org.xpen.util.UserSetting;
+import org.xpen.util.handler.FileTypeHandler;
 
 public class XbtHandler implements FileTypeHandler {
 

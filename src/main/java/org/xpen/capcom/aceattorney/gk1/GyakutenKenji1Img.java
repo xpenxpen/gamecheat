@@ -1,4 +1,4 @@
-package org.xpen.capcom.aceattorney;
+package org.xpen.capcom.aceattorney.gk1;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -10,7 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xpen.capcom.aceattorney.fileformat.Img;
+import org.xpen.capcom.aceattorney.gk1.fileformat.Img;
 import org.xpen.util.UserSetting;
 
 import com.google.common.collect.Range;

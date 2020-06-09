@@ -1,4 +1,4 @@
-package org.xpen.capcom.aceattorney.fileformat;
+package org.xpen.capcom.aceattorney.gk1.fileformat;
 
 import java.io.File;
 import java.io.RandomAccessFile;
@@ -12,8 +12,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xpen.ubisoft.dunia2.fileformat.dat.FileTypeHandler;
-import org.xpen.ubisoft.dunia2.fileformat.dat.SimpleCopyHandler;
+import org.xpen.util.handler.FileTypeHandler;
+import org.xpen.util.handler.SimpleCopyHandler;
 
 public class BinFile {
     
@@ -72,6 +72,12 @@ public class BinFile {
         }
         FatEntry lastFatEntry = fatEntries.get(entryCount - 1);
         lastFatEntry.length = (int)fileChannel.size() - lastFatEntry.start;
+        
+        for (int i = 0; i < entryCount; i++) {
+            FatEntry fatEntry = fatEntries.get(i);
+            fatEntry.start += 4;
+            fatEntry.length -= 4;
+        }
         
     }
 

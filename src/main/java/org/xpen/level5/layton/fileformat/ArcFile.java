@@ -9,9 +9,9 @@ import java.util.Stack;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xpen.ubisoft.dunia2.fileformat.dat.FileTypeHandler;
 import org.xpen.util.compress.NintendoLz10Compressor;
 import org.xpen.util.compress.NintendoRleCompressor;
+import org.xpen.util.handler.FileTypeHandler;
 
 /**
  * 4 Compression Type

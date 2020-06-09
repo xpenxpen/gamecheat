@@ -11,14 +11,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xpen.ubisoft.dunia2.fileformat.dat.FileTypeDetector;
-import org.xpen.ubisoft.dunia2.fileformat.dat.FileTypeHandler;
-import org.xpen.ubisoft.dunia2.fileformat.dat.SimpleCopyHandler;
 import org.xpen.ubisoft.dunia2.fileformat.fat2.CompressionScheme;
 import org.xpen.ubisoft.dunia2.fileformat.fat2.Entry;
 import org.xpen.ubisoft.dunia2.fileformat.fat2.FileListManager;
 import org.xpen.ubisoft.dunia2.fileformat.fat2.SubFatEntry;
 import org.xpen.util.UserSetting;
 import org.xpen.util.compress.LzoCompressor;
+import org.xpen.util.handler.FileTypeHandler;
+import org.xpen.util.handler.SimpleCopyHandler;
 
 public class DatFile {
     

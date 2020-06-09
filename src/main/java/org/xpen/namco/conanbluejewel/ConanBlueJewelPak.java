@@ -1,4 +1,4 @@
-package org.xpen.namco.conankindaichi;
+package org.xpen.namco.conanbluejewel;
 
 import java.io.File;
 import java.util.Collection;
@@ -8,26 +8,26 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.xpen.namco.conankindaichi.FileTypeDetector;
+import org.xpen.namco.conankindaichi.PakFile;
 import org.xpen.util.HandleCount;
 import org.xpen.util.UserSetting;
 
 /**
- * Detective Conan & Kindaichi Case Files: Chance Meeting of Two Great Detectives
- * 名侦探柯南&金田一少年之事件簿 两大名侦探的相逢
- * 名探偵コナン&金田一少年の事件簿 めぐりあう2人の名探偵
- * 1765/1886
+ * Detective Conan: The Blue Jewel's Rondo
+ * 名侦探柯南 苍蓝宝石的轮舞曲
+ * 名探偵コナン　蒼き宝石の輪舞曲
+ * 2181/2349
  *
  */
-public class ConanKindaichiPak {
+public class ConanBlueJewelPak {
     
-    private static final Logger LOG = LoggerFactory.getLogger(ConanKindaichiPak.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ConanBlueJewelPak.class);
     private static final String FILE_SUFFIX_PAK = "pak";
     
     public static void main(String[] args) throws Exception {
-//        UserSetting.rootInputFolder = "D:/soft/ga/nds/8100126/root";
-//        UserSetting.rootOutputFolder = "D:/soft/ga/nds/8100126/root/myex";
-        UserSetting.rootInputFolder = "D:/soft/ga/nds/8003356/root";
-        UserSetting.rootOutputFolder = "D:/soft/ga/nds/8003356/root/myex";
+        UserSetting.rootInputFolder = "D:/soft/ga/nds/8100127/root";
+        UserSetting.rootOutputFolder = "D:/soft/ga/nds/8100127/root/myex";
         String folderName = "pack";
         
         //all_info_mess 所有文字

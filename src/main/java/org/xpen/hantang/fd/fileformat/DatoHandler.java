@@ -9,8 +9,8 @@ import java.nio.ByteOrder;
 
 import javax.imageio.ImageIO;
 
-import org.xpen.ubisoft.dunia2.fileformat.dat.FileTypeHandler;
 import org.xpen.util.UserSetting;
+import org.xpen.util.handler.FileTypeHandler;
 
 public class DatoHandler implements FileTypeHandler {
     

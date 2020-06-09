@@ -64,7 +64,7 @@ DAE  https://en.wikipedia.org/wiki/COLLADA
 1969240 0   1969240     67
 1969304 469 1969773     64
 
-Supported Game(56)
+Supported Game(68)
 alawar
     魔法全书2  vst FAT
     魔法全书3  X7x7m
@@ -73,6 +73,8 @@ aquaplus
 artifex mundi
     乌鸦森林之谜1:枫叶溪幽灵 cub xor
     黄昏1:斯拉夫寓言
+atlus
+    诺拉和时间工房
 avalanche studios
     变节行动
 bethesda
@@ -81,15 +83,20 @@ big fish
     阿扎达1,2
     谜画之塔1,2,3
 capcom
-    逆转检事1
+    逆转检事1 lz11
+    逆转裁判事典 lz10
 Castle Pixel 
     花之季节
 ChunSoft
   Zero Escape 3
+cookingmama
+    料理妈妈1~3
 eidos
     盟军敢死队:使命召唤
+enterbrain
+    重装机兵 钢之季节
 falcom
-    伊苏1
+    伊苏1,2
 ???
     自然之力
 烛龙
@@ -111,11 +118,14 @@ koei
 level5
     雷顿教授1,2 arc ani lz10, rle, NTFS, Pallete
     雷顿教授3 LIMG, Pallete
+    雷顿教授MysteryJourney
 namco
   AKB149
   AKB48
   AKB48关岛
-    名侦探柯南&金田一少年之事件簿 两大名侦探的相逢
+    名侦探柯南&金田一少年之事件簿 两大名侦探的相逢 lz10
+    名侦探柯南苍蓝宝石 lz10
+    名侦探柯南 侦探力训练
 odin soft
     三国群英传2
 popcap

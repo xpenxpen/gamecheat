@@ -16,10 +16,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xpen.ubisoft.dunia2.fileformat.dat.FileTypeHandler;
-import org.xpen.ubisoft.dunia2.fileformat.dat.SimpleCopyHandler;
 import org.xpen.util.UserSetting;
 import org.xpen.util.compress.LzoCompressor;
+import org.xpen.util.handler.FileTypeHandler;
+import org.xpen.util.handler.SimpleCopyHandler;
 
 public class PakFile {
     public static final byte[] MAGIC_PACKAGE = {0x50, 0x41, 0x43, 0x4B, 0x41, 0x47, 0x45, 0x00}; //PACKAGE

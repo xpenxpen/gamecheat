@@ -1,9 +1,11 @@
-package org.xpen.namco.conankindaichi;
+package org.xpen.namco.conanbluejewel;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.xpen.namco.conankindaichi.CharaImgHandler;
+import org.xpen.namco.conankindaichi.ImgHandler;
 import org.xpen.util.handler.FileTypeHandler;
 import org.xpen.util.handler.SimpleCopyHandler;
 
@@ -35,12 +37,12 @@ public class FileTypeDetector {
             return "img64";
         }
         if (fileName.equals("background")) {
-            if (fname.equals("002")) {
-                return "img768";
-            }
-            if (BACKGROUD_512.contains(fname)) {
-                return "img512";
-            }
+//            if (fname.equals("002")) {
+//                return "img768";
+//            }
+//            if (BACKGROUD_512.contains(fname)) {
+//                return "img512";
+//            }
             return "img256";
         }
         if (fileName.equals("chara")) {
